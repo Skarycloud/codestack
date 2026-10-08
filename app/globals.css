@@ -329,25 +329,28 @@
 /* Roadmap page: a neobrutalist theme in the spirit of neobrutalism.com. Flat colors, thick ink
    borders and hard offset shadows, scoped to .nb so the rest of the site keeps its own look. */
 .nb {
-  --nb-bg: #fff7e8;
-  --nb-card: #ffffff;
+  /* Same page background and text as the rest of the site; only the boxes are neobrutalist. */
+  --nb-bg: hsl(var(--background));
+  --nb-card: hsl(var(--background));
   --nb-sub: #fff1c2;
-  --nb-ink: #000000;
-  --nb-muted: #5b5244;
+  --nb-ink: hsl(var(--foreground));
+  --nb-muted: hsl(var(--muted-foreground));
   --nb-line: #000000;
   --nb-shadow: #000000;
   --nb-yellow: #ffdc58;
   background: var(--nb-bg);
   color: var(--nb-ink);
 }
+/* Dark mode follows neobrutalism.com: near-black cards, soft light borders and a yellow offset
+   shadow. Yellow boxes swap to a gray shadow (.nb-alt-shadow) so they don't blur into it. */
 .dark .nb {
-  --nb-bg: #1d1a16;
-  --nb-card: #2a2620;
-  --nb-sub: #332e26;
-  --nb-ink: #f6efe1;
-  --nb-muted: #bdb29d;
-  --nb-line: #f6efe1;
-  --nb-shadow: #f6efe1;
+  --nb-card: #141416;
+  --nb-sub: #1e1e21;
+  --nb-line: #d4d4d8;
+  --nb-shadow: #ffdc58;
+}
+.dark .nb .nb-alt-shadow {
+  --nb-shadow: #71717a;
 }
 .nb-font {
   font-family: var(--font-balsamiq), "Comic Sans MS", system-ui, sans-serif;

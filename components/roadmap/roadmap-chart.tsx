@@ -74,7 +74,10 @@ export function RoadmapChart() {
             <Line />
             <div className="mx-auto w-fit">
               <div
-                className="nb-box px-5 py-2 text-center text-[15px] font-bold uppercase tracking-wide text-black"
+                className={cn(
+                  "nb-box px-5 py-2 text-center text-[15px] font-bold uppercase tracking-wide text-black",
+                  phase.color === "#FFDC58" && "nb-alt-shadow",
+                )}
                 style={{ background: phase.color }}
               >
                 Phase {pi + 1} · {phase.name}
@@ -100,7 +103,7 @@ export function RoadmapChart() {
         <Line />
         <a
           href="#ship"
-          className="nb-box nb-press mx-auto flex w-fit items-center gap-2 bg-black px-6 py-3 text-[16px] font-bold text-white dark:bg-[var(--nb-yellow)] dark:text-black"
+          className="nb-box nb-press nb-alt-shadow mx-auto flex w-fit items-center gap-2 bg-black px-6 py-3 text-[16px] font-bold text-white dark:bg-[var(--nb-yellow)] dark:text-black"
         >
           Ready to ship? Final checklist
           <ArrowDown className="size-4" />
@@ -148,7 +151,7 @@ function Step({
         onClick={() => onToggle()}
         aria-expanded={!!open}
         className={cn(
-          "nb-box nb-press mx-auto flex w-full max-w-md items-center gap-3 px-4 py-3 text-left text-black",
+          "nb-box nb-press nb-alt-shadow mx-auto flex w-full max-w-md items-center gap-3 px-4 py-3 text-left text-black",
           topic.optional && "border-dashed",
         )}
         style={{ background: complete ? "#5CF2C4" : "var(--nb-yellow)" }}
@@ -189,7 +192,7 @@ function Step({
           </div>
 
           {topic.rule && (
-            <div className="nb-box-sm mt-4 flex gap-3 bg-[var(--nb-yellow)] p-3.5 text-[15px] font-bold leading-snug text-black">
+            <div className="nb-box-sm nb-alt-shadow mt-4 flex gap-3 bg-[var(--nb-yellow)] p-3.5 text-[15px] font-bold leading-snug text-black">
               <Lightbulb className="mt-0.5 size-4 shrink-0" />
               {topic.rule}
             </div>

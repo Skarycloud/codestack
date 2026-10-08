@@ -31,7 +31,7 @@ export function RoadmapIntro() {
           <a
             key={p.id}
             href={`#phase-${p.id}`}
-            className="nb-box-sm nb-press px-3 py-1.5 text-[14px] font-bold text-black"
+            className={cn("nb-box-sm nb-press px-3 py-1.5 text-[14px] font-bold text-black", p.color === "#FFDC58" && "nb-alt-shadow")}
             style={{ background: p.color }}
           >
             {i + 1}. {p.name}
@@ -242,7 +242,7 @@ export function Tips() {
           </li>
         ))}
       </ol>
-      <blockquote className="nb-box mx-auto mt-16 max-w-3xl bg-[var(--nb-yellow)] p-6 text-center text-[20px] font-bold leading-snug text-black sm:text-[24px]">
+      <blockquote className="nb-box nb-alt-shadow mx-auto mt-16 max-w-3xl bg-[var(--nb-yellow)] p-6 text-center text-[20px] font-bold leading-snug text-black sm:text-[24px]">
         If an AI agent makes a change, you should be able to explain what changed, why, what could break, and how it was tested.
       </blockquote>
     </section>
