@@ -9,6 +9,7 @@ import { Segmented } from "@/components/segmented"
 import { ToolCard } from "@/components/tool-card"
 import { categories, categoryById, inAudience, tools, type Audience, type CategoryId } from "@/data/catalog"
 import { cn } from "@/lib/utils"
+import { ChipScroller } from "@/components/chip-scroller"
 
 type AudienceFilter = Audience | "all"
 
@@ -89,12 +90,13 @@ export function Explorer() {
             />
           </div>
           <div className="shell">
-            <div className="no-scrollbar -mx-1 flex gap-1 overflow-x-auto px-1 pb-3">
+            <ChipScroller label="Categories" activeKey={category}>
               {[{ id: "all" as const, name: "Everything" }, ...visibleCategories].map((c) => {
                 const active = category === c.id
                 return (
                   <button
                     key={c.id}
+                    data-active={active}
                     onClick={() => select(c.id)}
                     className={cn(
                       "pressable relative shrink-0 rounded-full px-3.5 py-1.5 text-[13px] transition-colors",
@@ -112,7 +114,7 @@ export function Explorer() {
                   </button>
                 )
               })}
-            </div>
+            </ChipScroller>
           </div>
         </div>
       </div>

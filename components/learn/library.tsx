@@ -31,6 +31,7 @@ import { Segmented } from "@/components/segmented"
 import { SwitchPill } from "@/components/switch-pill"
 import { resources, resourceTypes, tracks, type Resource, type ResourceType, type Track } from "@/data/resources"
 import { cn } from "@/lib/utils"
+import { ChipScroller } from "@/components/chip-scroller"
 
 const typeMeta: Record<ResourceType, { icon: typeof Book; label: string; tint: string }> = {
   docs: { icon: BookOpen, label: "Docs", tint: "text-[#0062c4] bg-[#0a84ff]/10 dark:text-[#64b5ff]" },
@@ -238,12 +239,13 @@ export function LearnLibrary() {
             </div>
           </div>
           <div className="shell">
-            <div className="no-scrollbar -mx-1 flex gap-1 overflow-x-auto px-1 pb-3">
+            <ChipScroller label="Tracks" activeKey={track}>
               {[{ id: "all" as const, name: "All tracks" }, ...tracks].map((t) => {
                 const active = track === t.id
                 return (
                   <button
                     key={t.id}
+                    data-active={active}
                     onClick={() => setTrack(t.id)}
                     className={cn(
                       "pressable relative shrink-0 rounded-full px-3.5 py-1.5 text-[13px] transition-colors",
@@ -264,7 +266,7 @@ export function LearnLibrary() {
                   </button>
                 )
               })}
-            </div>
+            </ChipScroller>
           </div>
         </div>
       </div>

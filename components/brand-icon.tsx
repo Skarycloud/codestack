@@ -15,33 +15,38 @@ interface BrandIconProps {
  * Renders a Simple Icons brand mark from the cached SVG sprite (public/brand-icons.svg),
  * so path data never ships in JavaScript. Brand colors too dark (or light) for the
  * current theme fall back to `currentColor`, so every logo stays visible.
- * Tools without a brand icon get a quiet monogram.
+ * Tools without a brand icon get a bold, colored initial.
  */
+// Mid-tone colors that keep at least 3:1 contrast on both the light and the dark tile.
+const monogramPalette = ["#0A7CFF", "#5E5CE6", "#AF52DE", "#E5355C", "#E0590C", "#1F9D55", "#0E8F9E", "#C2410C", "#7C3AED", "#DB2777"]
+
+function monogramColor(name: string) {
+  let hash = 0
+  for (const ch of name) hash = (hash * 31 + ch.charCodeAt(0)) >>> 0
+  return monogramPalette[hash % monogramPalette.length]
+}
+
 export function BrandIcon({ slug, name, variant = "color", className }: BrandIconProps) {
   const icon = slug ? brandMeta[slug] : undefined
 
   if (!icon) {
-    const initials = name
-      .replace(/[^A-Za-z0-9 ]/g, " ")
-      .split(/\s+/)
-      .filter(Boolean)
-      .slice(0, 2)
-      .map((w) => w[0])
-      .join("")
+    // No published logo: a single bold initial, sized and colored to sit alongside real marks.
+    const letter = (name.match(/[A-Za-z0-9]/)?.[0] ?? "?").toUpperCase()
+    const color = variant === "mono" ? "currentColor" : monogramColor(name)
     return (
       <svg viewBox="0 0 24 24" role="img" aria-label={name} className={cn("size-6", className)}>
         <text
           x="12"
-          y="12.5"
+          y="12"
+          dy="0.35em"
           textAnchor="middle"
-          dominantBaseline="middle"
-          fill="currentColor"
-          fontSize={initials.length > 1 ? 10.5 : 14}
-          fontWeight={650}
-          letterSpacing="-0.04em"
+          fill={color}
+          fontSize={20}
+          fontWeight={750}
+          letterSpacing="-0.02em"
           fontFamily="var(--font-sans), system-ui, sans-serif"
         >
-          {initials.toUpperCase()}
+          {letter}
         </text>
       </svg>
     )

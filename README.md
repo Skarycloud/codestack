@@ -55,7 +55,7 @@ CodeStack puts the essentials for **both designers and developers** in one fast,
 | Page | What it does |
 | --- | --- |
 | **Home** (`/`) | A scroll‑linked hero with a 3D wall of brand logos, a logo marquee, "For designers / For developers" tiles, a category bento grid, a draggable feature carousel, live stats and an open source call to action. |
-| **Explore** (`/explore`) | **251 tools across 19 categories**, from frameworks and databases to AI, mockups, 3D, typography and color. Search, filter by Design or Develop, and jump between categories. Links like `/explore?c=typography` open a filtered view directly. |
+| **Explore** (`/explore`) | **316 tools across 19 categories**, from frameworks and databases to AI, mockups, 3D, typography and color. Search, filter by Design or Develop, and jump between categories. Links like `/explore?c=typography` open a filtered view directly. |
 | **Icons** (`/icons`) | **141 brand logos.** Search, switch between color and mono, then copy any logo as **SVG** or a **React component**, or download **SVG** or **PNG** in brand, black or white. |
 | **Learn** (`/learn`) | **194 verified resources across 9 tracks**: design, frontend, backend, DevOps, mobile, AI, CS fundamentals, full‑stack paths and career. Docs, courses, videos, guides, books, practice platforms and podcasts, with a "Start watching" row of must‑see videos and a "Free only" filter. |
 | **Stack Builder** (`/stack-builder`) | Pick technologies or start from **9 proven presets** (T3, MERN, Supa‑Next, AI App and more). See how closely your stack matches the classics, share it as a link or copy it as Markdown. |
@@ -223,7 +223,7 @@ Logos come from [Simple Icons](https://simpleicons.org), plus a few custom marks
 2. Set `icon: "<slug>"` on the entry in `data/catalog.ts` or `data/skills.ts`.
 3. Run `npm run icons`.
 
-If Simple Icons has no logo for the brand, add a single filled path from a permissively licensed icon set to `customIcons` in `scripts/icon-sources.mjs`, with its `viewBox` and a `source` credit, then use that key as the slug. To show a logo only on the Icons page, add its slug to `extraSlugs` in the same file.
+Multi-shape marks, such as AI brands from [LobeHub Icons](https://github.com/lobehub/lobe-icons) (MIT), live in `scripts/vendor-icons.json` with a full SVG `body`. If Simple Icons has no logo for the brand, add a single filled path from a permissively licensed icon set to `customIcons` in `scripts/icon-sources.mjs`, with its `viewBox` and a `source` credit, then use that key as the slug. To show a logo only on the Icons page, add its slug to `extraSlugs` in the same file.
 
 The script scans both data files plus `scripts/icon-sources.mjs` and writes four outputs:
 
@@ -234,7 +234,7 @@ The script scans both data files plus `scripts/icon-sources.mjs` and writes four
 | `data/brand-meta.ts` | Titles, brand colors and a content‑hashed sprite URL, so browsers re‑fetch the sprite only when it changes. |
 | `data/brand-icons.ts` | Full path data, imported only by the icon library for its copy and download features. |
 
-Tools without a logo automatically get a clean monogram.
+Tools without a logo automatically get a bold, colored initial.
 
 ### Learning resources
 

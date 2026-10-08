@@ -32,6 +32,7 @@ import { SearchParamsListener, replaceQuery } from "@/components/search-params"
 import { Segmented } from "@/components/segmented"
 import { installCommand, publisherById, skillFields, skills, type Skill, type SkillField } from "@/data/skills"
 import { cn } from "@/lib/utils"
+import { ChipScroller } from "@/components/chip-scroller"
 
 export const fieldIcons: Record<SkillField, typeof Palette> = {
   design: Palette,
@@ -149,12 +150,13 @@ export function SkillDirectory() {
             />
           </div>
           <div className="shell">
-            <div className="no-scrollbar -mx-1 flex gap-1 overflow-x-auto px-1 pb-3">
+            <ChipScroller label="Fields" activeKey={field}>
               {[{ id: "all" as const, name: "Everything" }, ...skillFields].map((f) => {
                 const active = field === f.id
                 return (
                   <button
                     key={f.id}
+                    data-active={active}
                     onClick={() => setField(f.id)}
                     className={cn(
                       "pressable relative shrink-0 rounded-full px-3.5 py-1.5 text-[13px] transition-colors",
@@ -175,7 +177,7 @@ export function SkillDirectory() {
                   </button>
                 )
               })}
-            </div>
+            </ChipScroller>
           </div>
         </div>
       </div>

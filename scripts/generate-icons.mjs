@@ -1,6 +1,7 @@
 // Extracts only the brand icons CodeStack uses, so the app never ships the full 3,000+ icon
 // Simple Icons package. Icons come from data/catalog.ts and data/skills.ts, plus the custom
-// marks and Icons-page extras in scripts/icon-sources.mjs. Writes:
+// marks and Icons-page extras in scripts/icon-sources.mjs, and the vendored multi-path marks in
+// scripts/vendor-icons.json (AI brands from LobeHub Icons, MIT). Writes:
 //   public/brand-icons.svg        sprite for every icon used across the site, cached by the browser
 //   public/brand-icons-extra.svg  sprite for the Icons-page-only extras, loaded only there
 //   data/brand-meta.ts            titles, colors and sprite versions (tiny, used by <BrandIcon>)
@@ -19,8 +20,10 @@ const bySlug = new Map(
     .map((i) => [i.slug, i]),
 )
 
+const vendorIcons = JSON.parse(readFileSync(join(root, "scripts/vendor-icons.json"), "utf8"))
+
 const lookup = (slug) => {
-  const custom = customIcons[slug]
+  const custom = customIcons[slug] ?? vendorIcons[slug]
   if (custom) return custom
   const icon = bySlug.get(slug)
   if (icon) return { title: icon.title, hex: icon.hex, path: icon.path }
@@ -29,7 +32,7 @@ const lookup = (slug) => {
 
 const sources = ["data/catalog.ts", "data/skills.ts"].map((f) => readFileSync(join(root, f), "utf8")).join("\n")
 const siteSlugs = new Set([...sources.matchAll(/icon:\s*"([^"]+)"/g)].map((m) => m[1]))
-const extras = new Set([...Object.keys(customIcons), ...extraSlugs].filter((s) => !siteSlugs.has(s)))
+const extras = new Set([...Object.keys(customIcons), ...Object.keys(vendorIcons), ...extraSlugs].filter((s) => !siteSlugs.has(s)))
 
 const collect = (slugs) => Object.fromEntries([...slugs].sort().flatMap((slug) => ((icon) => (icon ? [[slug, icon]] : []))(lookup(slug))))
 const siteIcons = collect(siteSlugs)
@@ -45,8 +48,11 @@ writeFileSync(
 export interface BrandIcon {
   title: string
   hex: string
-  path: string
-  /** Set when the path is not drawn on the default 24×24 grid. */
+  /** A single path, for most icons. */
+  path?: string
+  /** Full inner SVG markup, for marks drawn with several shapes. */
+  body?: string
+  /** Set when the mark is not drawn on the default 24×24 grid. */
   viewBox?: string
   /** Icon set and license, for marks that do not come from Simple Icons. */
   source?: string
@@ -58,7 +64,9 @@ export const brandIcons: Record<string, BrandIcon> = ${JSON.stringify(icons, nul
 
 const writeSprite = (file, set) => {
   const sprite = `<svg xmlns="http://www.w3.org/2000/svg">${Object.entries(set)
-    .map(([slug, icon]) => `<symbol id="${slug}" viewBox="${icon.viewBox ?? "0 0 24 24"}"><path d="${icon.path}"/></symbol>`)
+    .map(
+      ([slug, icon]) => `<symbol id="${slug}" viewBox="${icon.viewBox ?? "0 0 24 24"}">${icon.body ?? `<path d="${icon.path}"/>`}</symbol>`,
+    )
     .join("")}</svg>`
   writeFileSync(join(root, "public", file), sprite)
   console.log(`${file}: ${Object.keys(set).length} icons, ${(sprite.length / 1024).toFixed(0)} KB`)
