@@ -13,6 +13,7 @@ const columns = [
       { name: "Learning resources", href: "/learn" },
       { name: "Stack Builder", href: "/stack-builder" },
       { name: "Agent skills", href: "/skills" },
+      { name: "Developer roadmap", href: "/roadmap" },
     ],
   },
   {

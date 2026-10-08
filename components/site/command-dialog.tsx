@@ -2,7 +2,7 @@
 
 import * as Dialog from "@radix-ui/react-dialog"
 import { Command } from "cmdk"
-import { ArrowUpRight, Bot, CornerDownLeft, Hammer, Layers, LibraryBig, Moon, Search, Shapes, Sun } from "lucide-react"
+import { ArrowUpRight, Bot, CornerDownLeft, Hammer, Layers, LibraryBig, Moon, Route, Search, Shapes, Sun } from "lucide-react"
 import { useTheme } from "next-themes"
 import { useRouter } from "next/navigation"
 import { useCallback } from "react"
@@ -18,6 +18,7 @@ const pages = [
   { name: "Learning resources", href: "/learn", icon: LibraryBig },
   { name: "Stack Builder", href: "/stack-builder", icon: Hammer },
   { name: "Agent skills for AI coding agents", href: "/skills", icon: Bot },
+  { name: "Developer roadmap: idea to production", href: "/roadmap", icon: Route },
 ]
 
 export default function CommandDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {

@@ -326,6 +326,25 @@
   }
 }
 
+/* Roadmap: steps outside the highlighted level fade back. Only the contents fade; every box keeps
+   its solid background so the spine line never shows through. Hovering brings a step back. */
+.dimmed button > *,
+.dimmed [aria-hidden] {
+  opacity: 0.3;
+  filter: saturate(0);
+  transition:
+    opacity 0.3s,
+    filter 0.3s;
+}
+.dimmed button {
+  border-color: hsl(var(--border)) !important;
+}
+.dimmed:hover button > *,
+.dimmed:hover [aria-hidden] {
+  opacity: 1;
+  filter: none;
+}
+
 /* Long sections skip layout and paint until they approach the viewport. The browser remembers
    each section's real size once rendered, so the scrollbar settles quickly. */
 .defer-render {

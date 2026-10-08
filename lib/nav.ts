@@ -1,5 +1,6 @@
 import { categories } from "@/data/catalog"
 import { resources, resourceTypes } from "@/data/resources"
+import { levels, phases } from "@/data/roadmap"
 import { skillFields } from "@/data/skills"
 import { stackPresets } from "@/data/stacks"
 
@@ -137,6 +138,23 @@ export const navItems: NavItem[] = [
           { name: "Agent Skills spec", href: "https://agentskills.io", external: true },
         ],
       },
+    ],
+  },
+  {
+    name: "Roadmap",
+    href: "/roadmap",
+    menu: [
+      {
+        title: "Roadmap",
+        primary: true,
+        links: [
+          { name: "Full roadmap", href: "/roadmap" },
+          { name: "AI-first loop", href: "/roadmap#ai-loop" },
+          { name: "Ship checklist", href: "/roadmap#ship" },
+        ],
+      },
+      { title: "Phases", links: phases.map((p) => ({ name: p.name, href: `/roadmap#phase-${p.id}` })) },
+      { title: "Levels", links: levels.map((l) => ({ name: `${l.level}. ${l.name}`, href: `/roadmap?level=${l.level}#roadmap` })) },
     ],
   },
   { name: "Contribute", href: "/contribute" },
