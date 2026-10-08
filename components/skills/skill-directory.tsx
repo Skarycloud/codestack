@@ -24,11 +24,11 @@ import {
   Workflow,
   X,
 } from "lucide-react"
-import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { useDeferredValue, useEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useDeferredValue, useMemo, useRef, useState } from "react"
 import { toast } from "sonner"
 import { BrandIcon } from "@/components/brand-icon"
 import { ease } from "@/components/motion/reveal"
+import { SearchParamsListener, replaceQuery } from "@/components/search-params"
 import { Segmented } from "@/components/segmented"
 import { installCommand, publisherById, skillFields, skills, type Skill, type SkillField } from "@/data/skills"
 import { cn } from "@/lib/utils"
@@ -73,27 +73,20 @@ async function copy(text: string, label: string) {
 }
 
 export function SkillDirectory() {
-  const params = useSearchParams()
-  const router = useRouter()
-  const pathname = usePathname()
-  const paramField = params.get("f")
-  const fieldFromParams = (): SkillField | "all" => (skillFields.some((f) => f.id === paramField) ? (paramField as SkillField) : "all")
-  const [field, setField] = useState<SkillField | "all">(fieldFromParams)
+  const [field, setFieldState] = useState<SkillField | "all">("all")
   const [show, setShow] = useState<"all" | "popular" | "gems">("all")
   const [query, setQuery] = useState("")
   const deferred = useDeferredValue(query)
 
-  // Follow the URL when it changes from outside, e.g. a field picked in the navbar.
-  useEffect(() => {
-    setField(fieldFromParams())
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [paramField])
-
-  useEffect(() => {
-    if ((paramField ?? "all") === field) return
-    router.replace(field === "all" ? pathname : `${pathname}?f=${field}`, { scroll: false })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [field])
+  // Apply ?f= on load, and follow it when it changes from outside, e.g. a field picked in the navbar.
+  const onParams = useCallback((params: URLSearchParams) => {
+    const f = params.get("f")
+    setFieldState(skillFields.some((s) => s.id === f) ? (f as SkillField) : "all")
+  }, [])
+  const setField = (next: SkillField | "all") => {
+    setFieldState(next)
+    replaceQuery({ f: next === "all" ? null : next })
+  }
 
   const results = useMemo(() => {
     const q = deferred.trim().toLowerCase()
@@ -120,6 +113,7 @@ export function SkillDirectory() {
 
   return (
     <>
+      <SearchParamsListener onChange={onParams} />
       <div className="sticky top-14 z-30">
         <div className="glass border-y border-black/[0.06] dark:border-white/[0.07]">
           <div className="shell flex flex-col gap-3 py-3 md:flex-row md:items-center">
@@ -207,7 +201,7 @@ export function SkillDirectory() {
               if (!items.length) return null
               const Icon = fieldIcons[f.id]
               return (
-                <section key={f.id} id={f.id} className="scroll-mt-44">
+                <section key={f.id} id={f.id} className="defer-render scroll-mt-44">
                   <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
                     <div className="flex items-center gap-4">
                       <span className={cn("grid size-12 shrink-0 place-items-center rounded-[14px]", fieldTint[f.id])}>
@@ -223,16 +217,10 @@ export function SkillDirectory() {
                     </span>
                   </div>
                   <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 [&>*]:min-w-0">
-                    {(preview ? items.slice(0, 6) : items).map((s, i) => (
-                      <motion.div
-                        key={`${s.publisher}-${s.name}`}
-                        initial={{ opacity: 0, y: 16 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.6, ease, delay: (i % 3) * 0.05 }}
-                      >
+                    {(preview ? items.slice(0, 6) : items).map((s) => (
+                      <div key={`${s.publisher}-${s.name}`} className="scroll-reveal">
                         <SkillCard skill={s} />
-                      </motion.div>
+                      </div>
                     ))}
                   </div>
                   {preview && items.length > 6 && <ShowAll count={items.length} label={`${f.name} skills`} onClick={() => expand(f.id)} />}

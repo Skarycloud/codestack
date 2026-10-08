@@ -6,8 +6,11 @@ import { Footer } from "@/components/site/footer"
 import { site } from "@/lib/site"
 import "./globals.css"
 
+// Inter is the brand face: swap it in, with Next's metrics-matched fallback so nothing shifts.
+// The mono face only styles code snippets, so "optional" uses it when it is ready in time and
+// otherwise keeps the fallback, sparing a full-page relayout on slow connections.
 const sans = Inter({ subsets: ["latin"], variable: "--font-sans", display: "swap" })
-const mono = Geist_Mono({ subsets: ["latin"], variable: "--font-mono", display: "swap" })
+const mono = Geist_Mono({ subsets: ["latin"], variable: "--font-mono", display: "optional", preload: false })
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),

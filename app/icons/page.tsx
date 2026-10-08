@@ -1,5 +1,4 @@
 import type { Metadata } from "next"
-import { Suspense } from "react"
 import { IconLibrary } from "@/components/icons/icon-library"
 import { PageHeader } from "@/components/page-header"
 
@@ -16,9 +15,7 @@ export default function IconsPage() {
         title="Every logo. Ready to paste."
         description="Pixel‑perfect brand marks for the tools in your stack. Copy as SVG or a React component, or export a crisp PNG."
       />
-      <Suspense>
-        <IconLibrary />
-      </Suspense>
+      <IconLibrary />
     </>
   )
 }

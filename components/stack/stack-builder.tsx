@@ -2,11 +2,11 @@
 
 import { AnimatePresence, motion } from "framer-motion"
 import { Check, ClipboardCopy, Link2, RotateCcw, Sparkles } from "lucide-react"
-import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { toast } from "sonner"
 import { BrandIcon } from "@/components/brand-icon"
 import { DragScroller } from "@/components/drag-scroller"
+import { SearchParamsListener, replaceQuery } from "@/components/search-params"
 import { ease } from "@/components/motion/reveal"
 import { categoryById, tools, type Tool } from "@/data/catalog"
 import { stackCategories, stackPresets, type StackPreset } from "@/data/stacks"
@@ -26,24 +26,20 @@ function bestMatch(selected: Set<string>): { preset: StackPreset; score: number 
 }
 
 export function StackBuilder() {
-  const params = useSearchParams()
-  const router = useRouter()
-  const pathname = usePathname()
-  const fromParams = () => new Set((params.get("s") ?? "").split(",").filter((n) => toolByName.has(n)))
-  const [selected, setSelected] = useState<Set<string>>(fromParams)
+  const [selected, setSelected] = useState<Set<string>>(() => new Set())
+  // False until the URL has been read, so the empty first render never overwrites a shared ?s= link.
+  const [synced, setSynced] = useState(false)
 
-  // Follow the URL when it changes from outside, e.g. a preset picked in the navbar.
-  const paramKey = params.get("s") ?? ""
-  useEffect(() => {
-    const next = fromParams()
+  // Apply ?s= on load, and follow it when it changes from outside, e.g. a preset picked in the navbar.
+  const onParams = useCallback((params: URLSearchParams) => {
+    const next = new Set((params.get("s") ?? "").split(",").filter((n) => toolByName.has(n)))
     setSelected((prev) => (sameSet(prev, next) ? prev : next))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [paramKey])
+    setSynced(true)
+  }, [])
 
   useEffect(() => {
-    const s = [...selected].map(encodeURIComponent).join(",")
-    router.replace(s ? `${pathname}?s=${s}` : pathname, { scroll: false })
-  }, [selected, pathname, router])
+    if (synced) replaceQuery({ s: [...selected].join(",") })
+  }, [selected, synced])
 
   const toggle = (name: string) =>
     setSelected((prev) => {
@@ -76,6 +72,7 @@ export function StackBuilder() {
 
   return (
     <div className="pb-32">
+      <SearchParamsListener onChange={onParams} />
       <DragScroller
         label="stack presets"
         controls="header"

@@ -23,10 +23,10 @@ import {
   Smartphone,
   X,
 } from "lucide-react"
-import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { useDeferredValue, useEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from "react"
 import { DragScroller } from "@/components/drag-scroller"
 import { ease } from "@/components/motion/reveal"
+import { SearchParamsListener, replaceQuery } from "@/components/search-params"
 import { Segmented } from "@/components/segmented"
 import { SwitchPill } from "@/components/switch-pill"
 import { resources, resourceTypes, tracks, type Resource, type ResourceType, type Track } from "@/data/resources"
@@ -109,7 +109,7 @@ function VideoCard({ video: v, className, priority }: { video: Resource; classNa
   const palette = channelPalettes[[...v.name].reduce((n, c) => n + c.charCodeAt(0), 0) % channelPalettes.length]
   return (
     <a href={v.url} target="_blank" rel="noopener noreferrer" className={cn("group/video block", className)}>
-      <div className="relative aspect-video overflow-hidden rounded-[18px] bg-surface-2 ring-1 ring-black/[0.06] dark:ring-white/[0.08]">
+      <div className="skeleton relative aspect-video overflow-hidden rounded-[18px] bg-surface-2 ring-1 ring-black/[0.06] dark:ring-white/[0.08]">
         {v.youtube ? (
           <>
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -152,22 +152,21 @@ function VideoCard({ video: v, className, priority }: { video: Resource; classNa
 }
 
 export function LearnLibrary() {
-  const params = useSearchParams()
-  const router = useRouter()
-  const pathname = usePathname()
-  const paramType = params.get("type")
-  const typeFromParams = (): ResourceType | "all" => (resourceTypes.some((t) => t.id === paramType) ? (paramType as ResourceType) : "all")
-  const [type, setType] = useState<ResourceType | "all">(typeFromParams)
+  const [type, setType] = useState<ResourceType | "all">("all")
   const [track, setTrack] = useState<Track | "all">("all")
   const [freeOnly, setFreeOnly] = useState(false)
   const [query, setQuery] = useState("")
   const deferred = useDeferredValue(query)
 
-  // Follow the URL when it changes from outside, e.g. a format picked in the navbar.
-  useEffect(() => {
-    setType(typeFromParams())
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [paramType])
+  // Apply ?type= on load, and follow it when it changes from outside, e.g. a format picked in the navbar.
+  const onParams = useCallback((params: URLSearchParams) => {
+    const t = params.get("type")
+    setType(resourceTypes.some((r) => r.id === t) ? (t as ResourceType) : "all")
+  }, [])
+  const selectType = (next: ResourceType | "all") => {
+    setType(next)
+    replaceQuery({ type: next === "all" ? null : next })
+  }
 
   // A "#track" link can arrive together with a filter reset. Once the new results
   // have rendered, bring the requested section into view.
@@ -176,12 +175,6 @@ export function LearnLibrary() {
     if (!hash) return
     const t = setTimeout(() => document.getElementById(hash)?.scrollIntoView({ behavior: "smooth", block: "start" }), 260)
     return () => clearTimeout(t)
-  }, [type])
-
-  useEffect(() => {
-    if ((paramType ?? "all") === type) return
-    router.replace(type === "all" ? `${pathname}${window.location.hash}` : `${pathname}?type=${type}`, { scroll: false })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [type])
 
   const results = useMemo(() => {
@@ -210,6 +203,7 @@ export function LearnLibrary() {
 
   return (
     <>
+      <SearchParamsListener onChange={onParams} />
       <div className="sticky top-14 z-30">
         <div className="glass border-y border-black/[0.06] dark:border-white/[0.07]">
           <div className="shell flex flex-col gap-3 py-3 md:flex-row md:items-center">
@@ -236,7 +230,7 @@ export function LearnLibrary() {
               <Segmented
                 size="sm"
                 value={type}
-                onChange={setType}
+                onChange={selectType}
                 options={resourceTypes.map((t) => ({ value: t.id, label: t.name }))}
                 className="shrink-0"
               />
@@ -301,7 +295,13 @@ export function LearnLibrary() {
               const watch = preview ? allWatch.slice(0, 4) : allWatch
               const hidden = items.length - reading.length - watch.length
               return (
-                <section key={t.id} id={t.id} className="scroll-mt-48">
+                <section
+                  key={t.id}
+                  id={t.id}
+                  // Skip rendering off-screen tracks. The size estimates match a real track at each
+                  // breakpoint, so "#track" links from the navbar still land in the right place.
+                  className="defer-render scroll-mt-48 [contain-intrinsic-size:auto_2900px] md:[contain-intrinsic-size:auto_1600px] lg:[contain-intrinsic-size:auto_1000px]"
+                >
                   <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
                     <div className="flex items-center gap-4">
                       <span className="grid size-12 shrink-0 place-items-center rounded-[14px] bg-surface-2 text-foreground">
@@ -316,16 +316,10 @@ export function LearnLibrary() {
                   </div>
                   {reading.length > 0 && (
                     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 [&>*]:min-w-0">
-                      {reading.map((r, i) => (
-                        <motion.div
-                          key={r.name}
-                          initial={{ opacity: 0, y: 16 }}
-                          whileInView={{ opacity: 1, y: 0 }}
-                          viewport={{ once: true }}
-                          transition={{ duration: 0.6, ease, delay: (i % 3) * 0.05 }}
-                        >
+                      {reading.map((r) => (
+                        <div key={r.name} className="scroll-reveal">
                           <ResourceCard resource={r} />
-                        </motion.div>
+                        </div>
                       ))}
                     </div>
                   )}
@@ -335,16 +329,10 @@ export function LearnLibrary() {
                         <PlayCircle className="size-4 text-[#ff375f]" /> Watch
                       </p>
                       <div className="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2 lg:grid-cols-4 [&>*]:min-w-0">
-                        {watch.map((r, i) => (
-                          <motion.div
-                            key={r.name}
-                            initial={{ opacity: 0, y: 16 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 0.6, ease, delay: (i % 4) * 0.05 }}
-                          >
+                        {watch.map((r) => (
+                          <div key={r.name} className="scroll-reveal">
                             <VideoCard video={r} />
-                          </motion.div>
+                          </div>
                         ))}
                       </div>
                     </div>

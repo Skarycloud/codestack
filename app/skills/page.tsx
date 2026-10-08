@@ -1,6 +1,5 @@
 import { ArrowUpRight, BadgeCheck, ShieldAlert } from "lucide-react"
 import type { Metadata } from "next"
-import { Suspense } from "react"
 import { BrandIcon } from "@/components/brand-icon"
 import { CopyCommand } from "@/components/contribute/copy-command"
 import { Reveal } from "@/components/motion/reveal"
@@ -30,9 +29,7 @@ export default function SkillsPage() {
 
       <SkillExplainer />
 
-      <Suspense>
-        <SkillDirectory />
-      </Suspense>
+      <SkillDirectory />
 
       <section className="bg-surface py-24 sm:py-28">
         <div className="shell">

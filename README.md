@@ -351,8 +351,19 @@ on every page.
 
 How it stays fast:
 
+- **Every directory ships as complete HTML.** URL filters like `?c=` are read by a tiny `SearchParamsListener` after
+  hydration instead of `useSearchParams` in the page, which would turn the whole page into a blank client render.
+  Filters write back with `history.replaceState`, so changing them costs no server round trip.
 - **First paint never waits for JavaScript.** Headline and header entrances are CSS animations, so content appears as
-  soon as the HTML arrives.
+  soon as the HTML arrives. The `rise` entrance has no blur, which kept pushing back Largest Contentful Paint.
+- **Scroll reveals run in CSS.** Cards fade in with scroll-driven animations (`animation-timeline: view()`) instead of
+  hundreds of JavaScript observers, and stay fully visible in browsers without support.
+- **Off-screen sections skip rendering.** Explore, Skills and Learn sections use `content-visibility: auto` with size
+  estimates close to their real height, so hash links still land correctly.
+- **Long grids render progressively.** The Icons page ships six rows of tiles and renders the rest as you scroll, with
+  skeleton tiles holding the space. Copy and download data loads in the background.
+- **Nothing animates on the main thread at rest.** Looping motion (the logo wall, the marquee) uses transforms on the
+  compositor, and the hero's gradient type is static.
 - **Logos are not in the JavaScript bundles.** They load from one cached SVG sprite; only a 7 KB name and color map is
   bundled.
 - **The ⌘K palette loads on demand.** It is prefetched when you hover or focus a search button, so it still opens instantly.
@@ -360,7 +371,8 @@ How it stays fast:
 - **Long directories render previews.** Skills and Learn show the first items of each section with a "Show all" button.
 - **Above‑the‑fold images get priority.** The first video thumbnails on Learn load eagerly, and the YouTube image host
   is preconnected.
-- **Fonts are self‑hosted** with `next/font`, so text never shifts when they load.
+- **Fonts are self‑hosted** with `next/font` and a metrics-matched fallback, so text never shifts when they load. The
+  mono face uses `display: optional`, since it only styles code.
 - **Lean dependencies:** only 13 runtime packages.
 
 ## Accessibility

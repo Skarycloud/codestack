@@ -2,9 +2,9 @@
 
 import { AnimatePresence, motion } from "framer-motion"
 import { Search, X } from "lucide-react"
-import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { useDeferredValue, useEffect, useMemo, useState } from "react"
+import { useCallback, useDeferredValue, useMemo, useState } from "react"
 import { ease } from "@/components/motion/reveal"
+import { SearchParamsListener, replaceQuery } from "@/components/search-params"
 import { Segmented } from "@/components/segmented"
 import { ToolCard } from "@/components/tool-card"
 import { audienceOf, categories, categoryById, tools, type Audience, type CategoryId } from "@/data/catalog"
@@ -13,41 +13,30 @@ import { cn } from "@/lib/utils"
 type AudienceFilter = Audience | "all"
 
 export function Explorer() {
-  const params = useSearchParams()
-  const router = useRouter()
-  const pathname = usePathname()
-
-  const initialCategory = params.get("c") as CategoryId | null
-  const [category, setCategory] = useState<CategoryId | "all">(initialCategory && categoryById[initialCategory] ? initialCategory : "all")
-  const [audience, setAudience] = useState<AudienceFilter>(() => {
-    if (initialCategory && categoryById[initialCategory]) return categoryById[initialCategory].audience
-    const a = params.get("a")
-    return a === "design" || a === "develop" ? a : "all"
-  })
+  const [category, setCategory] = useState<CategoryId | "all">("all")
+  const [audience, setAudience] = useState<AudienceFilter>("all")
   const [query, setQuery] = useState("")
   const deferredQuery = useDeferredValue(query)
 
-  // Follow the URL when it changes from outside, e.g. a category picked in the navbar.
-  const paramC = params.get("c")
-  const paramA = params.get("a")
-  useEffect(() => {
-    const c = paramC as CategoryId | null
+  // Apply ?c= and ?a= on load, and follow them when they change from outside,
+  // e.g. a category picked in the navbar.
+  const onParams = useCallback((params: URLSearchParams) => {
+    const c = params.get("c") as CategoryId | null
+    const a = params.get("a")
     if (c && categoryById[c]) {
       setCategory(c)
       setAudience((prev) => (prev === "all" || prev === categoryById[c].audience ? prev : categoryById[c].audience))
     } else {
       setCategory("all")
-      setAudience(paramA === "design" || paramA === "develop" ? paramA : "all")
+      setAudience(a === "design" || a === "develop" ? a : "all")
     }
-  }, [paramC, paramA])
+  }, [])
 
-  useEffect(() => {
-    const next = new URLSearchParams()
-    if (category !== "all") next.set("c", category)
-    else if (audience !== "all") next.set("a", audience)
-    const qs = next.toString()
-    router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false })
-  }, [category, audience, pathname, router])
+  const select = (nextCategory: CategoryId | "all", nextAudience: AudienceFilter = audience) => {
+    setCategory(nextCategory)
+    setAudience(nextAudience)
+    replaceQuery(nextCategory !== "all" ? { c: nextCategory } : { a: nextAudience === "all" ? null : nextAudience })
+  }
 
   const visibleCategories = categories.filter((c) => audience === "all" || c.audience === audience)
 
@@ -65,6 +54,7 @@ export function Explorer() {
 
   return (
     <>
+      <SearchParamsListener onChange={onParams} />
       <div className="sticky top-14 z-30">
         <div className="glass border-y border-black/[0.06] dark:border-white/[0.07]">
           <div className="shell flex flex-col gap-3 py-3 md:flex-row md:items-center">
@@ -89,10 +79,7 @@ export function Explorer() {
             </label>
             <Segmented
               value={audience}
-              onChange={(a) => {
-                setAudience(a)
-                setCategory("all")
-              }}
+              onChange={(a) => select("all", a)}
               options={[
                 { value: "all", label: "All" },
                 { value: "design", label: "Design" },
@@ -108,7 +95,7 @@ export function Explorer() {
                 return (
                   <button
                     key={c.id}
-                    onClick={() => setCategory(c.id)}
+                    onClick={() => select(c.id)}
                     className={cn(
                       "pressable relative shrink-0 rounded-full px-3.5 py-1.5 text-[13px] transition-colors",
                       active ? "text-background" : "text-muted-foreground hover:text-foreground",
@@ -150,13 +137,13 @@ export function Explorer() {
                   const items = results.filter((t) => t.category === c.id)
                   if (!items.length) return null
                   return (
-                    <section key={c.id} id={c.id} className="scroll-mt-48">
+                    <section key={c.id} id={c.id} className="defer-render scroll-mt-48">
                       <div className="mb-8 flex flex-wrap items-end justify-between gap-3">
                         <div>
                           <h2 className="text-title">{c.name}</h2>
                           <p className="mt-2 text-muted-foreground">{c.tagline}</p>
                         </div>
-                        <button onClick={() => setCategory(c.id)} className="text-[14px] text-link hover:underline">
+                        <button onClick={() => select(c.id)} className="text-[14px] text-link hover:underline">
                           View {items.length} ›
                         </button>
                       </div>
@@ -189,16 +176,10 @@ export function Explorer() {
 function Grid({ items }: { items: typeof tools }) {
   return (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 [&>*]:min-w-0">
-      {items.map((tool, i) => (
-        <motion.div
-          key={`${tool.category}-${tool.name}`}
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "0px 0px -5% 0px" }}
-          transition={{ duration: 0.6, ease, delay: (i % 4) * 0.04 }}
-        >
+      {items.map((tool) => (
+        <div key={`${tool.category}-${tool.name}`} className="scroll-reveal">
           <ToolCard tool={tool} />
-        </motion.div>
+        </div>
       ))}
     </div>
   )

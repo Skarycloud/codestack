@@ -74,7 +74,6 @@
     /* framer-motion measures scroll offsets against a positioned container */
     position: relative;
     -webkit-text-size-adjust: 100%;
-    text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     scroll-padding-top: 5rem;
@@ -190,11 +189,14 @@
 
   .text-spectrum {
     background: linear-gradient(92deg, #0a84ff 0%, #5e5ce6 30%, #bf5af2 55%, #ff375f 80%, #ff9f0a 100%);
-    background-size: 200% 100%;
+    /* One wide gradient shared across a row of words: each word sets --spectrum-x to show its own
+       slice, so the line reads as a single sweep. Static on purpose, since animating
+       background-position recalculates style every frame on the main thread. */
+    background-size: 400% 100%;
+    background-position: var(--spectrum-x, 0%) 50%;
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
-    animation: spectrum 9s ease-in-out infinite alternate;
   }
 
   /* Horizontal scroller that bleeds to the viewport edge but starts aligned with .shell content */
@@ -241,17 +243,16 @@
 }
 
 /* Entrance animations that run on first paint, before any JavaScript loads,
-   so above-the-fold content never waits on hydration. */
+   so above-the-fold content never waits on hydration. `rise` deliberately has no blur:
+   a blur filter grows the painted area, which keeps pushing back Largest Contentful Paint. */
 @keyframes rise {
   from {
     opacity: 0.15;
     transform: translateY(14px);
-    filter: blur(8px);
   }
   to {
     opacity: 1;
     transform: none;
-    filter: none;
   }
 }
 @keyframes rise-word {
@@ -274,18 +275,67 @@
   animation: rise-word 1s cubic-bezier(0.22, 1, 0.36, 1) var(--d, 0s) both;
 }
 
-@keyframes orbit {
+/* Scroll reveals for long lists of cards. Driven by scroll position in CSS, so cards ship in the
+   static HTML fully visible, cost no JavaScript observers, and simply appear as-is in browsers
+   without scroll-driven animations. */
+@keyframes scroll-reveal {
+  from {
+    opacity: 0.2;
+    transform: translateY(18px) scale(0.98);
+  }
   to {
-    transform: rotate(360deg);
+    opacity: 1;
+    transform: none;
+  }
+}
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .scroll-reveal {
+      animation: scroll-reveal linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 55%;
+    }
   }
 }
 
-@keyframes spectrum {
-  from {
-    background-position: 0% 50%;
-  }
+/* Skeleton placeholder: a soft sheen sweeps across the surface. Only a transform animates, so it
+   stays on the compositor, and anything that renders on top (like a thumbnail) simply covers it. */
+.skeleton {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background-color: hsl(var(--surface-2));
+}
+.skeleton::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, hsl(var(--foreground) / 0.06), transparent);
+  animation: skeleton-sheen 1.6s ease-in-out infinite;
+}
+@keyframes skeleton-sheen {
   to {
-    background-position: 100% 50%;
+    transform: translateX(100%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .skeleton::before {
+    animation: none;
+  }
+}
+
+/* Long sections skip layout and paint until they approach the viewport. The browser remembers
+   each section's real size once rendered, so the scrollbar settles quickly. */
+.defer-render {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 720px;
+}
+
+@keyframes orbit {
+  to {
+    transform: rotate(360deg);
   }
 }
 

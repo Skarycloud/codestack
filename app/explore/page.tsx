@@ -1,5 +1,4 @@
 import type { Metadata } from "next"
-import { Suspense } from "react"
 import { Explorer } from "@/components/explore/explorer"
 import { PageHeader } from "@/components/page-header"
 import { categories, stats } from "@/data/catalog"
@@ -17,9 +16,7 @@ export default function ExplorePage() {
         title="The best tools. Hand‑picked."
         description={`${stats.tools} tools across ${categories.length} categories, from Figma to Postgres. Every one chosen because people genuinely love using it.`}
       />
-      <Suspense>
-        <Explorer />
-      </Suspense>
+      <Explorer />
     </>
   )
 }

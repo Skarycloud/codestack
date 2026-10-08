@@ -43,7 +43,9 @@ export function Hero() {
             className="group inline-flex items-center gap-2 rounded-full border border-black/[0.06] bg-background/60 py-1 pl-1 pr-3 text-[13px] text-muted-foreground shadow-sm backdrop-blur-md transition-colors hover:text-foreground dark:border-white/10"
           >
             <span className="rounded-full bg-primary px-2 py-0.5 text-[11px] font-semibold text-primary-foreground">New</span>
-            Brand icon library<span className="hidden sm:inline">: copy any logo as SVG or JSX</span>
+            <span>
+              Brand icon library<span className="hidden sm:inline">: copy any logo as SVG or JSX</span>
+            </span>
             <ChevronRight className="size-3.5 transition-transform duration-300 group-hover:translate-x-0.5" />
           </Link>
         </div>
@@ -58,7 +60,7 @@ export function Hero() {
           </span>
           <span className="block pb-[0.08em]">
             {line2.map((word, i) => (
-              <Word key={word} delay={0.29 + i * 0.06} className="text-spectrum">
+              <Word key={word} delay={0.29 + i * 0.06} className="text-spectrum" spectrumX={(i / (line2.length - 1)) * 100}>
                 {word}
               </Word>
             ))}
@@ -107,10 +109,15 @@ export function Hero() {
 
 const delay = (seconds: number) => ({ "--d": `${seconds}s` }) as React.CSSProperties
 
-function Word({ children, delay: d, className }: { children: string; delay: number; className?: string }) {
+function Word({ children, delay: d, className, spectrumX }: { children: string; delay: number; className?: string; spectrumX?: number }) {
   return (
     <span className="rise-word mr-[0.22em] last:mr-0" style={delay(d)}>
-      <span className={className}>{children}</span>
+      <span
+        className={className}
+        style={spectrumX === undefined ? undefined : ({ "--spectrum-x": `${spectrumX}%` } as React.CSSProperties)}
+      >
+        {children}
+      </span>
     </span>
   )
 }

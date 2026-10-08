@@ -36,13 +36,10 @@ export function SkillExplainer() {
   return (
     <section className="shell grid gap-4 pb-20 md:grid-cols-3 [&>*]:min-w-0">
       {cards.map(({ step, eyebrow, title, body, Visual }, i) => (
-        <motion.article
+        <article
           key={step}
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "0px 0px -10% 0px" }}
-          transition={{ duration: 0.8, ease, delay: i * 0.08 }}
-          className="card-lift group relative flex h-full flex-col overflow-hidden rounded-[28px] bg-surface ring-1 ring-inset ring-black/[0.04] dark:ring-white/[0.06]"
+          style={{ "--d": `${0.3 + i * 0.08}s` } as React.CSSProperties}
+          className="rise card-lift group relative flex h-full flex-col overflow-hidden rounded-[28px] bg-surface ring-1 ring-inset ring-black/[0.04] dark:ring-white/[0.06]"
         >
           <div
             aria-hidden
@@ -59,7 +56,7 @@ export function SkillExplainer() {
             <h2 className="mt-3 text-[20px] font-semibold tracking-[-0.025em]">{title}</h2>
             <p className="mt-1.5 text-[14px] leading-relaxed text-muted-foreground">{body}</p>
           </div>
-        </motion.article>
+        </article>
       ))}
     </section>
   )

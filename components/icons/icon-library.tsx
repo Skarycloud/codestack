@@ -1,13 +1,12 @@
 "use client"
 
 import * as Dialog from "@radix-ui/react-dialog"
-import { motion } from "framer-motion"
 import { Check, Code2, Copy, Download, ImageDown, Search, X } from "lucide-react"
-import { useSearchParams } from "next/navigation"
-import { useDeferredValue, useEffect, useMemo, useState } from "react"
+import { useCallback, useDeferredValue, useEffect, useMemo, useState } from "react"
 import { toast } from "sonner"
 import { BrandIcon, type IconVariant } from "@/components/brand-icon"
-import { ease } from "@/components/motion/reveal"
+import { LoadMoreSentinel, useProgressiveList } from "@/components/progressive-list"
+import { SearchParamsListener } from "@/components/search-params"
 import { Segmented } from "@/components/segmented"
 import { brandMeta, brandSprite, brandSpriteExtra } from "@/data/brand-meta"
 import { isVeryDark, isVeryLight } from "@/lib/color"
@@ -18,6 +17,8 @@ const icons = Object.entries(brandMeta)
   .sort((a, b) => a.title.localeCompare(b.title))
 
 type Icon = (typeof icons)[number]
+
+const gridClass = "grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8"
 
 // Full path data is only needed to copy or download, so it loads in the background
 // once the page is idle instead of weighing down the first load.
@@ -74,10 +75,9 @@ async function downloadPng(icon: Icon, fill: Fill, size = 512) {
 }
 
 export function IconLibrary() {
-  const paramQ = useSearchParams().get("q") ?? ""
-  const [query, setQuery] = useState(paramQ)
-  // Follow the URL when it changes from outside, e.g. a popular icon picked in the navbar.
-  useEffect(() => setQuery(paramQ), [paramQ])
+  const [query, setQuery] = useState("")
+  // Apply ?q= on load, and follow it when it changes from outside, e.g. a popular icon picked in the navbar.
+  const onParams = useCallback((params: URLSearchParams) => setQuery(params.get("q") ?? ""), [])
   const [variant, setVariant] = useState<IconVariant>("color")
   const [selected, setSelected] = useState<Icon | null>(null)
   const deferred = useDeferredValue(query)
@@ -91,9 +91,12 @@ export function IconLibrary() {
     const q = deferred.trim().toLowerCase()
     return q ? icons.filter((i) => i.title.toLowerCase().includes(q) || i.slug.includes(q)) : icons
   }, [deferred])
+  // Six rows ship in the HTML; the rest render as you scroll, behind skeleton tiles.
+  const { visible, hasMore, loadMore } = useProgressiveList(results, 48, deferred)
 
   return (
     <>
+      <SearchParamsListener onChange={onParams} />
       <div className="sticky top-14 z-30">
         <div className="glass border-y border-black/[0.06] dark:border-white/[0.07]">
           <div className="shell flex items-center gap-3 py-3">
@@ -126,43 +129,48 @@ export function IconLibrary() {
         {results.length === 0 ? (
           <p className="py-24 text-center text-[20px] font-semibold tracking-[-0.02em]">No icons match “{query}”.</p>
         ) : (
-          <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8">
-            {results.map((icon, i) => (
-              <motion.div
-                key={icon.slug}
-                initial={{ opacity: 0, scale: 0.96 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, ease, delay: (i % 8) * 0.025 }}
-                className="group relative"
-              >
-                <button
-                  onClick={() => setSelected(icon)}
-                  className="card-surface card-lift flex aspect-square w-full flex-col items-center justify-center gap-3 p-3"
-                >
-                  <BrandIcon
-                    slug={icon.slug}
-                    name={icon.title}
-                    variant={variant}
-                    className="size-9 transition-transform duration-500 ease-apple group-hover:scale-110"
-                  />
-                  <span className="w-full truncate text-center text-[12px] text-muted-foreground">{icon.title}</span>
-                </button>
-                <button
-                  onClick={() =>
-                    copy(
-                      loadSvg().then((m) => m.brandSvg(icon.slug)),
-                      `${icon.title} SVG`,
-                    )
-                  }
-                  aria-label={`Copy ${icon.title} SVG`}
-                  className="pressable absolute right-2 top-2 grid size-7 place-items-center rounded-full bg-background/90 text-muted-foreground opacity-0 shadow-sm ring-1 ring-black/[0.06] transition-opacity hover:text-foreground focus-visible:opacity-100 group-hover:opacity-100 dark:ring-white/10"
-                >
-                  <Copy className="size-3.5" />
-                </button>
-              </motion.div>
-            ))}
-          </div>
+          <>
+            <div className={gridClass}>
+              {visible.map((icon) => (
+                <div key={icon.slug} className="scroll-reveal group relative">
+                  <button
+                    onClick={() => setSelected(icon)}
+                    className="card-surface card-lift flex aspect-square w-full flex-col items-center justify-center gap-3 p-3"
+                  >
+                    <BrandIcon
+                      slug={icon.slug}
+                      name={icon.title}
+                      variant={variant}
+                      className="size-9 transition-transform duration-500 ease-apple group-hover:scale-110"
+                    />
+                    <span className="w-full truncate text-center text-[12px] text-muted-foreground">{icon.title}</span>
+                  </button>
+                  <button
+                    onClick={() =>
+                      copy(
+                        loadSvg().then((m) => m.brandSvg(icon.slug)),
+                        `${icon.title} SVG`,
+                      )
+                    }
+                    aria-label={`Copy ${icon.title} SVG`}
+                    className="pressable absolute right-2 top-2 grid size-7 place-items-center rounded-full bg-background/90 text-muted-foreground opacity-0 shadow-sm ring-1 ring-black/[0.06] transition-opacity hover:text-foreground focus-visible:opacity-100 group-hover:opacity-100 dark:ring-white/10"
+                  >
+                    <Copy className="size-3.5" />
+                  </button>
+                </div>
+              ))}
+            </div>
+            {hasMore && (
+              <LoadMoreSentinel onLoadMore={loadMore} count={visible.length} className={cn(gridClass, "mt-3")}>
+                {Array.from({ length: 16 }, (_, i) => (
+                  <div key={i} className="card-surface flex aspect-square flex-col items-center justify-center gap-3 p-3">
+                    <div className="skeleton size-9 rounded-xl" />
+                    <div className="skeleton h-2.5 w-3/5 rounded-full" />
+                  </div>
+                ))}
+              </LoadMoreSentinel>
+            )}
+          </>
         )}
       </div>
 

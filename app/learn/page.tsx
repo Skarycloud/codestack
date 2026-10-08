@@ -1,6 +1,5 @@
 import type { Metadata } from "next"
 import { preconnect } from "react-dom"
-import { Suspense } from "react"
 import { FeaturedVideos, LearnLibrary } from "@/components/learn/library"
 import { PageHeader } from "@/components/page-header"
 import { resources, tracks } from "@/data/resources"
@@ -22,9 +21,7 @@ export default function LearnPage() {
         description={`${resources.length} hand‑picked docs, courses, videos, books, practice platforms and podcasts across ${tracks.length} tracks. ${free} of them are completely free.`}
       />
       <FeaturedVideos />
-      <Suspense>
-        <LearnLibrary />
-      </Suspense>
+      <LearnLibrary />
     </>
   )
 }
