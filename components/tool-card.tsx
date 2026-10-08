@@ -1,0 +1,32 @@
+import { ArrowUpRight } from "lucide-react"
+import { BrandIcon } from "@/components/brand-icon"
+import type { Tool } from "@/data/catalog"
+
+export function ToolCard({ tool }: { tool: Tool }) {
+  const host = new URL(tool.url).hostname.replace(/^www\./, "")
+  return (
+    <a
+      href={tool.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="card-surface card-lift group flex h-full flex-col p-5"
+    >
+      <div className="flex items-start justify-between">
+        <span className="grid size-12 place-items-center rounded-[14px] bg-surface-2/80 ring-1 ring-inset ring-black/[0.04] transition-transform duration-500 ease-apple group-hover:scale-[1.06] dark:ring-white/[0.05]">
+          <BrandIcon slug={tool.icon} name={tool.name} className="size-6" />
+        </span>
+        <span className="grid size-7 place-items-center rounded-full text-muted-foreground opacity-0 transition-all duration-300 ease-apple group-hover:bg-surface-2 group-hover:opacity-100">
+          <ArrowUpRight className="size-3.5" />
+        </span>
+      </div>
+      <h3 className="mt-5 text-[17px] font-semibold tracking-[-0.02em]">{tool.name}</h3>
+      <p className="mt-1 flex-1 text-[14px] leading-relaxed text-muted-foreground">{tool.description}</p>
+      <div className="mt-5 flex flex-wrap items-center gap-1.5 text-[12px]">
+        <span className="shrink-0 whitespace-nowrap rounded-full bg-surface-2 px-2.5 py-1 text-muted-foreground">{tool.kind}</span>
+        {tool.openSource && <span className="shrink-0 whitespace-nowrap rounded-full bg-[#30d158]/[0.12] px-2.5 py-1 text-[#166d2f] dark:text-[#30d158]">Open source</span>}
+        {tool.paid && <span className="shrink-0 whitespace-nowrap rounded-full bg-[#ff9f0a]/[0.12] px-2.5 py-1 text-[#8f5000] dark:text-[#ff9f0a]">Paid</span>}
+        <span className="ml-auto min-w-0 truncate text-muted-foreground">{host}</span>
+      </div>
+    </a>
+  )
+}
