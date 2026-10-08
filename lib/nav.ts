@@ -91,6 +91,7 @@ export const navItems: NavItem[] = [
           { name: "Design", href: "/learn#design" },
           { name: "Frontend", href: "/learn#frontend" },
           { name: "AI & ML", href: "/learn#ai" },
+          { name: "Learn by playing", href: "/learn#games" },
         ],
       },
       { title: "Formats", links: resourceTypes.filter((t) => t.id !== "all").map((t) => ({ name: t.name, href: `/learn?type=${t.id}` })) },

@@ -11,6 +11,7 @@ import {
   Compass,
   Cpu,
   Dumbbell,
+  Gamepad2,
   GraduationCap,
   Layers,
   Mic,
@@ -40,6 +41,7 @@ const typeMeta: Record<ResourceType, { icon: typeof Book; label: string; tint: s
   book: { icon: Book, label: "Book", tint: "text-[#8f5000] bg-[#ff9f0a]/10 dark:text-[#ff9f0a]" },
   video: { icon: PlayCircle, label: "Video", tint: "text-[#c00d36] bg-[#ff375f]/10 dark:text-[#ff6b8a]" },
   practice: { icon: Dumbbell, label: "Practice", tint: "text-[#0062c4] bg-[#64d2ff]/15 dark:text-[#64d2ff]" },
+  game: { icon: Gamepad2, label: "Game", tint: "text-[#b3127a] bg-[#ff2d92]/10 dark:text-[#ff7cc4]" },
   podcast: { icon: Mic, label: "Podcast", tint: "text-[#4b49c8] bg-[#5e5ce6]/10 dark:text-[#a5a4ff]" },
 }
 
@@ -53,6 +55,7 @@ const trackIcons: Record<Track, typeof Book> = {
   cs: Cpu,
   fullstack: Rocket,
   career: Compass,
+  games: Gamepad2,
 }
 
 const thumb = (id: string) => `https://i.ytimg.com/vi/${id}/hqdefault.jpg`
