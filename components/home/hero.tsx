@@ -7,6 +7,7 @@ import Link from "next/link"
 import { useRef } from "react"
 import { useCommandMenu } from "@/components/site/command-menu"
 import { stats } from "@/data/catalog"
+import { ShortcutKey } from "@/components/shortcut-key"
 
 // Decorative and heavy (100+ SVG tiles): render it after first paint instead of in the HTML.
 const IconWall = dynamic(() => import("./icon-wall").then((m) => m.IconWall), {
@@ -78,7 +79,9 @@ export function Hero() {
           >
             <Search className="size-[18px] shrink-0" />
             <span className="flex-1 truncate">Search Figma, Next.js, Postgres…</span>
-            <kbd className="rounded-full bg-foreground/[0.06] px-2.5 py-1 font-mono text-[11px]">⌘K</kbd>
+            <kbd className="rounded-full bg-foreground/[0.06] px-2.5 py-1 font-mono text-[11px]">
+              <ShortcutKey />
+            </kbd>
           </button>
 
           <div className="flex items-center gap-6">

@@ -12,6 +12,7 @@ import { ThemeToggle } from "@/components/site/theme-toggle"
 import { navItems, type NavGroup, type NavItem, type NavLink } from "@/lib/nav"
 import { site } from "@/lib/site"
 import { cn } from "@/lib/utils"
+import { ShortcutKey } from "@/components/shortcut-key"
 
 const OPEN_DELAY = 120
 const CLOSE_DELAY = 200
@@ -203,7 +204,9 @@ function NavbarInner({ routeKey = "" }: { routeKey?: string }) {
             >
               <Search className="size-3.5" />
               Search
-              <kbd className="ml-3 rounded-md bg-foreground/[0.06] px-1.5 py-0.5 font-mono text-[10.5px]">⌘K</kbd>
+              <kbd className="ml-3 rounded-md bg-foreground/[0.06] px-1.5 py-0.5 font-mono text-[10.5px]">
+                <ShortcutKey />
+              </kbd>
             </button>
             <button
               onClick={openSearch}

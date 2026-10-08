@@ -38,6 +38,8 @@ export interface Tool {
   icon?: string
   openSource?: boolean
   paid?: boolean
+  /** Free tier with optional paid extras. */
+  freemium?: boolean
 }
 
 export const categories: Category[] = [
@@ -200,6 +202,10 @@ export const tools: Tool[] = [
   { name: "Minimal Gallery", url: "https://minimal.gallery", description: "Inspiration for the minimalist in you.", kind: "Gallery", category: "inspiration" },
   { name: "Siteinspire", url: "https://www.siteinspire.com", description: "A showcase of the finest web and interactive design.", kind: "Gallery", category: "inspiration" },
   { name: "Page Flows", url: "https://pageflows.com", description: "User flow videos and screenshots of real products.", kind: "UX Flows", category: "inspiration", paid: true },
+  { name: "Unsection", url: "https://www.unsection.com", description: "Website section inspiration sorted by type: heroes, features, pricing, footers and more.", kind: "Sections", category: "inspiration" },
+  { name: "MotionSites", url: "https://motionsites.ai", description: "Animated website designs with ready prompts for Claude, Cursor, Bolt and Lovable.", kind: "AI Prompts", category: "inspiration", freemium: true },
+  { name: "Design Prompts", url: "https://www.designprompts.dev", description: "Explore visual design styles and copy the prompt that recreates each one with AI.", kind: "AI Prompts", category: "inspiration" },
+  { name: "shadcn.io DESIGN.md", url: "https://www.shadcn.io/design", description: "Free DESIGN.md specs of real brands like Apple, Stripe and Linear to hand to your AI agent.", kind: "Design Specs", category: "inspiration" },
 
   // Typography
   { name: "Google Fonts", url: "https://fonts.google.com", description: "Free, open source fonts optimised for the web.", kind: "Font Library", category: "typography", icon: "googlefonts", openSource: true },
@@ -220,6 +226,7 @@ export const tools: Tool[] = [
   { name: "Simple Icons", url: "https://simpleicons.org", description: "Free SVG icons for popular brands.", kind: "Brand Icons", category: "icons", icon: "simpleicons", openSource: true },
   { name: "Iconify", url: "https://icon-sets.iconify.design", description: "200,000+ open source icons in one place.", kind: "Aggregator", category: "icons", icon: "iconify", openSource: true },
   { name: "Font Awesome", url: "https://fontawesome.com", description: "The internet's icon library and toolkit.", kind: "Icon Set", category: "icons", icon: "fontawesome" },
+  { name: "SVG Repo", url: "https://www.svgrepo.com", description: "500,000+ free SVG icons and vectors, searchable and ready for commercial use.", kind: "Aggregator", category: "icons" },
 
   // Color
   { name: "Coolors", url: "https://coolors.co", description: "The super fast color palette generator.", kind: "Palettes", category: "color" },
@@ -234,7 +241,7 @@ export const tools: Tool[] = [
   { name: "Unsplash", url: "https://unsplash.com", description: "Beautiful, free images from generous creators.", kind: "Photos", category: "assets", icon: "unsplash" },
   { name: "Pexels", url: "https://www.pexels.com", description: "Free stock photos and videos.", kind: "Photos", category: "assets", icon: "pexels" },
   { name: "Pixabay", url: "https://pixabay.com", description: "Royalty‑free images, video and music.", kind: "Photos", category: "assets", icon: "pixabay" },
-  { name: "unDraw", url: "https://undraw.co", description: "Open source illustrations in any color.", kind: "Illustrations", category: "assets", openSource: true },
+  { name: "unDraw", url: "https://undraw.co", description: "Free SVG illustrations you can recolor to match your brand, no attribution needed.", kind: "Illustrations", category: "assets" },
   { name: "Storyset", url: "https://storyset.com", description: "Customisable, animated illustrations.", kind: "Illustrations", category: "assets" },
   { name: "Blush", url: "https://blush.design", description: "Mix‑and‑match illustrations by global artists.", kind: "Illustrations", category: "assets" },
   { name: "Open Peeps", url: "https://www.openpeeps.com", description: "A hand‑drawn illustration library, CC0.", kind: "Illustrations", category: "assets", openSource: true },
@@ -254,6 +261,14 @@ export const tools: Tool[] = [
   { name: "Aceternity UI", url: "https://ui.aceternity.com", description: "Trending, animated components for React.", kind: "Animated", category: "components" },
   { name: "Magic UI", url: "https://magicui.design", description: "UI library for design engineers.", kind: "Animated", category: "components", openSource: true },
   { name: "Material Design", url: "https://m3.material.io", description: "Google's open source design system.", kind: "Design System", category: "components", icon: "materialdesign" },
+  { name: "React Bits", url: "https://reactbits.dev", description: "Animated, interactive React components, backgrounds and text effects.", kind: "Animated", category: "components", openSource: true },
+  { name: "Uiverse", url: "https://uiverse.io/elements", description: "Thousands of community-made buttons, cards, loaders and inputs in HTML, CSS and Tailwind.", kind: "Elements", category: "components", openSource: true },
+  { name: "Tailark", url: "https://tailark.com", description: "shadcn blocks, pages and illustrations for marketing sites, with a free set to start.", kind: "Blocks", category: "components", freemium: true },
+  { name: "WigggleUI", url: "https://wigggle-ui.vercel.app", description: "Copy-paste widgets like weather, clocks and stats, built on shadcn/ui.", kind: "Widgets", category: "components", openSource: true },
+  { name: "SmoothUI", url: "https://smoothui.dev/docs/components", description: "Nearly 200 animated React components built with Motion, GSAP and Tailwind.", kind: "Animated", category: "components", openSource: true },
+  { name: "Unlumen UI", url: "https://ui.unlumen.com/components", description: "Polished animated components with 3D, WebGL and shader effects.", kind: "Animated", category: "components", freemium: true },
+  { name: "Neobrutalism", url: "https://neobrutalism.com/components", description: "Bold React components with thick borders, hard shadows and loud color.", kind: "Components", category: "components", openSource: true },
+  { name: "shadcn.io", url: "https://www.shadcn.io", description: "Free shadcn themes, 1,100+ component examples, hooks and templates.", kind: "Components", category: "components", freemium: true },
 
   // Motion
   { name: "Motion", url: "https://motion.dev", description: "Production‑grade animation for React and JS.", kind: "Library", category: "motion", openSource: true },

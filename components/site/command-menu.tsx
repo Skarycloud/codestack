@@ -21,7 +21,7 @@ export function CommandMenuProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if ((e.key === "k" && (e.metaKey || e.ctrlKey)) || (e.key === "/" && !isTyping(e.target))) {
+      if ((e.key.toLowerCase() === "k" && (e.metaKey || e.ctrlKey) && !e.altKey) || (e.key === "/" && !isTyping(e.target))) {
         e.preventDefault()
         setMounted(true)
         setIsOpen((o) => !o)

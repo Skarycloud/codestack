@@ -9,6 +9,7 @@ import { tools } from "@/data/catalog"
 import { brandMeta } from "@/data/brand-meta"
 import { resources } from "@/data/resources"
 import { cn } from "@/lib/utils"
+import { useModKey } from "@/components/shortcut-key"
 
 const iconSample = Object.keys(brandMeta).slice(12, 24)
 const stackSample = ["Next.js", "Tailwind CSS", "Supabase", "Vercel"].map((n) => tools.find((t) => t.name === n)!)
@@ -68,21 +69,10 @@ const features = [
   },
   {
     eyebrow: "Search",
-    title: "Find anything. Instantly. ⌘K.",
+    title: "Find anything. Instantly.",
     href: "/explore",
     tone: "bg-[#f5f5f7] dark:bg-surface",
-    visual: (
-      <div className="flex items-center justify-center gap-3 py-8">
-        {["⌘", "K"].map((k) => (
-          <kbd
-            key={k}
-            className="grid size-24 place-items-center rounded-[22px] bg-gradient-to-b from-white to-[#e8e8ed] font-sans text-[40px] font-medium shadow-[0_2px_0_#c7c7cc,0_10px_30px_-10px_rgba(0,0,0,0.3)] dark:from-[#2c2c2e] dark:to-[#1c1c1e] dark:shadow-[0_2px_0_#000,0_10px_30px_-10px_rgba(0,0,0,0.8)]"
-          >
-            {k}
-          </kbd>
-        ))}
-      </div>
-    ),
+    visual: <SearchKeys />,
   },
   {
     eyebrow: "Open source",
@@ -130,5 +120,21 @@ export function FeatureCarousel() {
         ))}
       </DragScroller>
     </section>
+  )
+}
+
+function SearchKeys() {
+  const mod = useModKey()
+  return (
+    <div className="flex items-center justify-center gap-3 py-8">
+      {[mod, "K"].map((k) => (
+        <kbd
+          key={k}
+          className="grid h-24 min-w-24 place-items-center px-6 rounded-[22px] bg-gradient-to-b from-white to-[#e8e8ed] font-sans text-[40px] font-medium shadow-[0_2px_0_#c7c7cc,0_10px_30px_-10px_rgba(0,0,0,0.3)] dark:from-[#2c2c2e] dark:to-[#1c1c1e] dark:shadow-[0_2px_0_#000,0_10px_30px_-10px_rgba(0,0,0,0.8)]"
+        >
+          {k}
+        </kbd>
+      ))}
+    </div>
   )
 }

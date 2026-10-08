@@ -55,7 +55,7 @@ CodeStack puts the essentials for **both designers and developers** in one fast,
 | Page | What it does |
 | --- | --- |
 | **Home** (`/`) | A scroll‑linked hero with a 3D wall of brand logos, a logo marquee, "For designers / For developers" tiles, a category bento grid, a draggable feature carousel, live stats and an open source call to action. |
-| **Explore** (`/explore`) | **170 tools across 17 categories**, from frameworks and databases to typography, color and inspiration. Search, filter by Design or Develop, and jump between categories. Links like `/explore?c=typography` open a filtered view directly. |
+| **Explore** (`/explore`) | **183 tools across 17 categories**, from frameworks and databases to typography, color and inspiration. Search, filter by Design or Develop, and jump between categories. Links like `/explore?c=typography` open a filtered view directly. |
 | **Icons** (`/icons`) | **141 brand logos.** Search, switch between color and mono, then copy any logo as **SVG** or a **React component**, or download **SVG** or **PNG** in brand, black or white. |
 | **Learn** (`/learn`) | **194 verified resources across 9 tracks**: design, frontend, backend, DevOps, mobile, AI, CS fundamentals, full‑stack paths and career. Docs, courses, videos, guides, books, practice platforms and podcasts, with a "Start watching" row of must‑see videos and a "Free only" filter. |
 | **Stack Builder** (`/stack-builder`) | Pick technologies or start from **9 proven presets** (T3, MERN, Supa‑Next, AI App and more). See how closely your stack matches the classics, share it as a link or copy it as Markdown. |
@@ -202,6 +202,7 @@ Add an entry to the `tools` array in [`data/catalog.ts`](data/catalog.ts):
   icon: "rive",                                    // Optional Simple Icons slug
   openSource: true,                                // Optional "Open source" badge
   paid: false,                                     // Optional "Paid" badge
+  freemium: false,                                 // Optional "Free + Pro" badge for free tiers with paid extras
 }
 ```
 
