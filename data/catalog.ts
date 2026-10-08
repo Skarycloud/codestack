@@ -19,13 +19,17 @@ export type CategoryId =
   | "icons"
   | "color"
   | "assets"
+  | "mockups"
   | "components"
   | "motion"
+  | "3d"
 
 export interface Category {
   id: CategoryId
   name: string
   audience: Audience
+  /** Also listed under the other audience, e.g. AI tools serve designers and developers alike. */
+  alsoFor?: Audience
   tagline: string
 }
 
@@ -51,15 +55,17 @@ export const categories: Category[] = [
   { id: "devtools", name: "Dev Tools", audience: "develop", tagline: "Build, test and ship faster." },
   { id: "hosting", name: "Hosting", audience: "develop", tagline: "From localhost to the world." },
   { id: "services", name: "Services", audience: "develop", tagline: "Auth, payments, email, insight." },
-  { id: "ai", name: "AI", audience: "develop", tagline: "Models and tools for intelligent apps." },
+  { id: "ai", name: "AI", audience: "develop", alsoFor: "design", tagline: "Models, assistants and AI tools for design and code." },
   { id: "design-tools", name: "Design Tools", audience: "design", tagline: "Where ideas take shape." },
   { id: "inspiration", name: "Inspiration", audience: "design", tagline: "The best work on the internet." },
   { id: "typography", name: "Typography", audience: "design", tagline: "Type that sets the tone." },
   { id: "icons", name: "Icon Sets", audience: "design", tagline: "Pixel‑perfect symbols, free." },
   { id: "color", name: "Color", audience: "design", tagline: "Palettes that just work." },
-  { id: "assets", name: "Photos & Art", audience: "design", tagline: "Imagery and illustration." },
+  { id: "assets", name: "Photos & Art", audience: "design", tagline: "Photos, video and illustration." },
+  { id: "mockups", name: "Mockups", audience: "design", tagline: "Show your work in context." },
   { id: "components", name: "UI Kits", audience: "design", tagline: "Components, ready to compose." },
   { id: "motion", name: "Motion", audience: "design", tagline: "Make interfaces feel alive." },
+  { id: "3d", name: "3D", audience: "design", tagline: "Models, scenes and depth." },
 ]
 
 export const tools: Tool[] = [
@@ -183,13 +189,30 @@ export const tools: Tool[] = [
   { name: "Penpot", url: "https://penpot.app", description: "Open source design and prototyping for teams.", kind: "Interface Design", category: "design-tools", icon: "penpot", openSource: true },
   { name: "Sketch", url: "https://www.sketch.com", description: "The Mac‑native design platform.", kind: "Interface Design", category: "design-tools", icon: "sketch", paid: true },
   { name: "Webflow", url: "https://webflow.com", description: "Build professional custom websites visually.", kind: "Site Builder", category: "design-tools", icon: "webflow" },
-  { name: "Spline", url: "https://spline.design", description: "Design and collaborate in 3D, in the browser.", kind: "3D Design", category: "design-tools" },
-  { name: "Blender", url: "https://www.blender.org", description: "The free and open source 3D creation suite.", kind: "3D Suite", category: "design-tools", icon: "blender", openSource: true },
+  { name: "Spline", url: "https://spline.design", description: "Design and collaborate in 3D, in the browser.", kind: "3D Design", category: "3d" },
+  { name: "Blender", url: "https://www.blender.org", description: "The free and open source 3D creation suite.", kind: "3D Suite", category: "3d", icon: "blender", openSource: true },
   { name: "Canva", url: "https://www.canva.com", description: "Design anything, publish anywhere.", kind: "Graphic Design", category: "design-tools", icon: "canva" },
   { name: "Inkscape", url: "https://inkscape.org", description: "Professional vector graphics editor, free.", kind: "Vector", category: "design-tools", icon: "inkscape", openSource: true },
   { name: "GIMP", url: "https://www.gimp.org", description: "The free and open source image editor.", kind: "Raster", category: "design-tools", icon: "gimp", openSource: true },
   { name: "Krita", url: "https://krita.org", description: "Professional digital painting, made by artists.", kind: "Painting", category: "design-tools", icon: "krita", openSource: true },
   { name: "DaVinci Resolve", url: "https://www.blackmagicdesign.com/products/davinciresolve", description: "Editing, color, VFX and audio in one tool.", kind: "Video", category: "design-tools", icon: "davinciresolve" },
+  { name: "ProtoPie", url: "https://www.protopie.io", description: "Realistic, code-free prototypes with sensors, logic and variables.", kind: "Prototyping", category: "design-tools", freemium: true },
+  { name: "UXPin", url: "https://www.uxpin.com", description: "Prototype with real, coded components and design systems.", kind: "Prototyping", category: "design-tools", freemium: true },
+  { name: "Balsamiq", url: "https://balsamiq.com", description: "Fast, low-fidelity wireframes that keep the focus on structure.", kind: "Wireframing", category: "design-tools", paid: true },
+  { name: "FigJam", url: "https://www.figma.com/figjam", description: "Figma's online whiteboard for brainstorms, flows and workshops.", kind: "Whiteboard", category: "design-tools", icon: "figma", freemium: true },
+  { name: "Miro", url: "https://miro.com", description: "A visual workspace for mapping journeys, flows and ideas as a team.", kind: "Whiteboard", category: "design-tools", icon: "miro", freemium: true },
+  { name: "Maze", url: "https://maze.co", description: "Test prototypes with real users and get answers in hours.", kind: "User Testing", category: "design-tools", icon: "maze", freemium: true },
+  { name: "Overflow", url: "https://overflow.io", description: "Turn your designs into presentable, interactive user flow diagrams.", kind: "User Flows", category: "design-tools", paid: true },
+
+  // AI for designers
+  { name: "ChatGPT", url: "https://chatgpt.com", description: "Brainstorm, write UX copy and generate images in one chat.", kind: "Assistant", category: "ai", icon: "openai", freemium: true },
+  { name: "Midjourney", url: "https://www.midjourney.com", description: "Striking AI imagery for moodboards, concepts and art direction.", kind: "Image Generation", category: "ai", paid: true },
+  { name: "Ideogram", url: "https://ideogram.ai", description: "AI images that render clean, accurate text and typography.", kind: "Image Generation", category: "ai", freemium: true },
+  { name: "Stitch", url: "https://stitch.withgoogle.com", description: "Google's AI UI designer, formerly Galileo AI. Prompt to screens and Figma.", kind: "UI Generation", category: "ai" },
+  { name: "Uizard", url: "https://uizard.io", description: "Generate editable mockups from prompts, sketches or screenshots.", kind: "UI Generation", category: "ai", freemium: true },
+  { name: "Relume", url: "https://www.relume.ai", description: "AI sitemaps and wireframes that export to Figma and Webflow.", kind: "Site Builder", category: "ai", freemium: true },
+  { name: "v0", url: "https://v0.app", description: "Vercel's AI that turns prompts and designs into working React UI.", kind: "UI to Code", category: "ai", icon: "v0", freemium: true },
+  { name: "Lovable", url: "https://lovable.dev", description: "Describe an app and get a full-stack, deployable build.", kind: "App Builder", category: "ai", freemium: true },
 
   // Inspiration
   { name: "Dribbble", url: "https://dribbble.com", description: "Discover the world's top designers and creatives.", kind: "Community", category: "inspiration", icon: "dribbble" },
@@ -206,6 +229,7 @@ export const tools: Tool[] = [
   { name: "MotionSites", url: "https://motionsites.ai", description: "Animated website designs with ready prompts for Claude, Cursor, Bolt and Lovable.", kind: "AI Prompts", category: "inspiration", freemium: true },
   { name: "Design Prompts", url: "https://www.designprompts.dev", description: "Explore visual design styles and copy the prompt that recreates each one with AI.", kind: "AI Prompts", category: "inspiration" },
   { name: "shadcn.io DESIGN.md", url: "https://www.shadcn.io/design", description: "Free DESIGN.md specs of real brands like Apple, Stripe and Linear to hand to your AI agent.", kind: "Design Specs", category: "inspiration" },
+  { name: "Collect UI", url: "https://collectui.com", description: "Daily UI inspiration sorted into hundreds of patterns.", kind: "Gallery", category: "inspiration" },
 
   // Typography
   { name: "Google Fonts", url: "https://fonts.google.com", description: "Free, open source fonts optimised for the web.", kind: "Font Library", category: "typography", icon: "googlefonts", openSource: true },
@@ -215,6 +239,12 @@ export const tools: Tool[] = [
   { name: "Font Squirrel", url: "https://www.fontsquirrel.com", description: "Free fonts licensed for commercial work.", kind: "Font Library", category: "typography" },
   { name: "Typescale", url: "https://typescale.com", description: "Visually generate a modular type scale.", kind: "Utility", category: "typography" },
   { name: "Fontjoy", url: "https://fontjoy.com", description: "Generate font pairings in one click.", kind: "Utility", category: "typography" },
+  { name: "Typewolf", url: "https://www.typewolf.com", description: "What's trending in type, with pairings and real-world examples.", kind: "Reference", category: "typography" },
+  { name: "Fontpair", url: "https://www.fontpair.co", description: "Beautiful Google Font pairings, ready to use.", kind: "Pairing", category: "typography" },
+  { name: "Pangram Pangram", url: "https://pangrampangram.com", description: "Contemporary typefaces, free to try for personal projects.", kind: "Foundry", category: "typography", freemium: true },
+  { name: "Adobe Fonts", url: "https://fonts.adobe.com", description: "Thousands of licensed fonts, included with Creative Cloud.", kind: "Library", category: "typography", freemium: true },
+  { name: "FontBrief", url: "https://www.fontbrief.com", description: "Describe your brand and get fitting font suggestions.", kind: "Finder", category: "typography" },
+  { name: "WhatFont", url: "https://chromewebstore.google.com/detail/whatfont/jabopobgcpjmedljpbcaablpmlmfcogm", description: "Hover any text on the web to see which font it uses.", kind: "Extension", category: "typography", icon: "googlechrome" },
 
   // Icon Sets
   { name: "Lucide", url: "https://lucide.dev", description: "Beautiful and consistent open source icons.", kind: "Icon Set", category: "icons", icon: "lucide", openSource: true },
@@ -227,6 +257,12 @@ export const tools: Tool[] = [
   { name: "Iconify", url: "https://icon-sets.iconify.design", description: "200,000+ open source icons in one place.", kind: "Aggregator", category: "icons", icon: "iconify", openSource: true },
   { name: "Font Awesome", url: "https://fontawesome.com", description: "The internet's icon library and toolkit.", kind: "Icon Set", category: "icons", icon: "fontawesome" },
   { name: "SVG Repo", url: "https://www.svgrepo.com", description: "500,000+ free SVG icons and vectors, searchable and ready for commercial use.", kind: "Aggregator", category: "icons" },
+  { name: "its hover", url: "https://www.itshover.com/icons", description: "Smooth animated React icons built with Motion, installable with the shadcn CLI.", kind: "Animated Icons", category: "icons", openSource: true },
+  { name: "Feather", url: "https://feathericons.com", description: "Simply beautiful, minimal open source icons.", kind: "Icon Set", category: "icons", openSource: true },
+  { name: "Remix Icon", url: "https://remixicon.com", description: "Neutral open source icons in line and fill styles.", kind: "Icon Set", category: "icons", openSource: true },
+  { name: "Flaticon", url: "https://www.flaticon.com", description: "Millions of icons and stickers in every style.", kind: "Marketplace", category: "icons", freemium: true },
+  { name: "Icons8", url: "https://icons8.com", description: "Icons, illustrations and photos in consistent styles.", kind: "Marketplace", category: "icons", icon: "icons8", freemium: true },
+  { name: "Noun Project", url: "https://thenounproject.com", description: "Over 8 million icons from a global community of designers.", kind: "Marketplace", category: "icons", icon: "nounproject", freemium: true },
 
   // Color
   { name: "Coolors", url: "https://coolors.co", description: "The super fast color palette generator.", kind: "Palettes", category: "color" },
@@ -236,6 +272,13 @@ export const tools: Tool[] = [
   { name: "Huemint", url: "https://huemint.com", description: "Machine learning color palettes for brands.", kind: "Palettes", category: "color" },
   { name: "Happy Hues", url: "https://www.happyhues.co", description: "Curated palettes shown in real context.", kind: "Palettes", category: "color" },
   { name: "Contrast Checker", url: "https://webaim.org/resources/contrastchecker", description: "Check WCAG contrast ratios, by WebAIM.", kind: "Accessibility", category: "color" },
+  { name: "Color Hunt", url: "https://colorhunt.co", description: "Thousands of hand-picked, trending four-color palettes.", kind: "Palettes", category: "color" },
+  { name: "Khroma", url: "https://www.khroma.co", description: "AI that learns which colors you like and generates palettes.", kind: "Generator", category: "color" },
+  { name: "Colormind", url: "http://colormind.io", description: "Deep-learning palette generator trained on photos and art.", kind: "Generator", category: "color" },
+  { name: "BrandColors", url: "https://brandcolors.net", description: "The official color codes of hundreds of brands.", kind: "Reference", category: "color" },
+  { name: "ColorSpace", url: "https://mycolor.space", description: "Enter one color and get matching palettes and gradients.", kind: "Generator", category: "color" },
+  { name: "Adobe Color", url: "https://color.adobe.com", description: "Build palettes from color rules or images, with contrast checks.", kind: "Generator", category: "color" },
+  { name: "Leonardo", url: "https://leonardocolor.io", description: "Adobe's open source tool for accessible, contrast-based color scales.", kind: "Accessibility", category: "color", openSource: true },
 
   // Photos & Art
   { name: "Unsplash", url: "https://unsplash.com", description: "Beautiful, free images from generous creators.", kind: "Photos", category: "assets", icon: "unsplash" },
@@ -249,6 +292,28 @@ export const tools: Tool[] = [
   { name: "Hairline", url: "https://hairline.lucasmarkes.com", description: "Interactive isometric line illustrations for React or plain DOM.", kind: "Illustrations", category: "assets", openSource: true },
   { name: "Blobatar", url: "https://blobatar.dev", description: "Deterministic blob avatars from any string, in a tiny package.", kind: "Avatars", category: "assets" },
   { name: "Avatar Lab", url: "https://avatars.bible-strong.app", description: "Design procedural 2D avatars and animations, export React, SVG or PNG.", kind: "Avatars", category: "assets" },
+  { name: "Freepik", url: "https://www.freepik.com", description: "Photos, vectors, PSDs, video and AI tools in one library.", kind: "Marketplace", category: "assets", icon: "freepik", freemium: true },
+  { name: "Burst", url: "https://www.shopify.com/stock-photos", description: "Shopify's free, high-resolution stock photos.", kind: "Photos", category: "assets", icon: "shopify" },
+  { name: "StockSnap", url: "https://stocksnap.io", description: "Beautiful CC0 stock photos, free of copyright restrictions.", kind: "Photos", category: "assets" },
+  { name: "Mixkit", url: "https://mixkit.co", description: "Free stock video, music, sound effects and templates.", kind: "Video", category: "assets" },
+  { name: "Coverr", url: "https://coverr.co", description: "Free stock video for websites and backgrounds.", kind: "Video", category: "assets" },
+  { name: "DrawKit", url: "https://www.drawkit.com", description: "Hand-drawn vector illustrations and icon packs.", kind: "Illustrations", category: "assets", freemium: true },
+  { name: "ManyPixels", url: "https://www.manypixels.co/gallery", description: "A gallery of free, recolorable illustrations.", kind: "Illustrations", category: "assets" },
+  { name: "Ouch!", url: "https://icons8.com/illustrations", description: "Icons8's illustration library in dozens of styles.", kind: "Illustrations", category: "assets", icon: "icons8", freemium: true },
+  { name: "IRA Design", url: "https://iradesign.io", description: "Build custom illustrations from mix-and-match parts and gradients.", kind: "Illustrations", category: "assets" },
+  { name: "Humaaans", url: "https://www.humaaans.com", description: "Mix-and-match illustrations of people, by Pablo Stanley.", kind: "Illustrations", category: "assets" },
+  { name: "Open Doodles", url: "https://www.opendoodles.com", description: "Free sketchy illustrations, CC0 licensed.", kind: "Illustrations", category: "assets" },
+
+  // Mockups
+  { name: "Mockup World", url: "https://www.mockupworld.co", description: "Thousands of free, photorealistic PSD mockups.", kind: "Mockups", category: "mockups" },
+  { name: "LS Graphics", url: "https://www.ls.graphics", description: "Premium and free device, branding and scene mockups.", kind: "Mockups", category: "mockups", freemium: true },
+  { name: "Angle", url: "https://angle.sh", description: "Thousands of device mockups for Figma, Sketch and XD.", kind: "Devices", category: "mockups", paid: true },
+  { name: "Artboard Studio", url: "https://artboard.studio", description: "Browser-based mockups for devices, apparel and packaging, with video.", kind: "Mockup Editor", category: "mockups", freemium: true },
+  { name: "Previewed", url: "https://previewed.app", description: "3D and animated app mockups made in the browser.", kind: "Mockup Editor", category: "mockups", freemium: true },
+  { name: "Shots", url: "https://shots.so", description: "Turn screenshots into polished device mockups and posts.", kind: "Mockup Editor", category: "mockups", freemium: true },
+  { name: "Rotato", url: "https://rotato.app", description: "Animated 3D device mockups and product videos for Mac.", kind: "Animated", category: "mockups", paid: true },
+  { name: "Screely", url: "https://screely.com", description: "Instantly wrap screenshots in a clean browser frame.", kind: "Screenshots", category: "mockups" },
+  { name: "Minimal Mockups", url: "https://www.minimalmockups.com", description: "Clean, minimal device mockups for Figma and Photoshop.", kind: "Devices", category: "mockups", freemium: true },
 
   // UI Kits
   { name: "shadcn/ui", url: "https://ui.shadcn.com", description: "Beautifully designed components you own.", kind: "Components", category: "components", icon: "shadcnui", openSource: true },
@@ -269,6 +334,7 @@ export const tools: Tool[] = [
   { name: "Unlumen UI", url: "https://ui.unlumen.com/components", description: "Polished animated components with 3D, WebGL and shader effects.", kind: "Animated", category: "components", freemium: true },
   { name: "Neobrutalism", url: "https://neobrutalism.com/components", description: "Bold React components with thick borders, hard shadows and loud color.", kind: "Components", category: "components", openSource: true },
   { name: "shadcn.io", url: "https://www.shadcn.io", description: "Free shadcn themes, 1,100+ component examples, hooks and templates.", kind: "Components", category: "components", freemium: true },
+  { name: "Skecher UI", url: "https://skecher-ui.com", description: "Animated motion components for React, installed with the shadcn CLI.", kind: "Animated", category: "components", openSource: true },
 
   // Motion
   { name: "Motion", url: "https://motion.dev", description: "Production‑grade animation for React and JS.", kind: "Library", category: "motion", openSource: true },
@@ -279,6 +345,20 @@ export const tools: Tool[] = [
   { name: "Anime.js", url: "https://animejs.com", description: "A fast, multipurpose JavaScript animation engine.", kind: "Library", category: "motion", icon: "animedotjs", openSource: true },
   { name: "Easings.net", url: "https://easings.net", description: "Visual cheat sheet of easing functions.", kind: "Reference", category: "motion" },
   { name: "Cubic Bézier", url: "https://cubic-bezier.com", description: "Craft and compare your own timing curves.", kind: "Utility", category: "motion" },
+  { name: "Jitter", url: "https://jitter.video", description: "Simple, collaborative motion design in the browser.", kind: "Motion Design", category: "motion", freemium: true },
+  { name: "Principle", url: "https://principleformac.com", description: "Animated, interactive prototypes for Mac.", kind: "Prototyping", category: "motion", paid: true },
+  { name: "SVGator", url: "https://www.svgator.com", description: "Animate SVGs without code, export to web and Lottie.", kind: "SVG Animation", category: "motion", freemium: true },
+  { name: "Keyshape", url: "https://www.keyshapeapp.com", description: "Keyframe animation for vector graphics on Mac.", kind: "SVG Animation", category: "motion", paid: true },
+  { name: "Animista", url: "https://animista.net", description: "Play with ready-made CSS animations and copy the code.", kind: "CSS", category: "motion" },
+  { name: "Loading.io", url: "https://loading.io", description: "Animated spinners, icons and backgrounds as SVG, CSS or GIF.", kind: "Loaders", category: "motion", freemium: true },
+  { name: "DialKit", url: "https://github.com/joshpuckett/dialkit", description: "Live dials and sliders for tuning motion and UI values in React, Vue, Svelte and JS.", kind: "Tuning", category: "motion", openSource: true },
+
+  // 3D
+  { name: "Sketchfab", url: "https://sketchfab.com", description: "Publish, browse and download millions of 3D models.", kind: "Library", category: "3d", icon: "sketchfab", freemium: true },
+  { name: "Vectary", url: "https://www.vectary.com", description: "Create and share interactive 3D and AR in the browser.", kind: "3D Design", category: "3d", icon: "vectary", freemium: true },
+  { name: "Poly Pizza", url: "https://poly.pizza", description: "Thousands of free low-poly models, CC licensed.", kind: "Models", category: "3d" },
+  { name: "CGTrader", url: "https://www.cgtrader.com", description: "A marketplace of free and premium 3D models.", kind: "Marketplace", category: "3d", freemium: true },
+  { name: "Adobe Substance 3D", url: "https://www.adobe.com/products/substance3d.html", description: "Industry-standard texturing, materials and 3D staging.", kind: "Texturing", category: "3d", paid: true },
 ]
 
 export const categoryById = Object.fromEntries(categories.map((c) => [c.id, c])) as Record<CategoryId, Category>
@@ -291,9 +371,14 @@ export function audienceOf(tool: Tool): Audience {
   return categoryById[tool.category].audience
 }
 
+/** Whether a category belongs in a Design or Develop view, counting `alsoFor`. */
+export function inAudience(category: Category, audience: Audience) {
+  return category.audience === audience || category.alsoFor === audience
+}
+
 export const stats = {
   tools: tools.length,
   categories: categories.length,
-  developers: tools.filter((t) => audienceOf(t) === "develop").length,
-  designers: tools.filter((t) => audienceOf(t) === "design").length,
+  developers: tools.filter((t) => inAudience(categoryById[t.category], "develop")).length,
+  designers: tools.filter((t) => inAudience(categoryById[t.category], "design")).length,
 }

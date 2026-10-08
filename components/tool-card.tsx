@@ -3,7 +3,6 @@ import { BrandIcon } from "@/components/brand-icon"
 import type { Tool } from "@/data/catalog"
 
 export function ToolCard({ tool }: { tool: Tool }) {
-  const host = new URL(tool.url).hostname.replace(/^www\./, "")
   return (
     <a href={tool.url} target="_blank" rel="noopener noreferrer" className="card-surface card-lift group flex h-full flex-col p-5">
       <div className="flex items-start justify-between">
@@ -29,8 +28,8 @@ export function ToolCard({ tool }: { tool: Tool }) {
           </span>
         )}
         {tool.freemium && <span className="shrink-0 whitespace-nowrap rounded-full bg-link/[0.1] px-2.5 py-1 text-link">Free + Pro</span>}
-        <span className="ml-auto min-w-0 truncate text-muted-foreground">{host}</span>
       </div>
+      <span className="sr-only">(opens in a new tab)</span>
     </a>
   )
 }

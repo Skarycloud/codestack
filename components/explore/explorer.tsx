@@ -7,7 +7,7 @@ import { ease } from "@/components/motion/reveal"
 import { SearchParamsListener, replaceQuery } from "@/components/search-params"
 import { Segmented } from "@/components/segmented"
 import { ToolCard } from "@/components/tool-card"
-import { audienceOf, categories, categoryById, tools, type Audience, type CategoryId } from "@/data/catalog"
+import { categories, categoryById, inAudience, tools, type Audience, type CategoryId } from "@/data/catalog"
 import { cn } from "@/lib/utils"
 
 type AudienceFilter = Audience | "all"
@@ -25,7 +25,7 @@ export function Explorer() {
     const a = params.get("a")
     if (c && categoryById[c]) {
       setCategory(c)
-      setAudience((prev) => (prev === "all" || prev === categoryById[c].audience ? prev : categoryById[c].audience))
+      setAudience((prev) => (prev === "all" || inAudience(categoryById[c], prev) ? prev : categoryById[c].audience))
     } else {
       setCategory("all")
       setAudience(a === "design" || a === "develop" ? a : "all")
@@ -38,13 +38,13 @@ export function Explorer() {
     replaceQuery(nextCategory !== "all" ? { c: nextCategory } : { a: nextAudience === "all" ? null : nextAudience })
   }
 
-  const visibleCategories = categories.filter((c) => audience === "all" || c.audience === audience)
+  const visibleCategories = categories.filter((c) => audience === "all" || inAudience(c, audience))
 
   const results = useMemo(() => {
     const q = deferredQuery.trim().toLowerCase()
     return tools.filter(
       (t) =>
-        (audience === "all" || audienceOf(t) === audience) &&
+        (audience === "all" || inAudience(categoryById[t.category], audience)) &&
         (category === "all" || t.category === category) &&
         (!q || `${t.name} ${t.description} ${t.kind} ${categoryById[t.category].name}`.toLowerCase().includes(q)),
     )

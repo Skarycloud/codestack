@@ -16,5 +16,6 @@ export const site = {
     x: "https://x.com/SumanthKum75525",
     linkedin: "https://www.linkedin.com/in/sumanth-kumar-230194294",
     email: "mailto:sumanth.k.0202@gmail.com",
+    portfolio: "https://sumanth-kumar-portfolio.vercel.app",
   },
 }

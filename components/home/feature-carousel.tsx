@@ -130,7 +130,11 @@ function SearchKeys() {
       {[mod, "K"].map((k) => (
         <kbd
           key={k}
-          className="grid h-24 min-w-24 place-items-center px-6 rounded-[22px] bg-gradient-to-b from-white to-[#e8e8ed] font-sans text-[40px] font-medium shadow-[0_2px_0_#c7c7cc,0_10px_30px_-10px_rgba(0,0,0,0.3)] dark:from-[#2c2c2e] dark:to-[#1c1c1e] dark:shadow-[0_2px_0_#000,0_10px_30px_-10px_rgba(0,0,0,0.8)]"
+          className={cn(
+            "grid h-24 min-w-24 place-items-center rounded-[22px] bg-gradient-to-b from-white to-[#e8e8ed] px-6 font-sans font-medium",
+            k.length > 1 ? "text-[30px] tracking-[-0.02em]" : "text-[40px]",
+            " shadow-[0_2px_0_#c7c7cc,0_10px_30px_-10px_rgba(0,0,0,0.3)] dark:from-[#2c2c2e] dark:to-[#1c1c1e] dark:shadow-[0_2px_0_#000,0_10px_30px_-10px_rgba(0,0,0,0.8)]",
+          )}
         >
           {k}
         </kbd>

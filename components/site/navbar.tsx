@@ -204,9 +204,7 @@ function NavbarInner({ routeKey = "" }: { routeKey?: string }) {
             >
               <Search className="size-3.5" />
               Search
-              <kbd className="ml-3 rounded-md bg-foreground/[0.06] px-1.5 py-0.5 font-mono text-[10.5px]">
-                <ShortcutKey />
-              </kbd>
+              <ShortcutKey className="ml-2.5" />
             </button>
             <button
               onClick={openSearch}

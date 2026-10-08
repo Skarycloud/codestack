@@ -55,11 +55,11 @@ CodeStack puts the essentials for **both designers and developers** in one fast,
 | Page | What it does |
 | --- | --- |
 | **Home** (`/`) | A scroll‑linked hero with a 3D wall of brand logos, a logo marquee, "For designers / For developers" tiles, a category bento grid, a draggable feature carousel, live stats and an open source call to action. |
-| **Explore** (`/explore`) | **183 tools across 17 categories**, from frameworks and databases to typography, color and inspiration. Search, filter by Design or Develop, and jump between categories. Links like `/explore?c=typography` open a filtered view directly. |
+| **Explore** (`/explore`) | **251 tools across 19 categories**, from frameworks and databases to AI, mockups, 3D, typography and color. Search, filter by Design or Develop, and jump between categories. Links like `/explore?c=typography` open a filtered view directly. |
 | **Icons** (`/icons`) | **141 brand logos.** Search, switch between color and mono, then copy any logo as **SVG** or a **React component**, or download **SVG** or **PNG** in brand, black or white. |
 | **Learn** (`/learn`) | **194 verified resources across 9 tracks**: design, frontend, backend, DevOps, mobile, AI, CS fundamentals, full‑stack paths and career. Docs, courses, videos, guides, books, practice platforms and podcasts, with a "Start watching" row of must‑see videos and a "Free only" filter. |
 | **Stack Builder** (`/stack-builder`) | Pick technologies or start from **9 proven presets** (T3, MERN, Supa‑Next, AI App and more). See how closely your stack matches the classics, share it as a link or copy it as Markdown. |
-| **Agent Skills** (`/skills`) | **190 Agent Skills** for Claude Code, Codex, Cursor, Copilot, Gemini CLI and more, from **44 publishers** and organized into **12 fields**. Includes **Popular** picks from the skills.sh leaderboard, hand‑picked **Hidden gems** and one‑click install commands. |
+| **Agent Skills** (`/skills`) | **194 Agent Skills** for Claude Code, Codex, Cursor, Copilot, Gemini CLI and more, from **47 publishers** and organized into **12 fields**. Includes **Popular** picks from the skills.sh leaderboard, hand‑picked **Hidden gems** and one‑click install commands. |
 | **Contribute** (`/contribute`) | Three ways to help, a four‑step guide with copyable commands, contribution guidelines and the code of conduct. |
 
 Available everywhere:
@@ -210,14 +210,14 @@ Add an entry to the `tools` array in [`data/catalog.ts`](data/catalog.ts):
 
 | Develop | Design |
 | --- | --- |
-| `frameworks`, `languages`, `mobile`, `backend`, `databases`, `devtools`, `hosting`, `services`, `ai` | `design-tools`, `inspiration`, `typography`, `icons`, `color`, `assets`, `components`, `motion` |
+| `frameworks`, `languages`, `mobile`, `backend`, `databases`, `devtools`, `hosting`, `services`, `ai` | `design-tools`, `inspiration`, `typography`, `icons`, `color`, `assets`, `mockups`, `components`, `motion`, `3d` |
 
-To add a category, append it to `categories` in the same file. It appears in Explore, the home page bento, the navbar
+`ai` also sets `alsoFor: "design"`, so it appears under both Design and Develop. To add a category, append it to `categories` in the same file. It appears in Explore, the home page bento, the navbar
 menu and the footer automatically.
 
 ### Brand icons
 
-Logos come from [Simple Icons](https://simpleicons.org), plus a few custom marks for brands Simple Icons no longer ships (VS Code, OpenAI, Playwright, DynamoDB, Canva and Tabler). To give a tool, skill publisher or agent a logo:
+Logos come from [Simple Icons](https://simpleicons.org), plus a few custom marks for brands Simple Icons no longer ships (VS Code, OpenAI, Playwright, DynamoDB, Canva, Tabler, LinkedIn, Slack, Microsoft Teams, Skype, Xbox and Weibo). To give a tool, skill publisher or agent a logo:
 
 1. Find the brand's slug on [simpleicons.org](https://simpleicons.org). For example, the slug for "Next.js" is `nextdotjs`.
 2. Set `icon: "<slug>"` on the entry in `data/catalog.ts` or `data/skills.ts`.

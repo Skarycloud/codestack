@@ -75,7 +75,9 @@ function BentoCard({ id, large }: { id: CategoryId; large: boolean }) {
       >
         <div className="flex items-start justify-between gap-4">
           <div>
-            <p className="text-eyebrow text-muted-foreground">{category.audience === "design" ? "Design" : "Develop"}</p>
+            <p className="text-eyebrow text-muted-foreground">
+              {category.alsoFor ? "Design + Develop" : category.audience === "design" ? "Design" : "Develop"}
+            </p>
             <h3 className={cn("mt-2 font-semibold tracking-[-0.025em]", large ? "text-[32px] leading-[1.05]" : "text-[22px]")}>
               {category.name}
             </h3>

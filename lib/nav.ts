@@ -44,7 +44,11 @@ export const navItems: NavItem[] = [
       },
       {
         title: "Design",
-        links: categories.filter((c) => c.audience === "design").map((c) => ({ name: c.name, href: `/explore?c=${c.id}` })),
+        // Design categories first, then shared ones like AI.
+        links: [...categories.filter((c) => c.audience === "design"), ...categories.filter((c) => c.alsoFor === "design")].map((c) => ({
+          name: c.name,
+          href: `/explore?c=${c.id}`,
+        })),
       },
       {
         title: "Develop",

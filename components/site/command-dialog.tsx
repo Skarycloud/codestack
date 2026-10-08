@@ -49,7 +49,7 @@ export default function CommandDialog({ open, onOpenChange }: { open: boolean; o
                 placeholder="Search tools, categories, pages…"
                 className="h-14 w-full bg-transparent text-[17px] tracking-[-0.01em] outline-none placeholder:text-muted-foreground/70"
               />
-              <kbd className="hidden rounded-md border border-border px-1.5 py-0.5 font-mono text-[11px] text-muted-foreground sm:block">
+              <kbd className="hidden h-[18px] place-items-center rounded-[5px] bg-foreground/[0.06] px-1.5 font-sans text-[11px] font-medium leading-none text-muted-foreground ring-1 ring-inset ring-foreground/[0.07] sm:grid">
                 esc
               </kbd>
             </div>
@@ -86,7 +86,9 @@ export default function CommandDialog({ open, onOpenChange }: { open: boolean; o
                       {c.name.slice(0, 2)}
                     </span>
                     {c.name}
-                    <span className="ml-auto text-xs text-muted-foreground">{c.audience === "design" ? "Design" : "Develop"}</span>
+                    <span className="ml-auto text-xs text-muted-foreground">
+                      {c.alsoFor ? "Design + Develop" : c.audience === "design" ? "Design" : "Develop"}
+                    </span>
                   </Item>
                 ))}
               </Command.Group>

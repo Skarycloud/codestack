@@ -1,4 +1,4 @@
-import { Github, Linkedin, Mail } from "lucide-react"
+import { Github, Globe, Linkedin, Mail } from "lucide-react"
 import Link from "next/link"
 import { LogoMark, Wordmark } from "@/components/site/logo"
 import { categories } from "@/data/catalog"
@@ -17,11 +17,17 @@ const columns = [
   },
   {
     title: "For designers",
-    links: categories.filter((c) => c.audience === "design").slice(0, 6).map((c) => ({ name: c.name, href: `/explore?c=${c.id}` })),
+    links: categories
+      .filter((c) => c.audience === "design")
+      .slice(0, 6)
+      .map((c) => ({ name: c.name, href: `/explore?c=${c.id}` })),
   },
   {
     title: "For developers",
-    links: categories.filter((c) => c.audience === "develop").slice(0, 6).map((c) => ({ name: c.name, href: `/explore?c=${c.id}` })),
+    links: categories
+      .filter((c) => c.audience === "develop")
+      .slice(0, 6)
+      .map((c) => ({ name: c.name, href: `/explore?c=${c.id}` })),
   },
   {
     title: "Community",
@@ -47,6 +53,7 @@ const socials = [
   { name: "X", href: site.socials.x, icon: XLogo },
   { name: "LinkedIn", href: site.socials.linkedin, icon: Linkedin },
   { name: "Email", href: site.socials.email, icon: Mail },
+  { name: "Portfolio", href: site.socials.portfolio, icon: Globe },
 ]
 
 export function Footer() {
@@ -68,6 +75,7 @@ export function Footer() {
                   key={name}
                   href={href}
                   aria-label={name}
+                  title={name}
                   target={href.startsWith("http") ? "_blank" : undefined}
                   rel="noopener noreferrer"
                   className="pressable grid size-9 place-items-center rounded-full text-muted-foreground hover:bg-foreground/[0.06] hover:text-foreground"
@@ -86,7 +94,12 @@ export function Footer() {
                   {col.links.map((link) => (
                     <li key={link.name}>
                       {"external" in link && link.external ? (
-                        <a href={link.href} target="_blank" rel="noopener noreferrer" className="text-muted-foreground transition-colors hover:text-foreground">
+                        <a
+                          href={link.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-muted-foreground transition-colors hover:text-foreground"
+                        >
                           {link.name}
                         </a>
                       ) : (
@@ -105,14 +118,24 @@ export function Footer() {
         <div className="mt-14 flex flex-col gap-3 border-t border-black/[0.06] pt-6 text-muted-foreground dark:border-white/[0.06] sm:flex-row sm:items-center sm:justify-between">
           <p>
             © {new Date().getFullYear()} CodeStack. Free and open source. Brand icons by{" "}
-            <a href="https://simpleicons.org" target="_blank" rel="noopener noreferrer" className="underline-offset-4 hover:text-foreground hover:underline">
+            <a
+              href="https://simpleicons.org"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline-offset-4 hover:text-foreground hover:underline"
+            >
               Simple Icons
             </a>
             .
           </p>
           <p>
             Crafted by{" "}
-            <a href={site.socials.github} target="_blank" rel="noopener noreferrer" className="text-foreground underline-offset-4 hover:underline">
+            <a
+              href={site.socials.portfolio}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-foreground underline-offset-4 hover:underline"
+            >
               {site.author}
             </a>{" "}
             and contributors.

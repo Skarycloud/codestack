@@ -61,6 +61,9 @@ export type PublisherId =
   | "gemini"
   | "brave"
   | "datadog"
+  | "impeccable"
+  | "transitions"
+  | "gstack"
 
 export interface Publisher {
   id: PublisherId
@@ -429,10 +432,56 @@ export const publishers: Publisher[] = [
     icon: "datadog",
     official: true,
   },
+  {
+    id: "impeccable",
+    name: "Impeccable",
+    repo: "pbakaus/impeccable",
+    blurb: "Paul Bakaus's design language that makes any coding agent better at design.",
+    install: "npx impeccable install",
+  },
+  {
+    id: "transitions",
+    name: "Transitions.dev",
+    repo: "Jakubantalik/transitions.dev",
+    blurb: "A library of 43+ crafted UI transitions, packaged as skills your agent can apply and refine.",
+  },
+  {
+    id: "gstack",
+    name: "gstack",
+    repo: "garrytan/gstack",
+    blurb: "Garry Tan's Claude Code setup: opinionated skills that act as designer, eng manager and QA.",
+  },
 ]
 
 export const skills: Skill[] = [
   // Design & UI
+  {
+    name: "impeccable",
+    field: "design",
+    publisher: "impeccable",
+    description: "A full design language for agents: typography, color, layout and motion rules plus audit commands that catch generic UI.",
+  },
+  {
+    name: "transitions-dev",
+    field: "design",
+    publisher: "transitions",
+    gem: true,
+    description: "43+ production-ready CSS transitions, from modals and toasts to streaming text, applied with motion tokens.",
+  },
+  {
+    name: "transitions-polish",
+    field: "design",
+    publisher: "transitions",
+    gem: true,
+    description: "Tunes motion you already have against a token scale for duration, easing, stagger and open/close asymmetry.",
+  },
+  {
+    name: "design-review",
+    field: "design",
+    publisher: "gstack",
+    gem: true,
+    description: "A designer's-eye QA pass that finds spacing, hierarchy and AI-slop problems in a live site, then fixes them.",
+  },
   {
     name: "frontend-design",
     field: "design",

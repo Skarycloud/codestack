@@ -81,9 +81,7 @@ export function Hero() {
           >
             <Search className="size-[18px] shrink-0" />
             <span className="flex-1 truncate">Search Figma, Next.js, Postgres…</span>
-            <kbd className="rounded-full bg-foreground/[0.06] px-2.5 py-1 font-mono text-[11px]">
-              <ShortcutKey />
-            </kbd>
+            <ShortcutKey className="mr-2" />
           </button>
 
           <div className="flex items-center gap-6">
