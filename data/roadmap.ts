@@ -30,13 +30,13 @@ export interface RoadmapTopic {
 }
 
 export const phases: { id: PhaseId; name: string; blurb: string; color: string }[] = [
-  { id: "plan", name: "Plan", blurb: "Decide what to build, and how, before writing code.", color: "#0A84FF" },
-  { id: "build", name: "Build", blurb: "Write code that people and agents can maintain.", color: "#5E5CE6" },
-  { id: "secure", name: "Secure", blurb: "Design security in. Never bolt it on at the end.", color: "#FF375F" },
-  { id: "verify", name: "Verify", blurb: "Prove it works, is fast, and can be found.", color: "#30B158" },
-  { id: "ship", name: "Ship", blurb: "Release safely, with a way back.", color: "#FF9F0A" },
-  { id: "run", name: "Run", blurb: "Production is never a black box.", color: "#14B8C4" },
-  { id: "grow", name: "Grow", blurb: "Keep it healthy, and let others help.", color: "#BF5AF2" },
+  { id: "plan", name: "Plan", blurb: "Decide what to build, and how, before writing code.", color: "#7FBCFF" },
+  { id: "build", name: "Build", blurb: "Write code that people and agents can maintain.", color: "#C4A1FF" },
+  { id: "secure", name: "Secure", blurb: "Design security in. Never bolt it on at the end.", color: "#FF8A8A" },
+  { id: "verify", name: "Verify", blurb: "Prove it works, is fast, and can be found.", color: "#5CF2C4" },
+  { id: "ship", name: "Ship", blurb: "Release safely, with a way back.", color: "#FFDC58" },
+  { id: "run", name: "Run", blurb: "Production is never a black box.", color: "#E7F192" },
+  { id: "grow", name: "Grow", blurb: "Keep it healthy, and let others help.", color: "#FF9EE6" },
 ]
 
 export const levels: { level: Level; name: string; blurb: string; topics: string[] }[] = [
@@ -101,22 +101,35 @@ export const topics: RoadmapTopic[] = [
     ],
   },
   {
-    id: "ux",
-    title: "UI and UX",
+    id: "design",
+    title: "Design",
     phase: "plan",
     level: 2,
-    summary: "AI-generated UI is no excuse for poor UX. Design flows and states, not just screens.",
+    summary: "A deliberate visual system, so the product looks designed, not generated.",
     groups: [
-      { title: "Structure", items: ["Information architecture", "Navigation", "User flows"] },
-      { title: "Design system", items: ["Typography", "Spacing", "Color", "Reusable components"] },
-      { title: "Every state", items: ["Loading", "Success", "Error", "Empty", "Disabled", "Offline or failure", "Permission denied"] },
-      { title: "Responsive", items: ["Mobile, tablet, laptop and desktop", "Large monitors", "Touch and keyboard input", "Different browsers"] },
+      { title: "Identity", items: ["Visual identity", "Typography hierarchy", "Color system", "Spacing system"] },
+      { title: "Behavior", items: ["Responsive behavior", "Motion with a purpose", "Micro-interactions"] },
+      { title: "Every state", items: ["Loading states", "Empty states", "Error states", "Success, disabled and offline states", "Permission denied"] },
     ],
+    rule: "AI-generated UI is no excuse for poor design. Decide the system first, then let tools apply it.",
     resources: [
       { name: "Design tools on CodeStack", href: "/explore?c=design-tools" },
       { name: "UI kits on CodeStack", href: "/explore?c=components" },
       { name: "Design skills for agents", href: "/skills?f=design" },
     ],
+  },
+  {
+    id: "ux",
+    title: "UX",
+    phase: "plan",
+    level: 2,
+    summary: "Make the next action obvious and every action answer back.",
+    groups: [
+      { title: "First impression", items: ["One clear primary action", "A real product demonstration", "Good onboarding"] },
+      { title: "Getting around", items: ["Navigation hierarchy", "Search", "Keyboard navigation", "Mobile UX"] },
+      { title: "Doing things", items: ["Forms with clear validation", "Useful empty states", "Feedback after every action"] },
+    ],
+    resources: [{ name: "Laws of UX", href: "https://lawsofux.com" }],
   },
   {
     id: "accessibility",
@@ -197,6 +210,20 @@ export const topics: RoadmapTopic[] = [
     ],
   },
   {
+    id: "agent-workflow",
+    title: "Coding-agent workflow",
+    phase: "build",
+    level: 4,
+    summary: "The definition of done for every agent task. Far more useful than telling an AI not to look vibe-coded.",
+    groups: [
+      { title: "Understand", items: ["Inspect the existing project", "Understand the requirements", "Create an implementation plan", "Identify dependencies"] },
+      { title: "Build", items: ["Check existing components before creating new ones", "Follow the existing design system", "Implement incrementally"] },
+      { title: "Check", items: ["Run lint and type checks", "Run tests", "Inspect the UI", "Check responsive layouts", "Check accessibility", "Check SEO", "Check security", "Check performance"] },
+      { title: "Finish", items: ["Review its own changes", "Remove unnecessary code", "Only then call the task complete"] },
+    ],
+    rule: "Don't let the coding agent decide architecture blindly.",
+  },
+  {
     id: "api",
     title: "API design",
     phase: "build",
@@ -261,10 +288,10 @@ export const topics: RoadmapTopic[] = [
     summary: "Anchor on OWASP Top 10:2025 for awareness and OWASP ASVS when you need a verifiable standard.",
     groups: [
       { title: "OWASP Top 10:2025", items: ["A01 Broken Access Control", "A02 Security Misconfiguration", "A03 Software Supply Chain Failures", "A04 Cryptographic Failures", "A05 Injection", "A06 Insecure Design", "A07 Authentication Failures", "A08 Software or Data Integrity Failures", "A09 Security Logging and Alerting Failures", "A10 Mishandling of Exceptional Conditions"] },
-      { title: "Identity", items: ["Authentication", "Authorization on every request", "Session management", "Password hashing", "Brute-force protection"] },
+      { title: "Identity", items: ["Authentication", "Authorization on every request", "API authorization", "Session management", "Password hashing", "Brute-force protection"] },
       { title: "Input and output", items: ["Input validation", "Output encoding and XSS protection", "SQL, NoSQL and command injection prevention", "SSRF protection", "Secure file uploads"] },
       { title: "Browser and transport", items: ["Security headers", "Content Security Policy", "CORS", "CSRF protection", "Secure cookies", "Encryption in transit and at rest"] },
-      { title: "Operations", items: ["Rate limiting", "Audit logging", "Remove unused endpoints and ports"] },
+      { title: "Operations", items: ["Rate limiting", "Secrets management", "Dependency auditing", "Logging without leaking sensitive data", "Remove unused endpoints and ports"] },
     ],
     rule: "Least privilege is both a security and an architecture optimization.",
     resources: [
@@ -326,15 +353,14 @@ export const topics: RoadmapTopic[] = [
   // Verify
   {
     id: "testing",
-    title: "Testing",
+    title: "Testing and quality",
     phase: "verify",
     level: 2,
-    summary: "Test where failure hurts most first. Coverage numbers come second.",
+    summary: "Test where failure hurts most first, then check it in real browsers and devices.",
     groups: [
-      { title: "Unit", items: ["Business logic", "Utilities", "Components where useful"] },
-      { title: "Integration", items: ["APIs", "Database", "Authentication", "External services"] },
-      { title: "End to end", items: ["Sign up and log in", "The core workflow", "Payments", "Other critical journeys"] },
-      { title: "Security tests", items: ["Authorization tests", "Input fuzzing", "SAST and dependency scans", "DAST where appropriate"] },
+      { title: "Automated tests", items: ["Unit tests for business logic", "Integration tests for APIs, data and auth", "End-to-end tests for critical journeys", "Security tests: authorization and fuzzing"] },
+      { title: "Real-world checks", items: ["Accessibility testing", "Browser testing", "Mobile testing"] },
+      { title: "In production", items: ["Error monitoring", "Analytics", "Performance monitoring"] },
     ],
     flow: ["Authentication", "Authorization", "Payments", "Data integrity", "Core business logic", "Critical user flows"],
     techniques: ["High-risk code gets the high-value tests first", "Use git bisect to find the commit that broke something", "Test failure paths, not only the happy path"],
@@ -366,8 +392,8 @@ export const topics: RoadmapTopic[] = [
     summary: "Fast and measurable. Optimize Core Web Vitals with data from real users.",
     groups: [
       { title: "Core Web Vitals", items: ["LCP: largest content paints fast", "INP: interactions respond fast", "CLS: nothing jumps"] },
-      { title: "Loading", items: ["TTFB and FCP", "CDN, compression and caching", "Fewer, smaller requests"] },
-      { title: "Runtime", items: ["Short main-thread tasks", "Less JavaScript execution", "Fewer third-party scripts"] },
+      { title: "Loading", items: ["Image optimization and lazy loading", "Font optimization", "Caching and a CDN", "TTFB and FCP"] },
+      { title: "JavaScript", items: ["Code splitting", "Bundle analysis", "Avoid unnecessary JavaScript", "Optimize third-party scripts"] },
       { title: "Measure", items: ["Lab tests (Lighthouse)", "Real user monitoring", "Budgets in CI"] },
     ],
     rule: "Don't ask how to make it faster. Ask where the bottleneck is.",
@@ -387,7 +413,7 @@ export const topics: RoadmapTopic[] = [
     groups: [
       { title: "Technical", items: ["Title and meta description", "Canonical URLs", "robots.txt and XML sitemap", "Clean URLs and proper redirects", "HTTPS and a real 404 page", "Crawlable navigation"] },
       { title: "On the page", items: ["Semantic HTML and heading hierarchy", "Image alt text", "Structured data", "Open Graph and X cards", "Internal linking"] },
-      { title: "Content", items: ["Search intent and keyword research", "Topic clusters", "Avoid duplicate content", "Keep content fresh"] },
+      { title: "Content", items: ["Search intent and keyword research", "Topic clusters", "Avoid duplicate content", "Keep content fresh", "Programmatic SEO only when justified"] },
       { title: "Monitoring", items: ["Google Search Console", "Bing Webmaster Tools", "Indexing and crawl errors", "Search performance"] },
     ],
     resources: [
@@ -405,8 +431,8 @@ export const topics: RoadmapTopic[] = [
     groups: [
       { title: "Clarity", items: ["Define entities explicitly", "Consistent terminology", "Answer questions directly", "Clear, factual writing"] },
       { title: "Structure", items: ["Schema.org structured data", "FAQ content", "Comparison information", "Stable URLs"] },
-      { title: "Authority", items: ["About, author and organization info", "Citations and references", "Facts consistent across the web"] },
-      { title: "Machine-readable", items: ["llms.txt where you want it", "Public, AI-readable docs", "Key content not hidden behind JavaScript", "Monitor how AI search describes you"] },
+      { title: "Authority", items: ["Author and company information", "Citations and references", "Factual consistency across the web"] },
+      { title: "Machine-readable", items: ["Content that can be extracted without the surrounding UI", "Key information not hidden behind JavaScript", "llms.txt where you want it", "Monitor how AI search describes you"] },
     ],
     rule: "An AI should be able to answer: what is this, who is it for, how do I install it, how does it work, and what are its limits?",
     flow: ["Your content", "AI search and answer engines", "AI-generated answers that cite you"],

@@ -326,23 +326,65 @@
   }
 }
 
-/* Roadmap: steps outside the highlighted level fade back. Only the contents fade; every box keeps
-   its solid background so the spine line never shows through. Hovering brings a step back. */
-.dimmed button > *,
-.dimmed [aria-hidden] {
-  opacity: 0.3;
-  filter: saturate(0);
+/* Roadmap page: a neobrutalist theme in the spirit of neobrutalism.com. Flat colors, thick ink
+   borders and hard offset shadows, scoped to .nb so the rest of the site keeps its own look. */
+.nb {
+  --nb-bg: #fff7e8;
+  --nb-card: #ffffff;
+  --nb-sub: #fff1c2;
+  --nb-ink: #000000;
+  --nb-muted: #5b5244;
+  --nb-line: #000000;
+  --nb-shadow: #000000;
+  --nb-yellow: #ffdc58;
+  background: var(--nb-bg);
+  color: var(--nb-ink);
+}
+.dark .nb {
+  --nb-bg: #1d1a16;
+  --nb-card: #2a2620;
+  --nb-sub: #332e26;
+  --nb-ink: #f6efe1;
+  --nb-muted: #bdb29d;
+  --nb-line: #f6efe1;
+  --nb-shadow: #f6efe1;
+}
+.nb-font {
+  font-family: var(--font-balsamiq), "Comic Sans MS", system-ui, sans-serif;
+  letter-spacing: 0;
+}
+.nb-box {
+  border: 2px solid var(--nb-line);
+  box-shadow: 4px 4px 0 0 var(--nb-shadow);
+}
+.nb-box-sm {
+  border: 2px solid var(--nb-line);
+  box-shadow: 2px 2px 0 0 var(--nb-shadow);
+}
+.nb-press {
   transition:
-    opacity 0.3s,
-    filter 0.3s;
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
 }
-.dimmed button {
-  border-color: hsl(var(--border)) !important;
+@media (hover: hover) {
+  .nb-press:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 0 var(--nb-shadow);
+  }
+  .nb-box-sm.nb-press:hover {
+    box-shadow: 4px 4px 0 0 var(--nb-shadow);
+  }
 }
-.dimmed:hover button > *,
-.dimmed:hover [aria-hidden] {
-  opacity: 1;
-  filter: none;
+.nb-press:active {
+  transform: translate(2px, 2px);
+  box-shadow: 0 0 0 0 var(--nb-shadow);
+}
+.nb-mark {
+  background: var(--nb-yellow);
+  color: #000;
+  padding: 0 0.12em;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
 }
 
 /* Long sections skip layout and paint until they approach the viewport. The browser remembers

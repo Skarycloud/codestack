@@ -1,13 +1,16 @@
 import type { Metadata } from "next"
-import { PageHeader } from "@/components/page-header"
+import { Balsamiq_Sans } from "next/font/google"
 import { ProgressProvider } from "@/components/roadmap/progress"
 import { RoadmapChart } from "@/components/roadmap/roadmap-chart"
-import { AiLoop, Levels, OptimizeLoop, PhaseStrip, RoadmapLegend, ShipChecklist, Tips } from "@/components/roadmap/roadmap-extras"
-import { topics } from "@/data/roadmap"
+import { Levels, Loops, RoadmapIntro, ShipChecklist, Tips } from "@/components/roadmap/roadmap-extras"
+import { topicIds, topics } from "@/data/roadmap"
 import { site } from "@/lib/site"
 
+// The hand-drawn face roadmap.sh uses for its charts. Loaded only on this page.
+const balsamiq = Balsamiq_Sans({ subsets: ["latin"], weight: ["400", "700"], variable: "--font-balsamiq", display: "swap" })
+
 const description =
-  "A step-by-step, language-agnostic roadmap from idea to production: architecture, AI-assisted development, security, testing, performance, SEO, GEO, observability and open source, with checklists for every step."
+  "A step-by-step, language-agnostic roadmap from idea to production: design, UX, architecture, AI-assisted development, security, testing, performance, SEO, GEO, observability and open source, with a checklist for every step."
 
 export const metadata: Metadata = {
   title: "Developer Roadmap 2026",
@@ -27,25 +30,32 @@ const jsonLd = {
   hasPart: topics.map((t) => ({ "@type": "LearningResource", name: t.title, description: t.summary })),
 }
 
+const checks = topics.reduce((n, t) => n + topicIds(t).length, 0)
+
 export default function RoadmapPage() {
   return (
     <ProgressProvider>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <PageHeader
-        eyebrow="Developer Roadmap 2026"
-        title="From idea to production."
-        description={`${topics.length} steps to secure, accessible, fast and discoverable software, for any language or framework. AI agents work throughout, but never skip the gates.`}
-      >
-        <PhaseStrip />
-      </PageHeader>
-
-      <RoadmapLegend />
-      <RoadmapChart />
-      <AiLoop />
-      <OptimizeLoop />
-      <Levels />
-      <ShipChecklist />
-      <Tips />
+      <div className={`nb ${balsamiq.variable}`}>
+        <header className="px-4 pb-6 pt-32 text-center sm:pt-40">
+          <p className="nb-font mx-auto w-fit border-2 border-[var(--nb-line)] bg-[var(--nb-card)] px-3 py-1 text-[13px] font-bold uppercase tracking-wider">
+            Developer roadmap 2026
+          </p>
+          <h1 className="mx-auto mt-6 max-w-4xl text-[44px] font-black uppercase leading-[0.98] tracking-[-0.04em] sm:text-[76px]">
+            From idea to <span className="nb-mark">production</span>
+          </h1>
+          <p className="nb-font mx-auto mt-6 max-w-2xl text-[18px] leading-relaxed text-[var(--nb-muted)] sm:text-[20px]">
+            {topics.length} steps, {checks} checks, one path. For any language or framework. AI agents help along the way, but never skip
+            the checks.
+          </p>
+          <RoadmapIntro />
+        </header>
+        <RoadmapChart />
+        <Loops />
+        <Levels />
+        <ShipChecklist />
+        <Tips />
+      </div>
     </ProgressProvider>
   )
 }
