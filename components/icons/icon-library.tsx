@@ -7,18 +7,22 @@ import { useSearchParams } from "next/navigation"
 import { useDeferredValue, useEffect, useMemo, useState } from "react"
 import { toast } from "sonner"
 import { BrandIcon, type IconVariant } from "@/components/brand-icon"
-import { brandJsx, brandSvg } from "@/lib/brand-svg"
 import { ease } from "@/components/motion/reveal"
 import { Segmented } from "@/components/segmented"
-import { brandIcons } from "@/data/brand-icons"
+import { brandMeta, brandSprite, brandSpriteExtra } from "@/data/brand-meta"
 import { isVeryDark, isVeryLight } from "@/lib/color"
 import { cn } from "@/lib/utils"
 
-const icons = Object.entries(brandIcons)
+const icons = Object.entries(brandMeta)
   .map(([slug, icon]) => ({ slug, ...icon }))
   .sort((a, b) => a.title.localeCompare(b.title))
 
 type Icon = (typeof icons)[number]
+
+// Full path data is only needed to copy or download, so it loads in the background
+// once the page is idle instead of weighing down the first load.
+const loadSvg = () => import("@/lib/brand-svg")
+const spriteHref = (icon: Icon) => `${icon.x ? brandSpriteExtra : brandSprite}#${icon.slug}`
 type Fill = "brand" | "black" | "white"
 
 const fillColor = (icon: Icon, fill: Fill) => (fill === "brand" ? `#${icon.hex}` : fill === "black" ? "#000000" : "#FFFFFF")
@@ -32,9 +36,9 @@ const componentName = (title: string) =>
     .join("")
     .replace(/^(\d)/, "Icon$1") + "Icon"
 
-async function copy(text: string, label: string) {
+async function copy(text: string | Promise<string>, label: string) {
   try {
-    await navigator.clipboard.writeText(text)
+    await navigator.clipboard.writeText(await text)
     toast(`${label} copied to clipboard`)
   } catch {
     toast("Couldn’t access the clipboard")
@@ -48,14 +52,16 @@ function download(href: string, filename: string) {
   a.click()
 }
 
-function downloadSvg(icon: Icon, fill: Fill) {
+async function downloadSvg(icon: Icon, fill: Fill) {
+  const { brandSvg } = await loadSvg()
   const blob = new Blob([brandSvg(icon.slug, fillColor(icon, fill))], { type: "image/svg+xml" })
   const url = URL.createObjectURL(blob)
   download(url, `${icon.slug}.svg`)
   setTimeout(() => URL.revokeObjectURL(url), 1000)
 }
 
-function downloadPng(icon: Icon, fill: Fill, size = 512) {
+async function downloadPng(icon: Icon, fill: Fill, size = 512) {
+  const { brandSvg } = await loadSvg()
   const svg = brandSvg(icon.slug, fillColor(icon, fill)).replace("<svg ", `<svg width="${size}" height="${size}" `)
   const img = new Image()
   img.onload = () => {
@@ -75,6 +81,11 @@ export function IconLibrary() {
   const [variant, setVariant] = useState<IconVariant>("color")
   const [selected, setSelected] = useState<Icon | null>(null)
   const deferred = useDeferredValue(query)
+
+  useEffect(() => {
+    const id = setTimeout(() => void loadSvg(), 1200)
+    return () => clearTimeout(id)
+  }, [])
 
   const results = useMemo(() => {
     const q = deferred.trim().toLowerCase()
@@ -138,7 +149,12 @@ export function IconLibrary() {
                   <span className="w-full truncate text-center text-[12px] text-muted-foreground">{icon.title}</span>
                 </button>
                 <button
-                  onClick={() => copy(brandSvg(icon.slug), `${icon.title} SVG`)}
+                  onClick={() =>
+                    copy(
+                      loadSvg().then((m) => m.brandSvg(icon.slug)),
+                      `${icon.title} SVG`,
+                    )
+                  }
                   aria-label={`Copy ${icon.title} SVG`}
                   className="pressable absolute right-2 top-2 grid size-7 place-items-center rounded-full bg-background/90 text-muted-foreground opacity-0 shadow-sm ring-1 ring-black/[0.06] transition-opacity hover:text-foreground focus-visible:opacity-100 group-hover:opacity-100 dark:ring-white/10"
                 >
@@ -176,7 +192,7 @@ function IconSheet({ icon, onClose }: { icon: Icon | null; onClose: () => void }
                     className="size-24"
                     fill={fill === "white" || (fill === "brand" && isVeryLight(icon.hex)) ? "#000" : fillColor(icon, fill)}
                   >
-                    <path d={icon.path} />
+                    <use href={spriteHref(icon)} />
                   </svg>
                 </div>
                 <div className="grid aspect-square place-items-center bg-[#0b0b0d] sm:aspect-auto sm:rounded-bl-[28px]">
@@ -185,7 +201,7 @@ function IconSheet({ icon, onClose }: { icon: Icon | null; onClose: () => void }
                     className="size-24"
                     fill={fill === "black" || (fill === "brand" && isVeryDark(icon.hex)) ? "#fff" : fillColor(icon, fill)}
                   >
-                    <path d={icon.path} />
+                    <use href={spriteHref(icon)} />
                   </svg>
                 </div>
               </div>
@@ -228,12 +244,27 @@ function IconSheet({ icon, onClose }: { icon: Icon | null; onClose: () => void }
                 />
 
                 <div className="mt-8 grid grid-cols-3 gap-2">
-                  <Action icon={Copy} label="Copy SVG" primary onClick={() => copy(brandSvg(icon.slug, fillColor(icon, fill)), "SVG")} />
+                  <Action
+                    icon={Copy}
+                    label="Copy SVG"
+                    primary
+                    onClick={() =>
+                      copy(
+                        loadSvg().then((m) => m.brandSvg(icon.slug, fillColor(icon, fill))),
+                        "SVG",
+                      )
+                    }
+                  />
                   <Action
                     icon={Code2}
                     label="JSX"
                     onClick={() =>
-                      copy(brandJsx(icon.slug, componentName(icon.title)).replace(`#${icon.hex}`, fillColor(icon, fill)), "React component")
+                      copy(
+                        loadSvg().then((m) =>
+                          m.brandJsx(icon.slug, componentName(icon.title)).replace(`#${icon.hex}`, fillColor(icon, fill)),
+                        ),
+                        "React component",
+                      )
                     }
                   />
                   <Action icon={Download} label="SVG" onClick={() => downloadSvg(icon, fill)} />
@@ -241,7 +272,8 @@ function IconSheet({ icon, onClose }: { icon: Icon | null; onClose: () => void }
                 </div>
 
                 <p className="mt-auto pt-8 text-[12px] leading-relaxed text-muted-foreground">
-                  Icon from Simple Icons (CC0). Brand marks are trademarks of their owners, so follow each brand’s usage guidelines.
+                  Icon from {icon.source ?? "Simple Icons (CC0)"}. Brand marks are trademarks of their owners, so follow each brand’s usage
+                  guidelines.
                 </p>
               </div>
             </div>

@@ -226,6 +226,7 @@ export const publishers: Publisher[] = [
     name: "Playwright",
     repo: "microsoft/playwright-cli",
     blurb: "Microsoft's official browser automation skill. Also installable with playwright-cli install --skills.",
+    icon: "playwright",
     official: true,
   },
   {
@@ -263,6 +264,7 @@ export const publishers: Publisher[] = [
     name: "OpenAI",
     repo: "openai/skills",
     blurb: "OpenAI's curated skills for Codex, from fixing CI to working with Linear and Notion.",
+    icon: "openai",
     official: true,
   },
   {
@@ -1613,7 +1615,7 @@ export function installCommand(skill: Skill) {
 /** Agents that read the open Agent Skills format. */
 export const skillAgents: { name: string; icon?: string }[] = [
   { name: "Claude Code", icon: "claude" },
-  { name: "Codex" },
+  { name: "Codex", icon: "openai" },
   { name: "Cursor", icon: "cursor" },
   { name: "GitHub Copilot", icon: "githubcopilot" },
   { name: "Gemini CLI", icon: "googlegemini" },

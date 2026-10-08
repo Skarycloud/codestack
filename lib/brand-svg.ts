@@ -8,7 +8,7 @@ export function brandSvg(slug: string, color?: string) {
   const icon = brandIcons[slug]
   if (!icon) return ""
   const fill = color ?? `#${icon.hex}`
-  return `<svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="${fill}"><title>${icon.title}</title><path d="${icon.path}"/></svg>`
+  return `<svg role="img" viewBox="${icon.viewBox ?? "0 0 24 24"}" xmlns="http://www.w3.org/2000/svg" fill="${fill}"><title>${icon.title}</title><path d="${icon.path}"/></svg>`
 }
 
 export function brandJsx(slug: string, component: string) {
@@ -16,7 +16,7 @@ export function brandJsx(slug: string, component: string) {
   if (!icon) return ""
   return `export function ${component}(props: React.SVGProps<SVGSVGElement>) {
   return (
-    <svg role="img" viewBox="0 0 24 24" fill="#${icon.hex}" {...props}>
+    <svg role="img" viewBox="${icon.viewBox ?? "0 0 24 24"}" fill="#${icon.hex}" {...props}>
       <title>${icon.title}</title>
       <path d="${icon.path}" />
     </svg>

@@ -217,21 +217,24 @@ menu and the footer automatically.
 
 ### Brand icons
 
-Logos come from [Simple Icons](https://simpleicons.org). To give a tool, skill publisher or agent a logo:
+Logos come from [Simple Icons](https://simpleicons.org), plus a few custom marks for brands Simple Icons no longer ships (VS Code, OpenAI, Playwright, DynamoDB, Canva and Tabler). To give a tool, skill publisher or agent a logo:
 
 1. Find the brand's slug on [simpleicons.org](https://simpleicons.org). For example, the slug for "Next.js" is `nextdotjs`.
 2. Set `icon: "<slug>"` on the entry in `data/catalog.ts` or `data/skills.ts`.
 3. Run `npm run icons`.
 
-The script scans both data files and writes three outputs:
+If Simple Icons has no logo for the brand, add a single filled path from a permissively licensed icon set to `customIcons` in `scripts/icon-sources.mjs`, with its `viewBox` and a `source` credit, then use that key as the slug. To show a logo only on the Icons page, add its slug to `extraSlugs` in the same file.
+
+The script scans both data files plus `scripts/icon-sources.mjs` and writes four outputs:
 
 | File | Purpose |
 | --- | --- |
-| `public/brand-icons.svg` | An SVG sprite containing every logo. Pages reference logos from it, so path data never ships inside JavaScript. |
+| `public/brand-icons.svg` | An SVG sprite with every logo used across the site. Pages reference logos from it, so path data never ships inside JavaScript. |
+| `public/brand-icons-extra.svg` | A second sprite for the Icons-page-only extras, so they add no weight to other pages. |
 | `data/brand-meta.ts` | Titles, brand colors and a content‑hashed sprite URL, so browsers re‑fetch the sprite only when it changes. |
 | `data/brand-icons.ts` | Full path data, imported only by the icon library for its copy and download features. |
 
-Tools without a Simple Icons logo automatically get a clean monogram.
+Tools without a logo automatically get a clean monogram.
 
 ### Learning resources
 

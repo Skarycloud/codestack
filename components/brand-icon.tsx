@@ -1,4 +1,4 @@
-import { brandMeta, brandSprite } from "@/data/brand-meta"
+import { brandMeta, brandSprite, brandSpriteExtra } from "@/data/brand-meta"
 import { isVeryDark, isVeryLight } from "@/lib/color"
 import { cn } from "@/lib/utils"
 
@@ -51,7 +51,7 @@ export function BrandIcon({ slug, name, variant = "color", className }: BrandIco
 
   return (
     <svg viewBox="0 0 24 24" role="img" aria-label={icon.title} className={cn("size-6", className)} fill={tone}>
-      <use href={`${brandSprite}#${slug}`} />
+      <use href={`${icon.x ? brandSpriteExtra : brandSprite}#${slug}`} />
     </svg>
   )
 }
