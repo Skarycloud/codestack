@@ -44,6 +44,8 @@ export interface Tool {
   paid?: boolean
   /** Free tier with optional paid extras. */
   freemium?: boolean
+  /** What the free tier includes, checked against the provider's own pricing page. */
+  free?: string
 }
 
 export const categories: Category[] = [
@@ -159,13 +161,19 @@ export const tools: Tool[] = [
   { name: "Insomnia", url: "https://insomnia.rest", description: "Open source API client for REST, GraphQL and gRPC.", kind: "API Client", category: "devtools", icon: "insomnia", openSource: true },
 
   // Hosting
-  { name: "Vercel", url: "https://vercel.com", description: "Build and deploy the best web experiences.", kind: "Frontend Cloud", category: "hosting", icon: "vercel" },
-  { name: "Netlify", url: "https://www.netlify.com", description: "Connect everything. Build anything.", kind: "Frontend Cloud", category: "hosting", icon: "netlify" },
+  { name: "Vercel", url: "https://vercel.com", description: "Deploy web apps with preview URLs on every push, a global CDN and SSL.", kind: "Frontend Cloud", category: "hosting", icon: "vercel", freemium: true, free: "Hobby plan for personal, non-commercial projects: 100 GB transfer a month" },
+  { name: "Netlify", url: "https://www.netlify.com", description: "Build, deploy and host sites and apps from Git, with deploy previews.", kind: "Frontend Cloud", category: "hosting", icon: "netlify", freemium: true, free: "300 credits a month, about 15 GB of bandwidth, with a hard cap" },
   { name: "Cloudflare", url: "https://www.cloudflare.com", description: "Edge network, Workers and Pages for global apps.", kind: "Edge Cloud", category: "hosting", icon: "cloudflare" },
   { name: "Railway", url: "https://railway.com", description: "Instant deploys for apps, databases and more.", kind: "PaaS", category: "hosting", icon: "railway" },
-  { name: "Render", url: "https://render.com", description: "The unified cloud to build and run your apps.", kind: "PaaS", category: "hosting", icon: "render" },
+  { name: "Render", url: "https://render.com", description: "Web services, databases and static sites with Git auto-deploys and SSL.", kind: "PaaS", category: "hosting", icon: "render", freemium: true, free: "Static sites; web services that sleep after 15 minutes idle; Postgres that expires after 30 days" },
   { name: "Fly.io", url: "https://fly.io", description: "Run full‑stack apps close to your users.", kind: "PaaS", category: "hosting", icon: "flydotio" },
-  { name: "DigitalOcean", url: "https://www.digitalocean.com", description: "Simple, scalable cloud infrastructure.", kind: "Cloud", category: "hosting", icon: "digitalocean" },
+  { name: "DigitalOcean", url: "https://www.digitalocean.com", description: "Simple, scalable cloud infrastructure and the App Platform.", kind: "Cloud", category: "hosting", icon: "digitalocean", freemium: true, free: "3 static sites on App Platform, 1 GiB transfer each a month" },
+  { name: "Koyeb", url: "https://www.koyeb.com", description: "Serverless platform for apps, APIs and Postgres, deployed from Git or Docker.", kind: "Serverless", category: "hosting", icon: "koyeb", freemium: true, free: "1 instance with 512 MB RAM that scales to zero, plus Postgres for 5 hours a month" },
+  { name: "AlwaysData", url: "https://www.alwaysdata.com", description: "Hosting with SSH, many languages, databases and email, from a European provider.", kind: "Hosting", category: "hosting", icon: "alwaysdata", freemium: true, free: "1 GB of storage and 256 MB RAM on an alwaysdata.net address" },
+  { name: "Neocities", url: "https://neocities.org", description: "A home for hand-made static websites, with an in-browser editor.", kind: "Static", category: "hosting", freemium: true, free: "1 GB storage and 200 GB bandwidth on a neocities.org subdomain" },
+  { name: "Surge", url: "https://surge.sh", description: "Publish static sites from the command line in seconds.", kind: "Static", category: "hosting", freemium: true, free: "Unlimited static sites, custom domains, SSL on surge.sh subdomains" },
+  { name: "Stormkit", url: "https://www.stormkit.io", description: "A self-hostable Vercel and Netlify alternative with previews, Postgres and auth.", kind: "Self-hosted", category: "hosting", freemium: true, free: "Self-hosted version with one free seat and no usage limits" },
+  { name: "PandaStack", url: "https://www.pandastack.ai", description: "Open source cloud for apps and AI agents: Git-push hosting, Postgres and sandboxes.", kind: "Cloud", category: "hosting", openSource: true, free: "$5.40 of usage credit a month, no card needed" },
 
   // Services
   { name: "Stripe", url: "https://stripe.com", description: "Financial infrastructure for the internet.", kind: "Payments", category: "services", icon: "stripe", paid: true },
@@ -274,6 +282,7 @@ export const tools: Tool[] = [
   { name: "Manus", url: "https://manus.im", description: "A general AI agent that turns tasks into finished results.", kind: "Agent", category: "ai", icon: "manus", freemium: true },
   { name: "Lindy", url: "https://www.lindy.ai", description: "Build AI agents that handle email, meetings and workflows.", kind: "Agent", category: "ai", freemium: true },
   { name: "Genspark", url: "https://www.genspark.ai", description: "An all-in-one AI workspace of agents for research and docs.", kind: "Agent", category: "ai", freemium: true },
+  { name: "AskVerb", url: "https://askverb.com", description: "Give your SaaS its own AI agent that reads live data and acts on plain-English requests, with confirmation.", kind: "Agent", category: "ai", free: "Free during launch, no card needed" },
   { name: "Browser Use", url: "https://browser-use.com", description: "Open source library that lets AI agents control a browser.", kind: "Browser Agent", category: "ai", openSource: true },
   { name: "Skyvern", url: "https://www.skyvern.com", description: "Automate browser workflows with LLMs and computer vision.", kind: "Browser Agent", category: "ai", openSource: true },
   { name: "Jules", url: "https://jules.google", description: "Google's asynchronous coding agent that works on your repo.", kind: "Coding Agent", category: "ai", icon: "googlejules" },

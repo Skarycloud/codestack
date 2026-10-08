@@ -50,7 +50,11 @@ export function RoadmapIntro() {
         </div>
         <p className="mt-2.5 text-[13.5px] text-[var(--nb-muted)]">
           Follow the path from top to bottom. Click a yellow step or any topic under it to open its checklist. Progress is saved in this
-          browser.
+          browser. Want deeper, per-technology roadmaps?{" "}
+          <a href="https://roadmap.sh" target="_blank" rel="noopener noreferrer" className="font-bold underline underline-offset-2">
+            roadmap.sh
+          </a>{" "}
+          is the classic, and inspired this one.
         </p>
       </div>
     </div>

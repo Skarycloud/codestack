@@ -15,6 +15,12 @@ export function ToolCard({ tool }: { tool: Tool }) {
       </div>
       <h3 className="mt-5 text-[17px] font-semibold tracking-[-0.02em]">{tool.name}</h3>
       <p className="mt-1 flex-1 text-[14px] leading-relaxed text-muted-foreground">{tool.description}</p>
+      {tool.free && (
+        <p className="mt-3 rounded-xl bg-[#30d158]/[0.08] px-3 py-2 text-[12.5px] leading-snug text-foreground/80">
+          <span className="font-semibold text-[#166d2f] dark:text-[#30d158]">Free: </span>
+          {tool.free}
+        </p>
+      )}
       <div className="mt-5 flex flex-wrap items-center gap-1.5 text-[12px]">
         <span className="shrink-0 whitespace-nowrap rounded-full bg-surface-2 px-2.5 py-1 text-muted-foreground">{tool.kind}</span>
         {tool.openSource && (
