@@ -41,7 +41,7 @@ export const phases: { id: PhaseId; name: string; blurb: string; color: string }
 
 export const levels: { level: Level; name: string; blurb: string; topics: string[] }[] = [
   { level: 1, name: "Beginner", blurb: "The fundamentals every path builds on.", topics: ["HTML, CSS and JavaScript", "Git and GitHub", "HTTP and DNS", "Basic security", "First tests"] },
-  { level: 2, name: "Developer", blurb: "Ship real features on a modern stack.", topics: ["A framework", "TypeScript", "APIs", "Databases", "Authentication", "CI/CD", "Accessibility", "SEO", "Performance"] },
+  { level: 2, name: "Developer", blurb: "Ship real features on a modern stack.", topics: ["A framework", "TypeScript", "APIs", "Databases", "Authentication", "Payments", "CI/CD", "Accessibility", "SEO", "Performance"] },
   { level: 3, name: "Professional", blurb: "Own systems, not just features.", topics: ["Architecture", "Security", "Observability", "Cloud and containers", "Testing strategy", "Scalability", "Privacy"] },
   { level: 4, name: "AI Developer", blurb: "Build with and for AI, safely.", topics: ["AI-assisted coding", "Coding agents", "MCP", "LLM APIs", "RAG", "AI evaluation", "Agent security", "AI observability"] },
   { level: 5, name: "Production Engineer", blurb: "Keep critical systems up, secure and affordable.", topics: ["Threat modeling", "Supply-chain security", "Infrastructure as code", "Disaster recovery", "SRE", "Cost engineering", "Compliance", "Incident response"] },
@@ -262,6 +262,37 @@ export const topics: RoadmapTopic[] = [
     ],
   },
   {
+    id: "payments",
+    title: "Payments",
+    phase: "build",
+    level: 2,
+    optional: true,
+    summary: "Pick a gateway or a merchant of record, then let verified webhooks drive every order.",
+    groups: [
+      { title: "Choose a model", items: ["Gateway: you are the seller and handle tax, invoices and compliance", "Merchant of record: the provider is the seller and handles global sales tax and VAT", "Subscriptions: a billing layer like Stripe Billing, Chargebee, Lago or Recurly", "Self-hosted commerce: Medusa, Saleor or Vendure"] },
+      { title: "Selling in India", optional: true, items: ["UPI, cards, netbanking and wallets", "Razorpay, Cashfree, PayU, PhonePe or Paytm", "International cards and settlement in INR", "Business KYC before going live"] },
+      { title: "Selling globally", optional: true, items: ["Stripe, PayPal, Adyen or Checkout.com", "Apple Pay and Google Pay", "Local methods like SEPA, iDEAL or bank transfers", "Multi-currency pricing and payouts"] },
+      { title: "Compare before you pick", items: ["Percentage fee and fixed fee per transaction", "Setup and monthly fees", "International cards and currency conversion fees", "Settlement time, settlement currency and payouts", "Refund and chargeback fees", "Supported countries and KYC requirements", "Webhooks, SDKs, docs, sandbox and test cards", "Fraud tools and tax handling"] },
+      { title: "Build it safely", items: ["Use an established provider; never store raw card data", "Verify webhooks", "Idempotency and a payment state machine", "Refunds, failures and fraud controls", "Audit logs", "Test with sandbox keys and test cards"] },
+    ],
+    rule: "A gateway moves money for you. A merchant of record sells for you, and takes on global tax and compliance.",
+    flow: ["Create checkout", "Customer pays", "Verify webhook", "Update order", "Fulfil and send receipt"],
+    techniques: [
+      "Gateway: Customer → Your business → Gateway → Bank. You are the seller.",
+      "Merchant of record: Customer → MoR → You. The MoR is the seller and pays you out.",
+      "A solo developer selling software worldwide usually starts with a merchant of record.",
+      "Charge from a price ID on the server, never from an amount sent by the browser",
+      "Treat the webhook, not the success redirect, as the source of truth",
+      "Store provider IDs for customers and payments, never card details",
+    ],
+    resources: [
+      { name: "Payments on CodeStack", href: "/explore?c=payments" },
+      { name: "Webhooks, Stripe", href: "https://docs.stripe.com/webhooks" },
+      { name: "Testing, Stripe", href: "https://docs.stripe.com/testing" },
+      { name: "Razorpay docs", href: "https://razorpay.com/docs/" },
+    ],
+  },
+  {
     id: "i18n",
     title: "Internationalization",
     phase: "build",
@@ -339,15 +370,14 @@ export const topics: RoadmapTopic[] = [
   },
   {
     id: "privacy",
-    title: "Privacy and payments",
+    title: "Privacy",
     phase: "secure",
     level: 3,
-    summary: "Collect less, keep it shorter, and let established providers handle money.",
+    summary: "Collect less, keep it for less time, and let people take their data with them.",
     groups: [
       { title: "Privacy", items: ["Data inventory", "Data minimization and retention policy", "Privacy policy, and consent where required", "Export and delete user data", "Don't log sensitive data", "Don't send sensitive data to AI APIs needlessly"] },
-      { title: "Payments", optional: true, items: ["Use an established provider; never store raw card data", "Verify webhooks", "Idempotency and a payment state machine", "Refunds, failures and fraud controls", "Audit logs"] },
     ],
-    resources: [{ name: "Webhooks, Stripe", href: "https://docs.stripe.com/webhooks" }],
+    resources: [{ name: "GDPR overview, European Commission", href: "https://commission.europa.eu/law/law-topic/data-protection_en" }],
   },
 
   // Verify
