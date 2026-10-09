@@ -1,12 +1,15 @@
 "use client"
 
-import { motion, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion"
+import { AnimatePresence, motion, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion"
 import { ArrowRight, ChevronRight, Search } from "lucide-react"
 import dynamic from "next/dynamic"
 import Link from "next/link"
-import { useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useCommandMenu } from "@/components/site/command-menu"
-import { stats } from "@/data/catalog"
+import { BrandIcon } from "@/components/brand-icon"
+import { brandMeta } from "@/data/brand-meta"
+import { categoryById, stats, tools } from "@/data/catalog"
+import { isVeryDark } from "@/lib/color"
 import { ShortcutKey } from "@/components/shortcut-key"
 
 // Decorative and heavy (100+ SVG tiles): render it after first paint instead of in the HTML.
@@ -15,7 +18,26 @@ const IconWall = dynamic(() => import("./icon-wall").then((m) => m.IconWall), {
   loading: () => <div aria-hidden className="mt-16 h-[520px] sm:mt-20 sm:h-[640px]" />,
 })
 
-const line1 = ["Every", "tool", "you", "need."]
+const line1 = ["tool", "you", "need."]
+
+// The tools that take turns in the headline, one from each corner of the directory.
+const tileTools = [
+  "Figma",
+  "React",
+  "Supabase",
+  "Claude",
+  "Tailwind CSS",
+  "Framer",
+  "Stripe",
+  "Python",
+  "Docker",
+  "PostgreSQL",
+  "Blender",
+  "Svelte",
+]
+  .map((name) => tools.find((t) => t.name === name))
+  .filter((t) => t?.icon && brandMeta[t.icon] && !brandMeta[t.icon].x)
+  .map((t) => ({ name: t!.name, slug: t!.icon!, hex: brandMeta[t!.icon!].hex, category: t!.category }))
 const line2 = ["All", "in", "one", "place."]
 
 export function Hero() {
@@ -52,8 +74,10 @@ export function Hero() {
 
         <h1 className="text-display mt-8 max-w-[14ch] sm:max-w-none">
           <span className="block">
+            <Word delay={0.05}>Every</Word>
+            <ToolTile />
             {line1.map((word, i) => (
-              <Word key={word} delay={0.05 + i * 0.06}>
+              <Word key={word} delay={0.17 + i * 0.06}>
                 {word}
               </Word>
             ))}
@@ -129,4 +153,68 @@ function Backdrop() {
       <div className="absolute left-[-12rem] top-[14rem] h-[24rem] w-[30rem] rounded-full bg-[radial-gradient(closest-side,rgba(255,159,10,0.10),transparent)] blur-2xl" />
     </div>
   )
+}
+
+/**
+ * An app-icon tile set into the headline that rolls through real tools from the directory,
+ * tinted with each brand's color. Fixed size, so the headline never reflows. Hover pauses it;
+ * click opens that tool's category.
+ */
+function ToolTile() {
+  const reduce = useReducedMotion()
+  const [i, setI] = useState(0)
+  const [paused, setPaused] = useState(false)
+
+  useEffect(() => {
+    if (reduce || paused) return
+    const id = setInterval(() => setI((n) => (n + 1) % tileTools.length), 2400)
+    return () => clearInterval(id)
+  }, [reduce, paused])
+
+  const tool = tileTools[i]
+  const glow = isVeryDark(tool.hex) ? "120,120,128" : hexToRgb(tool.hex)
+  return (
+    <span className="rise-word mr-[0.22em] align-[-0.1em]" style={delay(0.11)}>
+      <Link
+        href={`/explore?c=${tool.category}`}
+        aria-label={`${tool.name}, in ${categoryById[tool.category].name}. Open the category`}
+        title={tool.name}
+        onPointerEnter={() => setPaused(true)}
+        onPointerLeave={() => setPaused(false)}
+        onFocus={() => setPaused(true)}
+        onBlur={() => setPaused(false)}
+        className="group relative inline-block size-[0.84em] outline-none"
+      >
+        <motion.span
+          aria-hidden
+          className="absolute inset-[-28%] -z-10 rounded-full blur-[0.22em]"
+          animate={{ backgroundColor: `rgba(${glow},0.32)` }}
+          transition={{ duration: 0.6 }}
+        />
+        <motion.span
+          className="relative grid size-full place-items-center overflow-hidden rounded-[0.22em] bg-white shadow-[0_0.04em_0.1em_rgba(0,0,0,0.08),0_0.14em_0.4em_-0.1em_rgba(0,0,0,0.25)] ring-1 ring-black/[0.06] transition-shadow group-focus-visible:ring-2 group-focus-visible:ring-primary dark:bg-[#1c1c1e] dark:ring-white/10"
+          animate={{ rotate: reduce ? 0 : i % 2 ? 5 : -5 }}
+          whileHover={reduce ? undefined : { scale: 1.06, rotate: 0 }}
+          transition={{ type: "spring", bounce: 0.35, duration: 0.7 }}
+        >
+          <AnimatePresence initial={false} mode="popLayout">
+            <motion.span
+              key={tool.slug}
+              className="grid place-items-center"
+              initial={{ y: "110%", opacity: 0 }}
+              animate={{ y: "0%", opacity: 1 }}
+              exit={{ y: "-110%", opacity: 0 }}
+              transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+            >
+              <BrandIcon slug={tool.slug} name={tool.name} className="size-[0.5em]" />
+            </motion.span>
+          </AnimatePresence>
+        </motion.span>
+      </Link>
+    </span>
+  )
+}
+
+function hexToRgb(hex: string) {
+  return [0, 2, 4].map((o) => parseInt(hex.slice(o, o + 2), 16)).join(",")
 }
