@@ -1,8 +1,7 @@
 "use client"
 
-import { ChevronDown, Gamepad2 } from "lucide-react"
+import { ArrowUpRight, ChevronDown, Gamepad2 } from "lucide-react"
 import { useState } from "react"
-import { BrandIcon } from "@/components/brand-icon"
 import type { GameSkill, Resource } from "@/data/resources"
 import { cn } from "@/lib/utils"
 
@@ -18,14 +17,14 @@ const skillNames: Record<GameSkill, string> = {
 }
 
 /**
- * The Learn by playing track as a clean, App Store style list: an icon, a name, one line about
- * the game and a Play button, filtered by the skill it teaches.
+ * The Learn by playing track, presented like a game store: generous cover art, a quiet
+ * eyebrow, the title, one line about the game and a single Play action.
  */
 export function GameArcade({ items, preview, onShowAll }: { items: Resource[]; preview: boolean; onShowAll: () => void }) {
   const [skill, setSkill] = useState<GameSkill | "all">("all")
   const present = (Object.keys(skillNames) as GameSkill[]).filter((s) => items.some((g) => g.skill === s))
   const filtered = skill === "all" ? items : items.filter((g) => g.skill === skill)
-  const shown = preview && skill === "all" ? filtered.slice(0, 9) : filtered
+  const shown = preview && skill === "all" ? filtered.slice(0, 6) : filtered
 
   return (
     <section id="games" className="scroll-mt-48">
@@ -39,13 +38,11 @@ export function GameArcade({ items, preview, onShowAll }: { items: Resource[]; p
             <p className="mt-1 text-muted-foreground">Games that teach real skills, from SQL and Git to CSS and a designer&apos;s eye.</p>
           </div>
         </div>
-        <span className="text-[13px] tabular-nums text-muted-foreground">
-          {items.length} games · {items.filter((g) => g.free).length} free
-        </span>
+        <span className="text-[13px] tabular-nums text-muted-foreground">{items.length} games</span>
       </div>
 
       {present.length > 1 && (
-        <div className="no-scrollbar -mx-1 mb-4 flex gap-1 overflow-x-auto px-1">
+        <div className="no-scrollbar -mx-1 mb-10 flex gap-1 overflow-x-auto px-1">
           {(["all", ...present] as const).map((id) => (
             <button
               key={id}
@@ -61,38 +58,14 @@ export function GameArcade({ items, preview, onShowAll }: { items: Resource[]; p
         </div>
       )}
 
-      <ul className="grid gap-x-10 sm:grid-cols-2 lg:grid-cols-3 [&>*]:min-w-0">
+      <div className="grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3 [&>*]:min-w-0">
         {shown.map((g) => (
-          <li key={g.name} className="border-b border-black/[0.06] dark:border-white/[0.08]">
-            <a
-              href={g.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group -mx-3 flex items-center gap-4 rounded-2xl px-3 py-4 transition-colors hover:bg-foreground/[0.03]"
-            >
-              <span className="grid size-14 shrink-0 place-items-center rounded-[16px] bg-surface-2 ring-1 ring-inset ring-black/[0.04] transition-transform duration-500 ease-apple group-hover:scale-[1.04] dark:ring-white/[0.06]">
-                <BrandIcon name={g.name} className="size-7" />
-              </span>
-              <span className="min-w-0 flex-1">
-                <span className="block truncate text-[15.5px] font-semibold tracking-[-0.015em]">{g.name}</span>
-                <span className="mt-0.5 line-clamp-2 text-[13.5px] leading-snug text-muted-foreground">{g.description}</span>
-                <span className="mt-1 block text-[12px] text-muted-foreground/80">
-                  {g.skill ? skillNames[g.skill] : "Game"} · {g.level}
-                </span>
-              </span>
-              <span className="flex shrink-0 flex-col items-center gap-1">
-                <span className="rounded-full bg-surface-2 px-4 py-1.5 text-[13px] font-semibold text-link transition-colors group-hover:bg-foreground/10">
-                  Play
-                </span>
-                <span className="text-[10.5px] text-muted-foreground">{g.free ? "Free" : "Paid"}</span>
-              </span>
-            </a>
-          </li>
+          <GameCard key={g.name} game={g} />
         ))}
-      </ul>
+      </div>
 
       {shown.length < filtered.length && (
-        <div className="mt-8 flex justify-center">
+        <div className="mt-12 flex justify-center">
           <button
             type="button"
             onClick={onShowAll}
@@ -104,5 +77,45 @@ export function GameArcade({ items, preview, onShowAll }: { items: Resource[]; p
         </div>
       )}
     </section>
+  )
+}
+
+function GameCard({ game: g }: { game: Resource }) {
+  return (
+    <a href={g.url} target="_blank" rel="noopener noreferrer" className="group block">
+      <div className="relative aspect-[1.91/1] overflow-hidden rounded-[22px] bg-surface-2 ring-1 ring-inset ring-black/[0.05] dark:ring-white/[0.06]">
+        {g.cover ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={g.cover}
+            alt=""
+            width={760}
+            height={398}
+            loading="lazy"
+            decoding="async"
+            className="size-full object-cover transition-transform duration-700 ease-apple group-hover:scale-[1.03]"
+          />
+        ) : (
+          <div className="grid size-full place-items-center bg-gradient-to-br from-surface-2 to-foreground/[0.06] p-6 text-center">
+            <span className="text-[28px] font-semibold leading-tight tracking-[-0.03em] text-foreground/85 transition-transform duration-700 ease-apple group-hover:scale-[1.03]">
+              {g.name}
+            </span>
+          </div>
+        )}
+      </div>
+
+      <p className="mt-4 text-[12px] font-medium uppercase tracking-[0.06em] text-muted-foreground">
+        {g.skill ? skillNames[g.skill] : "Game"} · {g.level}
+      </p>
+      <h3 className="mt-1.5 text-[19px] font-semibold tracking-[-0.02em]">{g.name}</h3>
+      <p className="mt-1 line-clamp-2 text-[14.5px] leading-relaxed text-muted-foreground">{g.description}</p>
+      <div className="mt-4 flex items-center gap-3">
+        <span className="inline-flex items-center gap-1 rounded-full bg-surface-2 px-4 py-1.5 text-[13px] font-semibold text-link transition-colors group-hover:bg-foreground/10">
+          Play
+          <ArrowUpRight className="size-3.5 transition-transform duration-300 group-hover:-translate-y-px group-hover:translate-x-px" />
+        </span>
+        <span className="text-[13px] text-muted-foreground">{g.free ? "Free" : "Paid"}</span>
+      </div>
+    </a>
   )
 }
