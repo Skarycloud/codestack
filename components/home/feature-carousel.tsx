@@ -1,6 +1,7 @@
 "use client"
 
 import { Plus } from "lucide-react"
+import { Balsamiq_Sans } from "next/font/google"
 import Link from "next/link"
 import { BrandIcon } from "@/components/brand-icon"
 import { DragScroller } from "@/components/drag-scroller"
@@ -10,20 +11,26 @@ import { tools } from "@/data/catalog"
 import { brandMeta } from "@/data/brand-meta"
 import { localModels } from "@/data/local-llms"
 import { resources } from "@/data/resources"
-import { phaseById, topics } from "@/data/roadmap"
+import { phaseById, phases, stepNumber, topics } from "@/data/roadmap"
 import { publisherById, skills } from "@/data/skills"
 import { creatorIcon } from "@/lib/model-creators"
 import { cn } from "@/lib/utils"
+import { Fragment } from "react"
 import { useModKey } from "@/components/shortcut-key"
 
 const iconSample = Object.keys(brandMeta).slice(12, 24)
 const stackSample = ["Next.js", "Tailwind CSS", "Supabase", "Vercel"].map((n) => tools.find((t) => t.name === n)!)
 const skillSample = ["frontend-design", "high-end-visual-design", "seo-audit"].map((n) => skills.find((s) => s.name === n)!).filter(Boolean)
-const stepSample = ["architecture", "appsec", "performance", "deployment"].map((id) => topics.find((t) => t.id === id)!)
+const stepSample = ["development", "frontend"].map((id) => topics.find((t) => t.id === id)!)
+const stepPhase = phaseById[stepSample[0].phase]
+
+// The roadmap card borrows the roadmap page's neobrutalist look and font. The card sits below
+// the fold, so the font is fetched when it renders instead of preloading with the page.
+const balsamiq = Balsamiq_Sans({ subsets: ["latin"], weight: "700", variable: "--font-balsamiq", display: "swap", preload: false })
 const modelSample = ["Gemma 3 4B", "Qwen 3 8B", "gpt-oss 20B", "Llama 3.3 70B"].map((n) => localModels.find((m) => m.name === n)!)
 const maxLog = Math.log10(Math.max(...modelSample.map((m) => m.paramsB)) * 10)
 
-type Feature = { eyebrow: string; title: string; href: string; tone: string; visual: React.ReactNode; search?: true }
+type Feature = { eyebrow: string; title: string; href: string; tone: string; visual: React.ReactNode; search?: true; nb?: true }
 
 const features: Feature[] = [
   {
@@ -131,24 +138,27 @@ const features: Feature[] = [
     eyebrow: "Roadmap",
     title: "From idea to production, step by step.",
     href: "/roadmap",
-    tone: "bg-gradient-to-b from-[#fff8e5] to-[#f5f5f7] dark:from-[#2a2106] dark:to-surface",
+    tone: `nb nb-font nb-box nb-press ${balsamiq.variable}`,
+    nb: true,
     visual: (
-      <div className="relative">
-        <span aria-hidden className="absolute bottom-5 left-[9px] top-5 w-px bg-foreground/15" />
-        <div className="space-y-2.5">
-          {stepSample.map((t) => (
-            <div key={t.id} className="relative flex items-center gap-3">
-              <span
-                className="z-[1] size-[18px] shrink-0 rounded-[5px] ring-2 ring-[#f9f6ee] dark:ring-[#1c1c1e]"
-                style={{ background: phaseById[t.phase].color }}
-              />
-              <span className="flex-1 rounded-2xl bg-white/80 px-4 py-2.5 text-[14px] font-medium shadow-sm backdrop-blur dark:bg-white/[0.06]">
-                {t.title}
-                <span className="ml-2 text-[12px] font-normal text-muted-foreground">{phaseById[t.phase].name}</span>
-              </span>
-            </div>
-          ))}
+      <div className="flex flex-col items-center">
+        <div className="nb-box-sm bg-black px-4 py-1.5 text-[13px] font-bold text-white dark:bg-[var(--nb-card)]">Start here: an idea</div>
+        <NbLine />
+        <div
+          className="nb-box-sm px-3 py-1 text-[12px] font-bold uppercase tracking-wide text-black"
+          style={{ background: stepPhase.color }}
+        >
+          Phase {phases.indexOf(stepPhase) + 1} · {stepPhase.name}
         </div>
+        {stepSample.map((t) => (
+          <Fragment key={t.id}>
+            <NbLine />
+            <div className="nb-box-sm nb-alt-shadow flex w-full items-center gap-3 bg-[var(--nb-yellow)] px-3 py-2.5 text-black">
+              <span className="grid size-8 shrink-0 place-items-center bg-black text-[14px] font-bold text-white">{stepNumber[t.id]}</span>
+              <span className="truncate text-[16px] font-bold">{t.title}</span>
+            </div>
+          </Fragment>
+        ))}
       </div>
     ),
   },
@@ -189,7 +199,11 @@ export function FeatureCarousel() {
         {features.map((f, i) => (
           <Reveal key={f.eyebrow} delay={i * 0.05} className="shrink-0 snap-start">
             <article
-              className={cn("card-lift relative flex h-[500px] w-[300px] flex-col overflow-hidden rounded-[28px] p-8 sm:w-[372px]", f.tone)}
+              className={cn(
+                "relative flex h-[500px] w-[300px] flex-col overflow-hidden p-8 sm:w-[372px]",
+                f.nb ? "overflow-visible" : "card-lift rounded-[28px]",
+                f.tone,
+              )}
             >
               <p className="text-[13px] font-semibold opacity-70">{f.eyebrow}</p>
               <h3 className="mt-2 text-[26px] font-semibold leading-[1.12] tracking-[-0.028em]">{f.title}</h3>
@@ -241,4 +255,8 @@ function SearchKeys() {
       ))}
     </div>
   )
+}
+
+function NbLine() {
+  return <span aria-hidden className="h-4 w-[3px] bg-[var(--nb-line)]" />
 }
