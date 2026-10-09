@@ -10,6 +10,7 @@ import { ToolCard } from "@/components/tool-card"
 import { categories, categoryById, inAudience, tools, type Audience, type CategoryId } from "@/data/catalog"
 import { cn } from "@/lib/utils"
 import { ChipScroller } from "@/components/chip-scroller"
+import { useFilterTop } from "@/lib/use-filter-top"
 
 type AudienceFilter = Audience | "all"
 
@@ -18,6 +19,7 @@ export function Explorer() {
   const [audience, setAudience] = useState<AudienceFilter>("all")
   const [query, setQuery] = useState("")
   const deferredQuery = useDeferredValue(query)
+  const filterTop = useFilterTop()
 
   // Apply ?c= and ?a= on load, and follow them when they change from outside,
   // e.g. a category picked in the navbar.
@@ -36,6 +38,7 @@ export function Explorer() {
   const select = (nextCategory: CategoryId | "all", nextAudience: AudienceFilter = audience) => {
     setCategory(nextCategory)
     setAudience(nextAudience)
+    filterTop.reset()
     replaceQuery(nextCategory !== "all" ? { c: nextCategory } : { a: nextAudience === "all" ? null : nextAudience })
   }
 
@@ -56,6 +59,7 @@ export function Explorer() {
   return (
     <>
       <SearchParamsListener onChange={onParams} />
+      <div ref={filterTop.ref} aria-hidden />
       <div className="sticky top-14 z-30">
         <div className="glass border-y border-black/[0.06] dark:border-white/[0.07]">
           <div className="shell flex flex-col gap-3 py-3 md:flex-row md:items-center">

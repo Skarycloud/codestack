@@ -33,6 +33,7 @@ import { Segmented } from "@/components/segmented"
 import { installCommand, publisherById, skillFields, skills, type Skill, type SkillField } from "@/data/skills"
 import { cn } from "@/lib/utils"
 import { ChipScroller } from "@/components/chip-scroller"
+import { useFilterTop } from "@/lib/use-filter-top"
 
 export const fieldIcons: Record<SkillField, typeof Palette> = {
   design: Palette,
@@ -78,6 +79,7 @@ export function SkillDirectory() {
   const [show, setShow] = useState<"all" | "popular" | "gems">("all")
   const [query, setQuery] = useState("")
   const deferred = useDeferredValue(query)
+  const filterTop = useFilterTop()
 
   // Apply ?f= on load, and follow it when it changes from outside, e.g. a field picked in the navbar.
   const onParams = useCallback((params: URLSearchParams) => {
@@ -115,6 +117,7 @@ export function SkillDirectory() {
   return (
     <>
       <SearchParamsListener onChange={onParams} />
+      <div ref={filterTop.ref} aria-hidden />
       <div className="sticky top-14 z-30">
         <div className="glass border-y border-black/[0.06] dark:border-white/[0.07]">
           <div className="shell flex flex-col gap-3 py-3 md:flex-row md:items-center">
@@ -140,7 +143,10 @@ export function SkillDirectory() {
             <Segmented
               size="sm"
               value={show}
-              onChange={setShow}
+              onChange={(v) => {
+                setShow(v)
+                filterTop.reset()
+              }}
               options={[
                 { value: "all", label: "All" },
                 { value: "popular", label: "Popular", count: skills.filter((s) => s.popular).length },
@@ -157,7 +163,10 @@ export function SkillDirectory() {
                   <button
                     key={f.id}
                     data-active={active}
-                    onClick={() => setField(f.id)}
+                    onClick={() => {
+                      setField(f.id)
+                      filterTop.reset()
+                    }}
                     className={cn(
                       "pressable relative shrink-0 rounded-full px-3.5 py-1.5 text-[13px] transition-colors",
                       active ? "text-background" : "text-muted-foreground hover:text-foreground",

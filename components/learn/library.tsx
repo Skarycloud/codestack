@@ -35,6 +35,7 @@ import { SwitchPill } from "@/components/switch-pill"
 import { resources, resourceTypes, tracks, type Resource, type ResourceType, type Track } from "@/data/resources"
 import { cn } from "@/lib/utils"
 import { ChipScroller } from "@/components/chip-scroller"
+import { useFilterTop } from "@/lib/use-filter-top"
 
 const typeMeta: Record<ResourceType, { icon: typeof Book; label: string; tint: string }> = {
   docs: { icon: BookOpen, label: "Docs", tint: "text-[#0062c4] bg-[#0a84ff]/10 dark:text-[#64b5ff]" },
@@ -164,6 +165,7 @@ export function LearnLibrary() {
   const [freeOnly, setFreeOnly] = useState(false)
   const [query, setQuery] = useState("")
   const deferred = useDeferredValue(query)
+  const filterTop = useFilterTop()
 
   // Apply ?type= on load, and follow it when it changes from outside, e.g. a format picked in the navbar.
   const onParams = useCallback((params: URLSearchParams) => {
@@ -172,6 +174,7 @@ export function LearnLibrary() {
   }, [])
   const selectType = (next: ResourceType | "all") => {
     setType(next)
+    filterTop.reset()
     replaceQuery({ type: next === "all" ? null : next })
   }
 
@@ -211,6 +214,7 @@ export function LearnLibrary() {
   return (
     <>
       <SearchParamsListener onChange={onParams} />
+      <div ref={filterTop.ref} aria-hidden />
       <div className="sticky top-14 z-30">
         <div className="glass border-y border-black/[0.06] dark:border-white/[0.07]">
           <div className="shell flex flex-col gap-3 py-3 md:flex-row md:items-center">
@@ -241,7 +245,15 @@ export function LearnLibrary() {
                 options={resourceTypes.map((t) => ({ value: t.id, label: t.name }))}
                 className="shrink-0"
               />
-              <SwitchPill checked={freeOnly} onChange={setFreeOnly} label="Free only" className="ml-auto" />
+              <SwitchPill
+                checked={freeOnly}
+                onChange={(v) => {
+                  setFreeOnly(v)
+                  filterTop.reset()
+                }}
+                label="Free only"
+                className="ml-auto"
+              />
             </div>
           </div>
           <div className="shell">
@@ -252,7 +264,10 @@ export function LearnLibrary() {
                   <button
                     key={t.id}
                     data-active={active}
-                    onClick={() => setTrack(t.id)}
+                    onClick={() => {
+                      setTrack(t.id)
+                      filterTop.reset()
+                    }}
                     className={cn(
                       "pressable relative shrink-0 rounded-full px-3.5 py-1.5 text-[13px] transition-colors",
                       active ? "text-background" : "text-muted-foreground hover:text-foreground",

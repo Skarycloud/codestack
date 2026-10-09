@@ -7,6 +7,7 @@ import { CopyCommand } from "@/components/contribute/copy-command"
 import { Segmented } from "@/components/segmented"
 import { localModels, type LocalModel, type ModelCapability } from "@/data/local-llms"
 import { cn } from "@/lib/utils"
+import { useFilterTop } from "@/lib/use-filter-top"
 
 const creatorIcon: Record<string, string> = {
   Google: "gemma",
@@ -50,6 +51,7 @@ export function ModelDirectory() {
   const [order, setOrder] = useState<"asc" | "desc">("asc")
   const [query, setQuery] = useState("")
   const deferred = useDeferredValue(query)
+  const filterTop = useFilterTop()
 
   const results = useMemo(() => {
     const q = deferred.trim().toLowerCase()
@@ -64,6 +66,7 @@ export function ModelDirectory() {
 
   return (
     <>
+      <div ref={filterTop.ref} aria-hidden />
       <div className="sticky top-14 z-30">
         <div className="glass border-y border-black/[0.06] dark:border-white/[0.07]">
           <div className="shell flex flex-col gap-3 py-3 lg:flex-row lg:items-center">
@@ -88,9 +91,21 @@ export function ModelDirectory() {
             </label>
             <div className="no-scrollbar -mx-5 flex items-center gap-3 overflow-x-auto px-5 lg:mx-0 lg:flex-1 lg:px-0">
               <span className="shrink-0 text-[13px] text-muted-foreground">Fits in</span>
-              <Segmented size="sm" value={memory} onChange={setMemory} options={[...memoryOptions]} className="shrink-0" />
+              <Segmented
+                size="sm"
+                value={memory}
+                onChange={(v) => {
+                  setMemory(v)
+                  filterTop.reset()
+                }}
+                options={[...memoryOptions]}
+                className="shrink-0"
+              />
               <button
-                onClick={() => setOrder((o) => (o === "asc" ? "desc" : "asc"))}
+                onClick={() => {
+                  setOrder((o) => (o === "asc" ? "desc" : "asc"))
+                  filterTop.reset()
+                }}
                 className="pressable ml-auto inline-flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-[13px] text-muted-foreground ring-1 ring-inset ring-black/[0.08] hover:text-foreground dark:ring-white/[0.1]"
               >
                 {order === "asc" ? <ArrowUpNarrowWide className="size-4" /> : <ArrowDownWideNarrow className="size-4" />}
@@ -103,7 +118,10 @@ export function ModelDirectory() {
               {(["all", "vision", "tools", "thinking", "code", "audio"] as const).map((c) => (
                 <button
                   key={c}
-                  onClick={() => setCapability(c)}
+                  onClick={() => {
+                    setCapability(c)
+                    filterTop.reset()
+                  }}
                   className={cn(
                     "pressable shrink-0 rounded-full px-3.5 py-1.5 text-[13px] transition-colors",
                     capability === c
