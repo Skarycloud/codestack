@@ -55,8 +55,8 @@ CodeStack puts the essentials for **both designers and developers** in one fast,
 | Page | What it does |
 | --- | --- |
 | **Home** (`/`) | A scroll‑linked hero with a 3D wall of brand logos, a logo marquee, "For designers / For developers" tiles, a category bento grid, a draggable feature carousel, live stats and an open source call to action. |
-| **Explore** (`/explore`) | **574 tools across 20 categories**, from frameworks and databases to payments, AI, mockups, 3D, typography and color. Search, filter by Design or Develop, and jump between categories. Links like `/explore?c=typography` open a filtered view directly. |
-| **Icons** (`/icons`) | **141 brand logos.** Search, switch between color and mono, then copy any logo as **SVG** or a **React component**, or download **SVG** or **PNG** in brand, black or white. |
+| **Explore** (`/explore`) | **574 tools across 20 categories**, from frameworks and databases to payments, AI, mockups, 3D, typography and color. Search, filter by Design or Develop, and jump between categories. Links like `/explore?c=typography` or `/explore?q=upi` open a filtered view directly. |
+| **Icons** (`/icons`) | **483 brand logos.** Search, switch between color and mono, then copy any logo as **SVG** or a **React component**, or download **SVG** or **PNG** in brand, black or white. |
 | **Learn** (`/learn`) | **272 verified resources across 11 tracks**: learning platforms (Coursera, edX, Udemy, Khan Academy, GeeksforGeeks, W3Schools, MIT OpenCourseWare and 35 more), design, frontend, backend, DevOps, mobile, AI, CS fundamentals, full‑stack paths, career and **Learn by playing** (40 coding, SQL, Git, security and design games). Docs, courses, videos, guides, books, practice platforms, games and podcasts, with a "Start watching" row of must‑see videos and a "Free only" filter. |
 | **Stack Builder** (`/stack-builder`) | Pick technologies or start from **9 proven presets** (T3, MERN, Supa‑Next, AI App and more). See how closely your stack matches the classics, share it as a link or copy it as Markdown. |
 | **Agent Skills** (`/skills`) | **194 Agent Skills** for Claude Code, Codex, Cursor, Copilot, Gemini CLI and more, from **47 publishers** and organized into **12 fields**. Includes **Popular** picks from the skills.sh leaderboard, hand‑picked **Hidden gems** and one‑click install commands. |
@@ -136,6 +136,8 @@ codestack/
 │   ├── learn/                Learning resources
 │   ├── stack-builder/        Stack Builder
 │   ├── skills/               Agent Skills directory
+│   ├── roadmap/              Developer roadmap
+│   ├── local-llms/           Local LLMs directory
 │   ├── contribute/           Contribution guide and code of conduct
 │   ├── not-found.tsx         Custom 404 page
 │   ├── globals.css           Design tokens, type scale, utilities, keyframes
@@ -153,11 +155,16 @@ codestack/
 │   ├── learn/                Learn library, featured videos, video cards
 │   ├── skills/               Skills directory and animated explainer cards
 │   ├── stack/                Stack Builder
+│   ├── roadmap/              Roadmap path, checklists, levels and progress
+│   ├── local-llms/           Local model directory
 │   ├── contribute/           Copyable command block
 │   ├── motion/reveal.tsx     Scroll‑reveal helpers
-│   ├── brand-icon.tsx        Renders a brand logo from the SVG sprite
+│   ├── brand-icon.tsx        Renders a brand logo from the SVG sprite, a raster logo or a monogram
+│   ├── chip-scroller.tsx     Horizontally scrollable filter chips with arrow buttons
 │   ├── drag-scroller.tsx     Full‑bleed, draggable, snapping horizontal scroller
 │   ├── page-header.tsx       Shared page header (server component)
+│   ├── progressive-list.tsx  Renders long lists in batches as you scroll
+│   ├── search-params.tsx     Reads URL filters without opting out of static rendering
 │   ├── segmented.tsx         iOS‑style segmented control
 │   ├── switch-pill.tsx       iOS‑style labelled switch
 │   └── tool-card.tsx         Tool card used across the site
@@ -167,21 +174,31 @@ codestack/
 │   ├── resources.ts          Learning resources, formats and tracks
 │   ├── skills.ts             Agent skills, fields and publishers
 │   ├── stacks.ts             Stack Builder presets and categories
+│   ├── roadmap.ts            Roadmap phases, steps, levels and checklists
+│   ├── local-llms.ts         Local models, generated from the Ollama library
+│   ├── raster-logos.ts       Tool name to app-icon logo, for tools without an SVG mark
 │   ├── brand-meta.ts         Generated: logo titles, colors, sprite version
 │   └── brand-icons.ts        Generated: full logo paths (Icons page only)
 │
 ├── lib/
 │   ├── site.ts               Site name, URL, repository and social links
 │   ├── nav.ts                Navbar menus (built from the data files)
+│   ├── site-search.ts        The ⌘K search index and ranking
+│   ├── use-filter-top.ts     Glides back to a filter bar when a tab changes
+│   ├── model-creators.ts     Brand icon for each model creator
 │   ├── brand-svg.ts          SVG and JSX export helpers for the icon library
 │   ├── color.ts              Luminance helpers that keep dark logos visible
 │   └── utils.ts              `cn()` class name helper
 │
 ├── public/
-│   └── brand-icons.svg       Generated logo sprite (cached by the browser)
+│   ├── brand-icons.svg       Generated logo sprite (cached by the browser)
+│   ├── brand-icons-extra.svg Generated sprite for icons only the Icons page shows
+│   ├── logos/                App-icon logos as WebP
+│   └── games/                Cover art for Learn by playing
 │
 └── scripts/
     ├── generate-icons.mjs    Builds the sprite and metadata from Simple Icons
+    ├── icon-sources.mjs      Custom and extra icons for the sprite
     └── next.mjs              Windows‑safe launcher for the Next.js CLI
 ```
 
