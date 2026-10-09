@@ -5,16 +5,27 @@ import Link from "next/link"
 import { BrandIcon } from "@/components/brand-icon"
 import { DragScroller } from "@/components/drag-scroller"
 import { Reveal } from "@/components/motion/reveal"
+import { useCommandMenu } from "@/components/site/command-menu"
 import { tools } from "@/data/catalog"
 import { brandMeta } from "@/data/brand-meta"
+import { localModels } from "@/data/local-llms"
 import { resources } from "@/data/resources"
+import { phaseById, topics } from "@/data/roadmap"
+import { publisherById, skills } from "@/data/skills"
+import { creatorIcon } from "@/lib/model-creators"
 import { cn } from "@/lib/utils"
 import { useModKey } from "@/components/shortcut-key"
 
 const iconSample = Object.keys(brandMeta).slice(12, 24)
 const stackSample = ["Next.js", "Tailwind CSS", "Supabase", "Vercel"].map((n) => tools.find((t) => t.name === n)!)
+const skillSample = ["frontend-design", "high-end-visual-design", "seo-audit"].map((n) => skills.find((s) => s.name === n)!).filter(Boolean)
+const stepSample = ["architecture", "appsec", "performance", "deployment"].map((id) => topics.find((t) => t.id === id)!)
+const modelSample = ["Gemma 3 4B", "Qwen 3 8B", "gpt-oss 20B", "Llama 3.3 70B"].map((n) => localModels.find((m) => m.name === n)!)
+const maxLog = Math.log10(Math.max(...modelSample.map((m) => m.paramsB)) * 10)
 
-const features = [
+type Feature = { eyebrow: string; title: string; href: string; tone: string; visual: React.ReactNode; search?: true }
+
+const features: Feature[] = [
   {
     eyebrow: "Icon library",
     title: "Copy any logo. As SVG, JSX or PNG.",
@@ -68,11 +79,86 @@ const features = [
     ),
   },
   {
+    eyebrow: "Agent Skills",
+    title: "Teach your coding agent new tricks.",
+    href: "/skills",
+    tone: "bg-gradient-to-b from-[#f3efff] to-[#f5f5f7] dark:from-[#1a1433] dark:to-surface",
+    visual: (
+      <div className="space-y-2">
+        {skillSample.map((s) => {
+          const p = publisherById[s.publisher]
+          return (
+            <div
+              key={s.name}
+              className="flex items-center gap-3 rounded-2xl bg-white/80 px-4 py-3 shadow-sm backdrop-blur dark:bg-white/[0.06]"
+            >
+              <BrandIcon slug={p.icon} name={p.name} className="size-5" />
+              <span className="truncate font-mono text-[13px]">{s.name}</span>
+              <span className="ml-auto shrink-0 text-[12px] text-muted-foreground">{p.name}</span>
+            </div>
+          )
+        })}
+        <p className="pt-1 text-center text-[12px] text-muted-foreground">For Claude Code, Codex, Cursor and more</p>
+      </div>
+    ),
+  },
+  {
+    eyebrow: "Local LLMs",
+    title: "Run AI on your own machine.",
+    href: "/local-llms",
+    tone: "bg-[#0b0b0d] text-white dark:bg-surface",
+    visual: (
+      <div className="space-y-3">
+        {modelSample.map((m) => (
+          <div key={m.name}>
+            <div className="flex items-center gap-2.5 text-[14px]">
+              <BrandIcon slug={creatorIcon[m.creator]} name={m.creator} className="size-4" />
+              <span className="font-medium">{m.name}</span>
+              <span className="ml-auto text-[12px] tabular-nums text-white/45">{m.size}</span>
+            </div>
+            <div className="mt-1.5 h-1 overflow-hidden rounded-full bg-white/10">
+              <div className="h-full rounded-full bg-white/50" style={{ width: `${(Math.log10(m.paramsB * 10) / maxLog) * 100}%` }} />
+            </div>
+          </div>
+        ))}
+        <p className="rounded-xl bg-white/[0.07] px-3 py-2 font-mono text-[12.5px] text-white/80 ring-1 ring-inset ring-white/10">
+          <span className="text-white/40">$</span> ollama run gemma3:4b
+        </p>
+      </div>
+    ),
+  },
+  {
+    eyebrow: "Roadmap",
+    title: "From idea to production, step by step.",
+    href: "/roadmap",
+    tone: "bg-gradient-to-b from-[#fff8e5] to-[#f5f5f7] dark:from-[#2a2106] dark:to-surface",
+    visual: (
+      <div className="relative">
+        <span aria-hidden className="absolute bottom-5 left-[9px] top-5 w-px bg-foreground/15" />
+        <div className="space-y-2.5">
+          {stepSample.map((t) => (
+            <div key={t.id} className="relative flex items-center gap-3">
+              <span
+                className="z-[1] size-[18px] shrink-0 rounded-[5px] ring-2 ring-[#f9f6ee] dark:ring-[#1c1c1e]"
+                style={{ background: phaseById[t.phase].color }}
+              />
+              <span className="flex-1 rounded-2xl bg-white/80 px-4 py-2.5 text-[14px] font-medium shadow-sm backdrop-blur dark:bg-white/[0.06]">
+                {t.title}
+                <span className="ml-2 text-[12px] font-normal text-muted-foreground">{phaseById[t.phase].name}</span>
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+    ),
+  },
+  {
     eyebrow: "Search",
     title: "Find anything. Instantly.",
     href: "/explore",
     tone: "bg-[#f5f5f7] dark:bg-surface",
     visual: <SearchKeys />,
+    search: true,
   },
   {
     eyebrow: "Open source",
@@ -92,6 +178,7 @@ const features = [
 ]
 
 export function FeatureCarousel() {
+  const { open, prefetch } = useCommandMenu()
   return (
     <section className="overflow-hidden pb-12 pt-24 sm:pt-32">
       <Reveal className="shell">
@@ -107,14 +194,27 @@ export function FeatureCarousel() {
               <p className="text-[13px] font-semibold opacity-70">{f.eyebrow}</p>
               <h3 className="mt-2 text-[26px] font-semibold leading-[1.12] tracking-[-0.028em]">{f.title}</h3>
               <div className="mt-auto">{f.visual}</div>
-              <Link
-                href={f.href}
-                aria-label={`Open ${f.eyebrow}`}
-                className="pressable absolute bottom-6 right-6 z-10 grid size-9 place-items-center rounded-full bg-foreground text-background opacity-0 shadow-lg transition-opacity duration-300 [article:hover_&]:opacity-100 focus-visible:opacity-100"
-              >
-                <Plus className="size-4" />
-              </Link>
-              <Link href={f.href} className="absolute inset-0 rounded-[inherit]" aria-hidden tabIndex={-1} />
+              {f.search ? (
+                // The search card opens the palette itself rather than a page.
+                <button
+                  onClick={open}
+                  onPointerEnter={prefetch}
+                  onFocus={prefetch}
+                  aria-label="Open search"
+                  className="absolute inset-0 z-10 rounded-[inherit] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60"
+                />
+              ) : (
+                <>
+                  <Link
+                    href={f.href}
+                    aria-label={`Open ${f.eyebrow}`}
+                    className="pressable absolute bottom-6 right-6 z-10 grid size-9 place-items-center rounded-full bg-foreground text-background opacity-0 shadow-lg transition-opacity duration-300 [article:hover_&]:opacity-100 focus-visible:opacity-100"
+                  >
+                    <Plus className="size-4" />
+                  </Link>
+                  <Link href={f.href} className="absolute inset-0 rounded-[inherit]" aria-hidden tabIndex={-1} />
+                </>
+              )}
             </article>
           </Reveal>
         ))}

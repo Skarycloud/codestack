@@ -5,21 +5,24 @@ import { useEffect, useRef, useState } from "react"
 import { Reveal } from "@/components/motion/reveal"
 import { stats } from "@/data/catalog"
 import { brandMeta } from "@/data/brand-meta"
+import { localModels } from "@/data/local-llms"
 import { resources } from "@/data/resources"
+import { skills } from "@/data/skills"
 
 const items = [
   { value: stats.tools, suffix: "+", label: "Hand‑picked tools" },
   { value: Object.keys(brandMeta).length, suffix: "", label: "Brand icons to copy" },
   { value: resources.length, suffix: "", label: "Learning resources" },
-  { value: 100, suffix: "%", label: "Free & open source" },
+  { value: skills.length, suffix: "", label: "Agent skills" },
+  { value: localModels.length, suffix: "", label: "Local AI models" },
 ]
 
 export function Stats() {
   return (
     <section className="shell py-20">
-      <div className="grid grid-cols-2 gap-y-12 border-y border-black/[0.06] py-14 dark:border-white/[0.07] md:grid-cols-4">
+      <div className="grid grid-cols-2 gap-y-12 border-y border-black/[0.06] py-14 dark:border-white/[0.07] md:grid-cols-5">
         {items.map((item, i) => (
-          <Reveal key={item.label} delay={i * 0.06} className="text-center">
+          <Reveal key={item.label} delay={i * 0.06} className="text-center last:col-span-2 md:last:col-span-1">
             <p className="text-[clamp(2.5rem,5vw,3.75rem)] font-semibold leading-none tracking-[-0.045em] tabular-nums">
               <Counter to={item.value} />
               <span className="text-muted-foreground">{item.suffix}</span>

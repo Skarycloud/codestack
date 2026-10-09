@@ -39,12 +39,12 @@ export function Hero() {
       >
         <div className="rise">
           <Link
-            href="/icons"
+            href="/local-llms"
             className="group inline-flex items-center gap-2 rounded-full border border-black/[0.06] bg-background/60 py-1 pl-1 pr-3 text-[13px] text-muted-foreground shadow-sm backdrop-blur-md transition-colors hover:text-foreground dark:border-white/10"
           >
             <span className="rounded-full bg-primary px-2 py-0.5 text-[11px] font-semibold text-primary-foreground">New</span>
             <span>
-              Brand icon library<span className="hidden sm:inline">: copy any logo as SVG or JSX</span>
+              Local LLMs<span className="hidden sm:inline">: run open AI models on your own machine</span>
             </span>
             <ChevronRight className="size-3.5 transition-transform duration-300 group-hover:translate-x-0.5" />
           </Link>
@@ -68,8 +68,8 @@ export function Hero() {
         </h1>
 
         <p className="rise text-lede mt-7 max-w-[34rem] text-muted-foreground" style={delay(0.45)}>
-          A free, open source, hand‑picked home for <span className="text-foreground">{stats.tools}+ tools</span>, brand icons and learning
-          resources, made for designers and developers.
+          A free, open source home for <span className="text-foreground">{stats.tools}+ tools</span>, brand icons, courses, agent skills and
+          local AI models, plus a roadmap from idea to production.
         </p>
 
         <div className="rise mt-10 flex w-full max-w-md flex-col items-center gap-5" style={delay(0.55)}>
