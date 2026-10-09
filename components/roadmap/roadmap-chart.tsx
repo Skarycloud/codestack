@@ -37,6 +37,13 @@ export function RoadmapChart() {
   const onParams = useCallback((params: URLSearchParams) => {
     const l = Number(params.get("level"))
     setLevel(l >= 1 && l <= 5 ? (l as Level) : null)
+    // ?step= opens that step's checklist and brings it into view, e.g. from the search palette.
+    const step = params.get("step")
+    if (step && topics.some((t) => t.id === step)) {
+      setOpen({ topic: step })
+      // After the step's own "bring the checklist into view" scroll, so the step title leads.
+      setTimeout(() => document.getElementById(step)?.scrollIntoView({ behavior: "smooth", block: "start" }), 150)
+    }
   }, [])
 
   const toggle = (topic: string, group?: number) =>

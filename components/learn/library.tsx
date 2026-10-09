@@ -167,10 +167,12 @@ export function LearnLibrary() {
   const deferred = useDeferredValue(query)
   const filterTop = useFilterTop()
 
-  // Apply ?type= on load, and follow it when it changes from outside, e.g. a format picked in the navbar.
+  // Apply ?type= and ?q= on load, and follow it when it changes from outside, e.g. a format picked in the navbar.
   const onParams = useCallback((params: URLSearchParams) => {
     const t = params.get("type")
     setType(resourceTypes.some((r) => r.id === t) ? (t as ResourceType) : "all")
+    const q = params.get("q")
+    if (q !== null) setQuery(q)
   }, [])
   const selectType = (next: ResourceType | "all") => {
     setType(next)

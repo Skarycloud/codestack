@@ -21,11 +21,13 @@ export function Explorer() {
   const deferredQuery = useDeferredValue(query)
   const filterTop = useFilterTop()
 
-  // Apply ?c= and ?a= on load, and follow them when they change from outside,
+  // Apply ?c=, ?a= and ?q= on load, and follow them when they change from outside,
   // e.g. a category picked in the navbar.
   const onParams = useCallback((params: URLSearchParams) => {
     const c = params.get("c") as CategoryId | null
     const a = params.get("a")
+    const q = params.get("q")
+    if (q !== null) setQuery(q)
     if (c && categoryById[c]) {
       setCategory(c)
       setAudience((prev) => (prev === "all" || inAudience(categoryById[c], prev) ? prev : categoryById[c].audience))

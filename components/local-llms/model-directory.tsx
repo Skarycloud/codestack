@@ -1,28 +1,15 @@
 "use client"
 
 import { ArrowDownWideNarrow, ArrowUpNarrowWide, ArrowUpRight, Search, X } from "lucide-react"
-import { useDeferredValue, useMemo, useState } from "react"
+import { useCallback, useDeferredValue, useMemo, useState } from "react"
 import { BrandIcon } from "@/components/brand-icon"
 import { CopyCommand } from "@/components/contribute/copy-command"
+import { SearchParamsListener } from "@/components/search-params"
 import { Segmented } from "@/components/segmented"
 import { localModels, type LocalModel, type ModelCapability } from "@/data/local-llms"
+import { creatorIcon } from "@/lib/model-creators"
 import { cn } from "@/lib/utils"
 import { useFilterTop } from "@/lib/use-filter-top"
-
-const creatorIcon: Record<string, string> = {
-  Google: "gemma",
-  Alibaba: "qwen",
-  Meta: "meta",
-  DeepSeek: "deepseek",
-  OpenAI: "openai",
-  Microsoft: "microsoft",
-  "Mistral AI": "mistralai",
-  "Hugging Face": "huggingface",
-  Ai2: "ai2",
-  "Z.ai": "zai",
-  NVIDIA: "nvidia",
-  "Liquid AI": "liquid",
-}
 
 /** Rough memory needed to run a model: the weights plus room for context and the runtime. */
 const memoryNeeded = (m: LocalModel) => Math.max(1, Math.ceil(m.sizeGB * 1.2))
@@ -52,6 +39,8 @@ export function ModelDirectory() {
   const [query, setQuery] = useState("")
   const deferred = useDeferredValue(query)
   const filterTop = useFilterTop()
+  // Apply ?q= on load, e.g. a model picked in the search palette.
+  const onParams = useCallback((params: URLSearchParams) => setQuery(params.get("q") ?? ""), [])
 
   const results = useMemo(() => {
     const q = deferred.trim().toLowerCase()
@@ -66,6 +55,7 @@ export function ModelDirectory() {
 
   return (
     <>
+      <SearchParamsListener onChange={onParams} />
       <div ref={filterTop.ref} aria-hidden />
       <div className="sticky top-14 z-30">
         <div className="glass border-y border-black/[0.06] dark:border-white/[0.07]">

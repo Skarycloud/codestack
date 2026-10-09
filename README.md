@@ -66,7 +66,7 @@ CodeStack puts the essentials for **both designers and developers** in one fast,
 
 Available everywhere:
 
-- **⌘K / Ctrl+K search** (or press `/`): jump to any tool, category or page from anywhere.
+- **⌘K / Ctrl+K search** (or press `/`): one search across tools, learning resources, agent skills, local models, brand icons and roadmap steps. Matches names first, then tags and descriptions, and every result links straight to its page, checklist or site. The index lives in `lib/site-search.ts`.
 - **Apple‑style navigation:** hover menus with dropdown arrows, a keyboard‑friendly layout, and a drill‑down menu on mobile.
 - **Light and dark themes** that follow your system, with a manual toggle.
 - **Responsive** from small phones to wide desktops, with no horizontal scrolling.

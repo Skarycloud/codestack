@@ -81,10 +81,12 @@ export function SkillDirectory() {
   const deferred = useDeferredValue(query)
   const filterTop = useFilterTop()
 
-  // Apply ?f= on load, and follow it when it changes from outside, e.g. a field picked in the navbar.
+  // Apply ?f= and ?q= on load, and follow it when it changes from outside, e.g. a field picked in the navbar.
   const onParams = useCallback((params: URLSearchParams) => {
     const f = params.get("f")
     setFieldState(skillFields.some((s) => s.id === f) ? (f as SkillField) : "all")
+    const q = params.get("q")
+    if (q !== null) setQuery(q)
   }, [])
   const setField = (next: SkillField | "all") => {
     setFieldState(next)
