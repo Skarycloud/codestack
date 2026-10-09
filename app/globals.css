@@ -326,6 +326,16 @@
   }
 }
 
+/* The hero search bar's typing caret. */
+.caret-blink {
+  animation: caret-blink 1.05s steps(1) infinite;
+}
+@keyframes caret-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
 /* Roadmap page: a neobrutalist theme in the spirit of neobrutalism.com. Flat colors, thick ink
    borders and hard offset shadows, scoped to .nb so the rest of the site keeps its own look. */
 .nb {

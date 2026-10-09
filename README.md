@@ -54,7 +54,7 @@ CodeStack puts the essentials for **both designers and developers** in one fast,
 
 | Page | What it does |
 | --- | --- |
-| **Home** (`/`) | A scroll‑linked hero with a 3D wall of brand logos, a logo marquee, "For designers / For developers" tiles, a category bento grid, a draggable feature carousel, live stats and an open source call to action. |
+| **Home** (`/`) | An editorial hero: a headline with a rolling tool sticker, animated topographic line art, a typing command-bar search and a count-up of the tools; then a sheet of brand stickers, a logo marquee, "For designers / For developers" tiles, a category bento grid, a draggable feature carousel, live stats and an open source call to action. |
 | **Explore** (`/explore`) | **574 tools across 20 categories**, from frameworks and databases to payments, AI, mockups, 3D, typography and color. Search, filter by Design or Develop, and jump between categories. Links like `/explore?c=typography` or `/explore?q=upi` open a filtered view directly. |
 | **Icons** (`/icons`) | **483 brand logos.** Search, switch between color and mono, then copy any logo as **SVG** or a **React component**, or download **SVG** or **PNG** in brand, black or white. |
 | **Learn** (`/learn`) | **272 verified resources across 11 tracks**: learning platforms (Coursera, edX, Udemy, Khan Academy, GeeksforGeeks, W3Schools, MIT OpenCourseWare and 35 more), design, frontend, backend, DevOps, mobile, AI, CS fundamentals, full‑stack paths, career and **Learn by playing** (40 coding, SQL, Git, security and design games). Docs, courses, videos, guides, books, practice platforms, games and podcasts, with a "Start watching" row of must‑see videos and a "Free only" filter. |
@@ -142,7 +142,7 @@ codestack/
 │   ├── contribute/           Contribution guide and code of conduct
 │   ├── not-found.tsx         Custom 404 page
 │   ├── globals.css           Design tokens, type scale, utilities, keyframes
-│   ├── icon.svg              Favicon (the Stacked Slash logo)
+│   ├── icon.svg              Favicon (the neobrutalist Stacked Slash logo)
 │   ├── opengraph-image.png   Social share image (+ twitter-image.png and alt text)
 │   ├── sitemap.ts            Generates /sitemap.xml
 │   └── robots.ts             Generates /robots.txt
@@ -152,7 +152,7 @@ codestack/
 ├── components/
 │   ├── site/                 Navbar (mega‑menu), footer, logo, theme toggle,
 │   │                         providers and the lazy‑loaded ⌘K command palette
-│   ├── home/                 Hero, icon wall, marquee, bento, carousel, stats, CTA
+│   ├── home/                 Hero, contour art, sticker sheet, marquee, bento, carousel, stats, CTA
 │   ├── explore/              Directory filters and grid
 │   ├── icons/                Icon grid and export sheet
 │   ├── learn/                Learn library, featured videos, video cards
