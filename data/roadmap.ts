@@ -505,7 +505,10 @@ export const topics: RoadmapTopic[] = [
     ],
     rule: "Don't use your most expensive model to lowercase a string.",
     techniques: ["Send only the context the model needs", "Summarize old conversation state", "Use structured outputs", "Cache repeated prompts and context", "Consider local inference for private or high-volume work"],
-    resources: [{ name: "AI models and inference on CodeStack", href: "/explore?c=ai" }],
+    resources: [
+      { name: "AI models and inference on CodeStack", href: "/explore?c=ai" },
+      { name: "Free LLM API directory", href: "https://freellm.net" },
+    ],
   },
   {
     id: "ai-apps",

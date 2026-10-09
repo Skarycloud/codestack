@@ -272,6 +272,7 @@ export const tools: Tool[] = [
   { name: "Liquid AI", url: "https://www.liquid.ai", description: "Efficient foundation models built on liquid neural networks.", kind: "AI Lab", category: "ai", icon: "liquid" },
   { name: "Ai2", url: "https://allenai.org", description: "The Allen Institute's fully open models, data and research.", kind: "AI Lab", category: "ai", icon: "ai2", openSource: true },
   { name: "Sakana AI", url: "https://sakana.ai", description: "Nature-inspired research into evolving and merging models.", kind: "AI Lab", category: "ai", icon: "sakana" },
+  { name: "Free LLM APIs", url: "https://freellm.net", description: "Open source directory of free LLM APIs, with rate limits, a playground and one-click configs for Claude Code, Cursor and Codex.", kind: "Directory", category: "ai", openSource: true, free: "Lists 499+ models from 30 providers and which ones need a card" },
   { name: "Together AI", url: "https://www.together.ai", description: "Fast inference and fine-tuning for open models.", kind: "Inference", category: "ai", icon: "together", freemium: true },
   { name: "Cerebras", url: "https://www.cerebras.ai", description: "Wafer-scale chips for the fastest model inference.", kind: "Inference", category: "ai", icon: "cerebras", freemium: true },
   { name: "Groq", url: "https://groq.com", description: "LPU inference with very low latency for open models.", kind: "Inference", category: "ai", icon: "groq", freemium: true },
