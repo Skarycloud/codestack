@@ -10,7 +10,15 @@ import "./globals.css"
 // The mono face only styles code snippets, so "optional" uses it when it is ready in time and
 // otherwise keeps the fallback, sparing a full-page relayout on slow connections.
 const sans = Inter({ subsets: ["latin"], variable: "--font-sans", display: "swap" })
-const mono = Geist_Mono({ subsets: ["latin"], variable: "--font-mono", display: "optional", preload: false })
+const mono = Geist_Mono({
+  subsets: ["latin"],
+  variable: "--font-mono",
+  display: "optional",
+  preload: false,
+  // Fall back to the system's monospace face, not a metrics-adjusted Arial, so code always looks like code.
+  adjustFontFallback: false,
+  fallback: ["ui-monospace", "SFMono-Regular", "Menlo", "Consolas", "monospace"],
+})
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),

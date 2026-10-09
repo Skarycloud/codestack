@@ -41,6 +41,7 @@ export const navItems: NavItem[] = [
           { name: "All tools", href: "/explore" },
           { name: "For designers", href: "/explore?a=design" },
           { name: "For developers", href: "/explore?a=develop" },
+          { name: "Local LLMs", href: "/local-llms" },
         ],
       },
       {
