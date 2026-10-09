@@ -1,6 +1,6 @@
 <div align="center">
 
-![CodeStack: every tool you need, all in one place.](app/opengraph-image.png)
+![CodeStack: every tool you need, all in one place. An isometric diorama follows an idea from blueprint to rocket launch.](app/opengraph-image.png)
 
 # CodeStack
 
@@ -9,7 +9,7 @@
 A free, open source, hand‑picked home for the tools, brand icons, agent skills and learning resources
 that designers and developers actually love. Curated by hand, shaped by the community.
 
-[Explore](#features) · [Getting started](#getting-started) · [Add a tool](#adding-content) · [Contribute](#contributing)
+[Screenshots](#screenshots) · [Explore](#features) · [Getting started](#getting-started) · [Add a tool](#adding-content) · [Contribute](#contributing)
 
 </div>
 
@@ -18,6 +18,7 @@ that designers and developers actually love. Curated by hand, shaped by the comm
 ## Table of contents
 
 - [Why CodeStack](#why-codestack)
+- [Screenshots](#screenshots)
 - [Features](#features)
 - [Tech stack](#tech-stack)
 - [Getting started](#getting-started)
@@ -49,6 +50,27 @@ CodeStack puts the essentials for **both designers and developers** in one fast,
 - Every entry is **chosen by hand** and links to its official site.
 - Every learning resource and video link was **verified** when it was added.
 - Everything is **free to use and open source**, and anyone can add to it with a single pull request.
+
+## Screenshots
+
+Screenshots follow your GitHub theme: light or dark.
+
+<picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/home-dark.webp"><img src="docs/screenshots/home-light.webp" alt="The CodeStack homepage: an editorial headline beside the isometric idea to launch diorama, with the command-bar search below."></picture>
+
+<table>
+  <tr>
+    <td width="50%"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/explore-dark.webp"><img src="docs/screenshots/explore-light.webp" alt="The Explore directory with category tabs and tool cards."></picture><br><sub><b>Explore</b>: 574 tools across 20 categories</sub></td>
+    <td width="50%"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/search-dark.webp"><img src="docs/screenshots/search-light.webp" alt="The Ctrl+K palette searching for postgres."></picture><br><sub><b>Search</b>: one palette for tools, resources, skills, models, icons and roadmap steps</sub></td>
+  </tr>
+  <tr>
+    <td><picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/roadmap-dark.webp"><img src="docs/screenshots/roadmap-light.webp" alt="The developer roadmap: From idea to production, in seven phases."></picture><br><sub><b>Developer Roadmap</b>: 31 steps from idea to production</sub></td>
+    <td><picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/ai-coding-dark.webp"><img src="docs/screenshots/ai-coding-light.webp" alt="The AI coding roadmap: Vibecode like an engineer."></picture><br><sub><b>AI Coding Roadmap</b>: 15 levels and the Context Pack</sub></td>
+  </tr>
+  <tr>
+    <td><picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/icons-dark.webp"><img src="docs/screenshots/icons-light.webp" alt="The brand icon library."></picture><br><sub><b>Icons</b>: 483 brand logos to copy or download</sub></td>
+    <td><picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/local-llms-dark.webp"><img src="docs/screenshots/local-llms-light.webp" alt="The Local LLMs directory."></picture><br><sub><b>Local LLMs</b>: 111 open-weight models to run locally</sub></td>
+  </tr>
+</table>
 
 ## Features
 
@@ -146,6 +168,8 @@ codestack/
 │   ├── opengraph-image.png   Social share image (+ twitter-image.png and alt text)
 │   ├── sitemap.ts            Generates /sitemap.xml
 │   └── robots.ts             Generates /robots.txt
+│
+├── docs/screenshots/        README screenshots, light and dark
 │
 ├── content/context-pack/    Context Pack templates as real Markdown files (edit these)
 │
@@ -419,7 +443,8 @@ Lighthouse accessibility scores **100 on every page**.
 
 - Unique titles and descriptions for every page.
 - `/sitemap.xml` and `/robots.txt` are generated at build time.
-- A branded **social share image** (1200×630) is used for Open Graph and Twitter cards.
+- A branded **social share image** (1200×630) is used for Open Graph and Twitter cards: the wordmark, the headline with its tool sticker, the live counts and the "idea to launch" diorama. It doubles as the banner at the top of this README.
+- README screenshots live in `docs/screenshots/` as light and dark WebP pairs (1440×900 at 1.5×). Retake them when a page changes noticeably.
 - Static HTML for every route, so crawlers see full content.
 
 ## Deployment

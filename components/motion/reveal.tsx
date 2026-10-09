@@ -1,6 +1,6 @@
 "use client"
 
-import { motion, useReducedMotion, type HTMLMotionProps } from "framer-motion"
+import { motion, type HTMLMotionProps } from "framer-motion"
 
 export const ease = [0.22, 1, 0.36, 1] as const
 
@@ -9,12 +9,14 @@ interface RevealProps extends HTMLMotionProps<"div"> {
   y?: number
 }
 
-/** Fades content up into place the first time it scrolls into view. */
+/**
+ * Fades content up into place the first time it scrolls into view. The same start on the server and
+ * the client; for reduced motion, the app's MotionConfig skips the movement and keeps the fade.
+ */
 export function Reveal({ delay = 0, y = 24, children, ...props }: RevealProps) {
-  const reduce = useReducedMotion()
   return (
     <motion.div
-      initial={reduce ? { opacity: 0 } : { opacity: 0, y, filter: "blur(6px)" }}
+      initial={{ opacity: 0, y, filter: "blur(6px)" }}
       whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
       viewport={{ once: true, margin: "0px 0px -12% 0px" }}
       transition={{ duration: 0.9, ease, delay }}
@@ -41,11 +43,10 @@ export function RevealGroup({ children, stagger = 0.06, ...props }: HTMLMotionPr
 }
 
 export function RevealItem({ children, ...props }: HTMLMotionProps<"div">) {
-  const reduce = useReducedMotion()
   return (
     <motion.div
       variants={{
-        hidden: reduce ? { opacity: 0 } : { opacity: 0, y: 20, scale: 0.98 },
+        hidden: { opacity: 0, y: 20, scale: 0.98 },
         show: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.7, ease } },
       }}
       {...props}

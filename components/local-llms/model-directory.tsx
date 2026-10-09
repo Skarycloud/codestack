@@ -190,7 +190,7 @@ function ModelCard({ model: m }: { model: LocalModel }) {
           <span>Needs about {memoryNeeded(m)} GB RAM</span>
         </div>
         <div className="mt-1.5 h-1 overflow-hidden rounded-full bg-foreground/[0.07]" aria-hidden>
-          <div className="h-full rounded-full bg-foreground/40" style={{ width: `${scale}%` }} />
+          <div className="h-full rounded-full bg-foreground/40" style={{ width: `${scale.toFixed(1)}%` }} />
         </div>
       </div>
 

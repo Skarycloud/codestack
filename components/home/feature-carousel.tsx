@@ -123,7 +123,9 @@ const getFeatures = (d: HomeSamples): Feature[] => [
             <div className="mt-1.5 h-1 overflow-hidden rounded-full bg-white/10">
               <div
                 className="h-full rounded-full bg-white/50"
-                style={{ width: `${(Math.log10(m.paramsB * 10) / Math.log10(Math.max(...d.models.map((x) => x.paramsB)) * 10)) * 100}%` }}
+                style={{
+                  width: `${((Math.log10(m.paramsB * 10) / Math.log10(Math.max(...d.models.map((x) => x.paramsB)) * 10)) * 100).toFixed(1)}%`,
+                }}
               />
             </div>
           </div>
