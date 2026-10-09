@@ -14,6 +14,7 @@ const columns = [
       { name: "Stack Builder", href: "/stack-builder" },
       { name: "Agent skills", href: "/skills" },
       { name: "Developer roadmap", href: "/roadmap" },
+      { name: "AI coding roadmap", href: "/roadmap/ai-coding" },
       { name: "Local LLMs", href: "/local-llms" },
     ],
   },

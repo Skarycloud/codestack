@@ -10,12 +10,12 @@ import {
   itemId,
   levels,
   phases,
-  stepNumber,
   topicIds,
   topics,
+  type ChartPhase,
+  type ChartTopic,
   type Level,
   type RoadmapGroup,
-  type RoadmapTopic,
 } from "@/data/roadmap"
 import { cn } from "@/lib/utils"
 
@@ -26,25 +26,52 @@ const Line = ({ className }: { className?: string }) => (
   <div aria-hidden className={cn("mx-auto h-8 w-[3px] bg-[var(--nb-line)]", className)} />
 )
 
+export interface ChartConfig {
+  phases: ChartPhase[]
+  topics: ChartTopic[]
+  /** The box the path starts from. */
+  start: string
+  /** The button the path ends on. */
+  end: { href: string; label: string }
+  /** The small caps line at the top of an open checklist. */
+  meta: (topic: ChartTopic, step: number) => string
+  /** Supports ?level= highlighting. */
+  levels?: boolean
+}
+
+const mainConfig: ChartConfig = {
+  phases,
+  topics,
+  start: "Start here: an idea",
+  end: { href: "#ship", label: "Ready to ship? Final checklist" },
+  meta: (t, n) => `Step ${n} · Level ${t.level} ${levels[t.level! - 1].name}`,
+  levels: true,
+}
+
 /**
- * The roadmap as one continuous path: every step follows the last, its topics hang right
+ * A roadmap as one continuous path: every step follows the last, its topics hang right
  * underneath, and its checklist opens in place. Nothing to hunt for, nothing in a side panel.
  */
-export function RoadmapChart() {
+export function RoadmapChart({ config = mainConfig }: { config?: ChartConfig }) {
   const [open, setOpen] = useState<Open>(null)
   const [level, setLevel] = useState<Level | null>(null)
+  const { phases, topics } = config
+  const stepNumber = Object.fromEntries(topics.map((t, i) => [t.id, i + 1]))
 
-  const onParams = useCallback((params: URLSearchParams) => {
-    const l = Number(params.get("level"))
-    setLevel(l >= 1 && l <= 5 ? (l as Level) : null)
-    // ?step= opens that step's checklist and brings it into view, e.g. from the search palette.
-    const step = params.get("step")
-    if (step && topics.some((t) => t.id === step)) {
-      setOpen({ topic: step })
-      // After the step's own "bring the checklist into view" scroll, so the step title leads.
-      setTimeout(() => document.getElementById(step)?.scrollIntoView({ behavior: "smooth", block: "start" }), 150)
-    }
-  }, [])
+  const onParams = useCallback(
+    (params: URLSearchParams) => {
+      const l = Number(params.get("level"))
+      if (config.levels) setLevel(l >= 1 && l <= 5 ? (l as Level) : null)
+      // ?step= opens that step's checklist and brings it into view, e.g. from the search palette.
+      const step = params.get("step")
+      if (step && config.topics.some((t) => t.id === step)) {
+        setOpen({ topic: step })
+        // After the step's own "bring the checklist into view" scroll, so the step title leads.
+        setTimeout(() => document.getElementById(step)?.scrollIntoView({ behavior: "smooth", block: "start" }), 150)
+      }
+    },
+    [config],
+  )
 
   const toggle = (topic: string, group?: number) =>
     setOpen((prev) => (prev?.topic === topic && (group === undefined || prev.group === group) ? null : { topic, group }))
@@ -72,7 +99,7 @@ export function RoadmapChart() {
       <div className="mx-auto max-w-3xl">
         <div className="mx-auto w-fit">
           <div className="nb-box bg-black px-6 py-3 text-center text-[17px] font-bold text-white dark:bg-[var(--nb-card)]">
-            Start here: an idea
+            {config.start}
           </div>
         </div>
 
@@ -99,6 +126,8 @@ export function RoadmapChart() {
                   topic={topic}
                   color={phase.color}
                   dim={!!level && topic.level !== level}
+                  number={stepNumber[topic.id]}
+                  meta={config.meta(topic, stepNumber[topic.id])}
                   open={open?.topic === topic.id ? open : null}
                   onToggle={(group) => toggle(topic.id, group)}
                   onClose={() => setOpen(null)}
@@ -109,10 +138,10 @@ export function RoadmapChart() {
 
         <Line />
         <a
-          href="#ship"
+          href={config.end.href}
           className="nb-box nb-press nb-alt-shadow mx-auto flex w-fit items-center gap-2 bg-black px-6 py-3 text-[16px] font-bold text-white dark:bg-[var(--nb-yellow)] dark:text-black"
         >
-          Ready to ship? Final checklist
+          {config.end.label}
           <ArrowDown className="size-4" />
         </a>
       </div>
@@ -124,13 +153,17 @@ function Step({
   topic,
   color,
   dim,
+  number,
+  meta,
   open,
   onToggle,
   onClose,
 }: {
-  topic: RoadmapTopic
+  topic: ChartTopic
   color: string
   dim: boolean
+  number: number
+  meta: string
   open: Open
   onToggle: (group?: number) => void
   onClose: () => void
@@ -164,7 +197,7 @@ function Step({
         style={{ background: complete ? "#5CF2C4" : "var(--nb-yellow)" }}
       >
         <span className="grid size-9 shrink-0 place-items-center bg-black text-[15px] font-bold text-white">
-          {complete ? <Check className="size-4" strokeWidth={3} /> : stepNumber[topic.id]}
+          {complete ? <Check className="size-4" strokeWidth={3} /> : number}
         </span>
         <span className="min-w-0 flex-1">
           <span className="block text-[18px] font-bold leading-tight">{topic.title}</span>
@@ -186,9 +219,7 @@ function Step({
       {open && (
         <div ref={panel} className="nb-box mt-5 scroll-mt-24 bg-[var(--nb-card)] p-5 sm:p-6">
           <div className="flex items-start justify-between gap-4">
-            <p className="text-[13px] font-bold uppercase tracking-wide text-[var(--nb-muted)]">
-              Step {stepNumber[topic.id]} · Level {topic.level} {levels[topic.level - 1].name}
-            </p>
+            <p className="text-[13px] font-bold uppercase tracking-wide text-[var(--nb-muted)]">{meta}</p>
             <button
               onClick={onClose}
               aria-label="Close checklist"
@@ -271,7 +302,7 @@ function TopicChip({
   active,
   onClick,
 }: {
-  topic: RoadmapTopic
+  topic: ChartTopic
   group: RoadmapGroup
   color: string
   active: boolean
@@ -305,7 +336,7 @@ function TopicChip({
   )
 }
 
-function Checklist({ topic, group, index, highlight }: { topic: RoadmapTopic; group: RoadmapGroup; index: number; highlight: boolean }) {
+function Checklist({ topic, group, index, highlight }: { topic: ChartTopic; group: RoadmapGroup; index: number; highlight: boolean }) {
   const { done, toggle, setMany } = useProgress()
   const ids = groupIds(topic, group)
   const all = ids.every((id) => done.has(id))

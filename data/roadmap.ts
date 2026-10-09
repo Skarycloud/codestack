@@ -29,6 +29,16 @@ export interface RoadmapTopic {
   optional?: boolean
 }
 
+/** What a flowchart step needs. RoadmapTopic fits it, and so do other roadmaps' steps. */
+export type ChartTopic = Omit<RoadmapTopic, "phase" | "level"> & { phase: string; level?: Level }
+
+export interface ChartPhase {
+  id: string
+  name: string
+  blurb: string
+  color: string
+}
+
 export const phases: { id: PhaseId; name: string; blurb: string; color: string }[] = [
   { id: "plan", name: "Plan", blurb: "Decide what to build, and how, before writing code.", color: "#7FBCFF" },
   { id: "build", name: "Build", blurb: "Write code that people and agents can maintain.", color: "#C4A1FF" },
@@ -667,5 +677,5 @@ export const phaseById = Object.fromEntries(phases.map((p) => [p.id, p])) as Rec
 /** Step numbers along the main path, 1 to n. */
 export const stepNumber = Object.fromEntries(topics.map((t, i) => [t.id, i + 1])) as Record<string, number>
 
-export const groupIds = (topic: RoadmapTopic, group: RoadmapGroup) => group.items.map((item) => itemId(topic.id, item))
-export const topicIds = (topic: RoadmapTopic) => topic.groups.flatMap((g) => groupIds(topic, g))
+export const groupIds = (topic: ChartTopic, group: RoadmapGroup) => group.items.map((item) => itemId(topic.id, item))
+export const topicIds = (topic: ChartTopic) => topic.groups.flatMap((g) => groupIds(topic, g))

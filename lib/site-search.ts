@@ -2,6 +2,8 @@ import { categories, categoryById, tools } from "@/data/catalog"
 import { brandMeta } from "@/data/brand-meta"
 import { localModels } from "@/data/local-llms"
 import { resources, resourceTypes, tracks } from "@/data/resources"
+import { aiPhases, aiTopics, prompts } from "@/data/ai-roadmap"
+import { contextFiles } from "@/data/context-pack"
 import { phaseById, stepNumber, topics } from "@/data/roadmap"
 import { publisherById, skillFields, skills } from "@/data/skills"
 import { creatorIcon } from "@/lib/model-creators"
@@ -35,7 +37,7 @@ export const groups: { id: GroupId; name: string; limit: number; seeAll?: (q: st
   { id: "skills", name: "Agent skills", limit: 5, seeAll: (q) => `/skills?q=${encodeURIComponent(q)}`, seeAllLabel: "Skills" },
   { id: "models", name: "Local LLMs", limit: 5, seeAll: (q) => `/local-llms?q=${encodeURIComponent(q)}`, seeAllLabel: "Local LLMs" },
   { id: "icons", name: "Brand icons", limit: 6, seeAll: (q) => `/icons?q=${encodeURIComponent(q)}`, seeAllLabel: "Icons" },
-  { id: "roadmap", name: "Roadmap", limit: 4 },
+  { id: "roadmap", name: "Roadmap", limit: 6 },
 ]
 
 export const norm = (s: string) => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "")
@@ -75,6 +77,10 @@ export const pages: SearchItem[] = [
     "checklist",
     "steps",
   ]),
+  item(
+    { id: "p-ai-roadmap", group: "pages", title: "AI coding roadmap and Context Pack", href: "/roadmap/ai-coding", icon: "page:roadmap" },
+    ["vibecoding", "vibe coding", "ai agents", "agents.md", "claude.md", "prompts", "context"],
+  ),
   item({ id: "p-llms", group: "pages", title: "Local LLMs you can download and run", href: "/local-llms", icon: "page:llms" }, [
     "models",
     "ollama",
@@ -200,6 +206,51 @@ export function searchIndex() {
         },
         [...t.groups.map((g) => g.title), phaseById[t.phase].name, "roadmap"],
         [t.summary, t.rule ?? "", ...t.groups.flatMap((g) => g.items)].join(" "),
+      ),
+    ),
+    ...aiTopics.map((t, i) =>
+      item(
+        {
+          id: `ai-${t.id}`,
+          group: "roadmap",
+          title: t.title,
+          subtitle: `AI roadmap · Level ${i + 1} · ${aiPhases.find((p) => p.id === t.phase)!.name}`,
+          href: `/roadmap/ai-coding?step=${t.id}`,
+          icon: "page:roadmap",
+        },
+        [...t.groups.map((g) => g.title), "ai", "agents", "vibecoding"],
+        [t.summary, t.rule ?? "", ...t.groups.flatMap((g) => g.items)].join(" "),
+      ),
+    ),
+    ...contextFiles.map((f) =>
+      item(
+        {
+          id: `cp-${f.path}`,
+          group: "roadmap",
+          title: f.path,
+          subtitle: "Context Pack template",
+          href: `/roadmap/ai-coding#file-${f.path
+            .replace(/[^a-zA-Z0-9]+/g, "-")
+            .replace(/^-|-$/g, "")
+            .toLowerCase()}`,
+          icon: "page:roadmap",
+        },
+        ["template", "markdown", "context pack", f.priority],
+        `${f.purpose} ${f.includes.join(" ")}`,
+      ),
+    ),
+    ...prompts.map((p) =>
+      item(
+        {
+          id: `pr-${p.id}`,
+          group: "roadmap",
+          title: `${p.title} prompt`,
+          subtitle: "AI roadmap prompt",
+          href: `/roadmap/ai-coding#prompt-${p.id}`,
+          icon: "page:roadmap",
+        },
+        ["prompt", "template", "ai"],
+        p.when,
       ),
     ),
   ]

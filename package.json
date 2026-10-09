@@ -8,6 +8,7 @@
     "start": "node scripts/next.mjs start",
     "lint": "next lint",
     "icons": "node scripts/generate-icons.mjs",
+    "context-pack": "node scripts/build-context-pack.mjs",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

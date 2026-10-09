@@ -61,6 +61,7 @@ CodeStack puts the essentials for **both designers and developers** in one fast,
 | **Stack Builder** (`/stack-builder`) | Pick technologies or start from **9 proven presets** (T3, MERN, Supa‑Next, AI App and more). See how closely your stack matches the classics, share it as a link or copy it as Markdown. |
 | **Agent Skills** (`/skills`) | **194 Agent Skills** for Claude Code, Codex, Cursor, Copilot, Gemini CLI and more, from **47 publishers** and organized into **12 fields**. Includes **Popular** picks from the skills.sh leaderboard, hand‑picked **Hidden gems** and one‑click install commands. |
 | **Developer Roadmap** (`/roadmap`) | A roadmap.sh-style flowchart from idea to production in **31 steps across 7 phases** (Plan, Build, Secure, Verify, Ship, Run, Grow). Each step opens its checklist in place, with the key rule, a mini flowchart, techniques and resources. Styled after neobrutalism with roadmap.sh's Balsamiq Sans font. Covers design, UX, payments (gateway or merchant of record), a coding-agent definition of done, agent and MCP security, OWASP Top 10:2025, performance, SEO and GEO. Includes the AI-first loop, the optimization loop, five maturity levels (`?level=1` to `5` highlights a level), a final ship checklist and tips. Progress is saved in the browser. Content lives in `data/roadmap.ts`. |
+| **AI Coding Roadmap** (`/roadmap/ai-coding`) | A separate roadmap for building with AI coding agents (Codex, Claude Code, Copilot, Cursor, Gemini CLI): **15 levels in 5 phases**, from understanding agents and prompting to context engineering, architecture, data, APIs, testing, security, deployment and multi-agent workflows. Includes the **AI Project Context Pack** (65 Markdown templates such as AGENTS.md, CLAUDE.md and docs/ARCHITECTURE.md, each with what to include, when to create it, which agents read it automatically and how to check it was used), downloadable as Starter, Standard and Production zips; a table of which instruction files each agent loads, checked against each tool's docs; a 9-step workflow; 17 copyable prompts; a worked example; and 17 habits. Templates live in `content/context-pack/`; run `npm run context-pack` after editing one. |
 | **Local LLMs** (`/local-llms`) | **111 open-weight models** you can download and run locally, sorted from SmolLM2 135M (271 MB) to DeepSeek-V3 671B (404 GB). Each card shows parameters (total and active for mixture-of-experts), download size, context window, license, capabilities, the memory it needs and a copyable `ollama run` command. Filter by memory, capability or search. Data comes from the Ollama library; licenses from each model's license file (`data/local-llms.ts`). |
 | **Contribute** (`/contribute`) | Three ways to help, a four‑step guide with copyable commands, contribution guidelines and the code of conduct. |
 
@@ -136,7 +137,7 @@ codestack/
 │   ├── learn/                Learning resources
 │   ├── stack-builder/        Stack Builder
 │   ├── skills/               Agent Skills directory
-│   ├── roadmap/              Developer roadmap
+│   ├── roadmap/              Developer roadmap, and ai-coding/ for the AI coding roadmap
 │   ├── local-llms/           Local LLMs directory
 │   ├── contribute/           Contribution guide and code of conduct
 │   ├── not-found.tsx         Custom 404 page
@@ -145,6 +146,8 @@ codestack/
 │   ├── opengraph-image.png   Social share image (+ twitter-image.png and alt text)
 │   ├── sitemap.ts            Generates /sitemap.xml
 │   └── robots.ts             Generates /robots.txt
+│
+├── content/context-pack/    Context Pack templates as real Markdown files (edit these)
 │
 ├── components/
 │   ├── site/                 Navbar (mega‑menu), footer, logo, theme toggle,
@@ -155,7 +158,8 @@ codestack/
 │   ├── learn/                Learn library, featured videos, video cards
 │   ├── skills/               Skills directory and animated explainer cards
 │   ├── stack/                Stack Builder
-│   ├── roadmap/              Roadmap path, checklists, levels and progress
+│   ├── roadmap/              Roadmap path, checklists, levels and progress (shared by both roadmaps)
+│   ├── ai-roadmap/           AI coding roadmap sections, Context Pack and copy/download actions
 │   ├── local-llms/           Local model directory
 │   ├── contribute/           Copyable command block
 │   ├── motion/reveal.tsx     Scroll‑reveal helpers
@@ -175,6 +179,9 @@ codestack/
 │   ├── skills.ts             Agent skills, fields and publishers
 │   ├── stacks.ts             Stack Builder presets and categories
 │   ├── roadmap.ts            Roadmap phases, steps, levels and checklists
+│   ├── ai-roadmap.ts         AI coding roadmap: levels, agent file table, workflow, prompts, example, habits
+│   ├── context-pack.ts       Context Pack file index and the three packs
+│   ├── context-templates.ts  Generated: the templates, loaded on demand
 │   ├── local-llms.ts         Local models, generated from the Ollama library
 │   ├── raster-logos.ts       Tool name to app-icon logo, for tools without an SVG mark
 │   ├── brand-meta.ts         Generated: logo titles, colors, sprite version
@@ -186,6 +193,7 @@ codestack/
 │   ├── site-search.ts        The ⌘K search index and ranking
 │   ├── use-filter-top.ts     Glides back to a filter bar when a tab changes
 │   ├── model-creators.ts     Brand icon for each model creator
+│   ├── zip.ts                Tiny zip writer for Context Pack downloads
 │   ├── brand-svg.ts          SVG and JSX export helpers for the icon library
 │   ├── color.ts              Luminance helpers that keep dark logos visible
 │   └── utils.ts              `cn()` class name helper
@@ -199,6 +207,7 @@ codestack/
 └── scripts/
     ├── generate-icons.mjs    Builds the sprite and metadata from Simple Icons
     ├── icon-sources.mjs      Custom and extra icons for the sprite
+    ├── build-context-pack.mjs Bundles content/context-pack/ into data/context-templates.ts
     └── next.mjs              Windows‑safe launcher for the Next.js CLI
 ```
 

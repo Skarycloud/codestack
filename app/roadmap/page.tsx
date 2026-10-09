@@ -1,8 +1,12 @@
+import { ArrowRight } from "lucide-react"
 import type { Metadata } from "next"
 import { Balsamiq_Sans } from "next/font/google"
+import Link from "next/link"
 import { ProgressProvider } from "@/components/roadmap/progress"
 import { RoadmapChart } from "@/components/roadmap/roadmap-chart"
 import { Levels, Loops, RoadmapIntro, ShipChecklist, Tips } from "@/components/roadmap/roadmap-extras"
+import { aiTopics, prompts } from "@/data/ai-roadmap"
+import { contextFiles } from "@/data/context-pack"
 import { topicIds, topics } from "@/data/roadmap"
 import { site } from "@/lib/site"
 
@@ -49,6 +53,7 @@ export default function RoadmapPage() {
             the checks.
           </p>
           <RoadmapIntro />
+          <AiRoadmapCard />
         </header>
         <RoadmapChart />
         <Loops />
@@ -57,5 +62,30 @@ export default function RoadmapPage() {
         <Tips />
       </div>
     </ProgressProvider>
+  )
+}
+
+/** The way into the separate AI coding roadmap, kept off the main path on purpose. */
+function AiRoadmapCard() {
+  return (
+    <Link
+      href="/roadmap/ai-coding"
+      className="nb-font nb-box nb-press group mx-auto mt-8 flex max-w-3xl flex-col gap-4 bg-[#C4A1FF] p-5 text-left text-black sm:flex-row sm:items-center sm:p-6"
+    >
+      <div className="flex-1">
+        <p className="w-fit border-2 border-black bg-white px-2 py-0.5 text-[12px] font-bold uppercase tracking-wider">
+          Separate roadmap · for vibecoders
+        </p>
+        <h2 className="mt-3 text-[24px] font-bold leading-tight sm:text-[28px]">Building with AI coding agents?</h2>
+        <p className="mt-1.5 text-[15px] leading-snug">
+          Prompting, context files, AGENTS.md and CLAUDE.md, testing and security for Codex, Claude Code, Copilot and Cursor.{" "}
+          {aiTopics.length} levels, {contextFiles.length} downloadable Markdown templates and {prompts.length} copyable prompts.
+        </p>
+      </div>
+      <span className="inline-flex shrink-0 items-center gap-2 self-start border-2 border-black bg-black px-4 py-2.5 text-[15px] font-bold text-white sm:self-center">
+        Open the AI roadmap
+        <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
+      </span>
+    </Link>
   )
 }

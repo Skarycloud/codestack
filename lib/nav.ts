@@ -154,6 +154,8 @@ export const navItems: NavItem[] = [
           { name: "Full roadmap", href: "/roadmap" },
           { name: "AI-first loop", href: "/roadmap#ai-loop" },
           { name: "Ship checklist", href: "/roadmap#ship" },
+          { name: "AI coding roadmap", href: "/roadmap/ai-coding" },
+          { name: "Context Pack templates", href: "/roadmap/ai-coding#context-pack" },
         ],
       },
       { title: "Phases", links: phases.map((p) => ({ name: p.name, href: `/roadmap#phase-${p.id}` })) },

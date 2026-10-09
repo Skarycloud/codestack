@@ -1,0 +1,21 @@
+---
+description: "Core project rules for all code in this repository"
+globs:
+alwaysApply: true
+---
+
+# Project rules
+
+Shared instructions are in AGENTS.md. Follow them; this file only adds Cursor-specific notes.
+
+- Plan before multi-file edits and list the files you'll change.
+- Run [test command] after changes and report the result.
+- [Cursor-only preference]
+
+<!--
+Other rule types:
+- File-scoped: alwaysApply: false with globs: "src/**/*.test.ts"
+- Agent-decided: alwaysApply: false with a description and no globs
+- Manual: no globs or description; include it with @rule-name
+Files must use the .mdc extension.
+-->

@@ -7,7 +7,7 @@ import { aiLoop, itemId, levels, phases, shipChecklist, tips, topicIds, topics, 
 import { cn } from "@/lib/utils"
 
 /** A big section heading with neobrutalist highlighted words. */
-function Heading({ eyebrow, children, id }: { eyebrow: string; children: React.ReactNode; id?: string }) {
+export function Heading({ eyebrow, children, id }: { eyebrow: string; children: React.ReactNode; id?: string }) {
   return (
     <div id={id} className="scroll-mt-24 text-center">
       <p className="mx-auto w-fit border-2 border-[var(--nb-line)] bg-[var(--nb-card)] px-3 py-1 text-[12.5px] font-bold uppercase tracking-wider">
