@@ -1,4 +1,5 @@
 import { brandMeta, brandSprite, brandSpriteExtra } from "@/data/brand-meta"
+import { rasterLogos } from "@/data/raster-logos"
 import { isVeryDark, isVeryLight } from "@/lib/color"
 import { cn } from "@/lib/utils"
 
@@ -28,6 +29,23 @@ function monogramColor(name: string) {
 
 export function BrandIcon({ slug, name, variant = "color", className }: BrandIconProps) {
   const icon = slug ? brandMeta[slug] : undefined
+
+  // No SVG mark: use the tool's own app icon when we have one.
+  const raster = !icon ? rasterLogos[name] : undefined
+  if (raster) {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={raster.src}
+        alt={name}
+        width={96}
+        height={96}
+        loading="lazy"
+        decoding="async"
+        className={cn("size-6 rounded-[22%] object-contain", raster.invert && "dark:invert", variant === "mono" && "grayscale", className)}
+      />
+    )
+  }
 
   if (!icon) {
     // No published logo: a single bold initial, sized and colored to sit alongside real marks.

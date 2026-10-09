@@ -88,6 +88,7 @@ export const navItems: NavItem[] = [
         primary: true,
         links: [
           { name: "All resources", href: "/learn" },
+          { name: "Learning platforms", href: "/learn#platforms" },
           { name: "Design", href: "/learn#design" },
           { name: "Frontend", href: "/learn#frontend" },
           { name: "AI & ML", href: "/learn#ai" },

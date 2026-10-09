@@ -19,6 +19,7 @@ import {
   Play,
   PlayCircle,
   Rocket,
+  School,
   Search,
   Server,
   Smartphone,
@@ -47,6 +48,7 @@ const typeMeta: Record<ResourceType, { icon: typeof Book; label: string; tint: s
 }
 
 const trackIcons: Record<Track, typeof Book> = {
+  platforms: School,
   design: Palette,
   frontend: Code2,
   backend: Server,
