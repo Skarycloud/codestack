@@ -6,9 +6,9 @@ import Link from "next/link"
 import { useEffect, useRef, useState } from "react"
 import { useCommandMenu } from "@/components/site/command-menu"
 import { BrandIcon } from "@/components/brand-icon"
-import { ContourArt } from "@/components/home/contour-art"
+import { StoryScene } from "@/components/home/story-scene"
 import { brandMeta } from "@/data/brand-meta"
-import { categories, categoryById, stats, tools } from "@/data/catalog"
+import { categoryById, stats, tools } from "@/data/catalog"
 import { isVeryDark } from "@/lib/color"
 import { display, serif } from "@/lib/fonts"
 import { cn } from "@/lib/utils"
@@ -103,15 +103,9 @@ export function Hero() {
           </p>
         </div>
 
-        <figure className="rise order-1 lg:order-2" style={delay(0.2)}>
-          <ContourArt className="h-[220px] w-full [mask-image:radial-gradient(ellipse_at_center,#000_45%,transparent_78%)] sm:h-[320px] lg:h-[540px]" />
-          <figcaption className="mt-1 hidden justify-between font-mono text-[11.5px] uppercase tracking-[0.08em] text-muted-foreground/70 lg:flex">
-            <span>Fig. 01</span>
-            <span>
-              A map of {stats.tools} tools · {categories.length} categories
-            </span>
-          </figcaption>
-        </figure>
+        <div className="rise order-1 lg:order-2" style={delay(0.2)}>
+          <StoryScene caption={`${stats.tools} tools · idea to launch`} />
+        </div>
 
         <div className="rise order-3 flex flex-col gap-4 pr-[7px] sm:flex-row sm:items-center lg:col-span-2 lg:mt-2" style={delay(0.55)}>
           <CommandBar onOpen={open} onPrefetch={prefetch} />
@@ -231,9 +225,13 @@ const examples = [
 /** Types and erases example searches. Holds a static hint for reduced motion. */
 function useTypewriter(words: string[]) {
   const reduce = useReducedMotion()
+  // Starts empty on the server and the client alike, so hydration matches; the effect fills it in.
   const [text, setText] = useState("")
   useEffect(() => {
-    if (reduce) return
+    if (reduce) {
+      setText("Figma, Next.js, Postgres…")
+      return
+    }
     let word = 0
     let chars = 0
     let deleting = false
@@ -256,7 +254,7 @@ function useTypewriter(words: string[]) {
     timer = setTimeout(tick, 900)
     return () => clearTimeout(timer)
   }, [reduce, words])
-  return reduce ? "Figma, Next.js, Postgres…" : text
+  return text
 }
 
 /** The hero's search: a neobrutalist command bar that opens the palette. */
