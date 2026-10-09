@@ -9,30 +9,28 @@ import { Reveal } from "@/components/motion/reveal"
 import { useCommandMenu } from "@/components/site/command-menu"
 import { tools } from "@/data/catalog"
 import { brandMeta } from "@/data/brand-meta"
-import { localModels } from "@/data/local-llms"
-import { resources } from "@/data/resources"
-import { phaseById, phases, stepNumber, topics } from "@/data/roadmap"
-import { publisherById, skills } from "@/data/skills"
-import { creatorIcon } from "@/lib/model-creators"
+import type { HomeSamples } from "@/lib/home-samples"
 import { cn } from "@/lib/utils"
 import { Fragment } from "react"
 import { useModKey } from "@/components/shortcut-key"
 
 const iconSample = Object.keys(brandMeta).slice(12, 24)
 const stackSample = ["Next.js", "Tailwind CSS", "Supabase", "Vercel"].map((n) => tools.find((t) => t.name === n)!)
-const skillSample = ["frontend-design", "high-end-visual-design", "seo-audit"].map((n) => skills.find((s) => s.name === n)!).filter(Boolean)
-const stepSample = ["development", "frontend"].map((id) => topics.find((t) => t.id === id)!)
-const stepPhase = phaseById[stepSample[0].phase]
+const contextSample = [
+  { path: "AGENTS.md", color: "#FFDC58" },
+  { path: "PROJECT_BRIEF.md", color: "#7FBCFF" },
+  { path: "docs/ARCHITECTURE.md", color: "#C4A1FF" },
+  { path: "docs/SECURITY.md", color: "#5CF2C4" },
+]
 
 // The roadmap card borrows the roadmap page's neobrutalist look and font. The card sits below
 // the fold, so the font is fetched when it renders instead of preloading with the page.
 const balsamiq = Balsamiq_Sans({ subsets: ["latin"], weight: "700", variable: "--font-balsamiq", display: "swap", preload: false })
-const modelSample = ["Gemma 3 4B", "Qwen 3 8B", "gpt-oss 20B", "Llama 3.3 70B"].map((n) => localModels.find((m) => m.name === n)!)
-const maxLog = Math.log10(Math.max(...modelSample.map((m) => m.paramsB)) * 10)
 
 type Feature = { eyebrow: string; title: string; href: string; tone: string; visual: React.ReactNode; search?: true; nb?: true }
 
-const features: Feature[] = [
+// Built from server-picked samples (see lib/home-samples.ts).
+const getFeatures = (d: HomeSamples): Feature[] => [
   {
     eyebrow: "Icon library",
     title: "Copy any logo. As SVG, JSX or PNG.",
@@ -76,7 +74,7 @@ const features: Feature[] = [
     tone: "bg-gradient-to-b from-[#eef4ff] to-[#f5f5f7] dark:from-[#0a1a33] dark:to-surface",
     visual: (
       <div className="space-y-2">
-        {resources.slice(0, 4).map((r) => (
+        {d.resources.map((r) => (
           <div key={r.name} className="rounded-2xl bg-white/80 px-4 py-3 shadow-sm backdrop-blur dark:bg-white/[0.06]">
             <p className="text-[14px] font-semibold tracking-[-0.01em]">{r.name}</p>
             <p className="text-[12px] text-muted-foreground">{r.author}</p>
@@ -92,16 +90,15 @@ const features: Feature[] = [
     tone: "bg-gradient-to-b from-[#f3efff] to-[#f5f5f7] dark:from-[#1a1433] dark:to-surface",
     visual: (
       <div className="space-y-2">
-        {skillSample.map((s) => {
-          const p = publisherById[s.publisher]
+        {d.skills.map((s) => {
           return (
             <div
               key={s.name}
               className="flex items-center gap-3 rounded-2xl bg-white/80 px-4 py-3 shadow-sm backdrop-blur dark:bg-white/[0.06]"
             >
-              <BrandIcon slug={p.icon} name={p.name} className="size-5" />
+              <BrandIcon slug={s.icon} name={s.publisher} className="size-5" />
               <span className="truncate font-mono text-[13px]">{s.name}</span>
-              <span className="ml-auto shrink-0 text-[12px] text-muted-foreground">{p.name}</span>
+              <span className="ml-auto shrink-0 text-[12px] text-muted-foreground">{s.publisher}</span>
             </div>
           )
         })}
@@ -116,15 +113,18 @@ const features: Feature[] = [
     tone: "bg-[#0b0b0d] text-white dark:bg-surface",
     visual: (
       <div className="space-y-3">
-        {modelSample.map((m) => (
+        {d.models.map((m) => (
           <div key={m.name}>
             <div className="flex items-center gap-2.5 text-[14px]">
-              <BrandIcon slug={creatorIcon[m.creator]} name={m.creator} className="size-4" />
+              <BrandIcon slug={m.icon} name={m.creator} className="size-4" />
               <span className="font-medium">{m.name}</span>
               <span className="ml-auto text-[12px] tabular-nums text-white/45">{m.size}</span>
             </div>
             <div className="mt-1.5 h-1 overflow-hidden rounded-full bg-white/10">
-              <div className="h-full rounded-full bg-white/50" style={{ width: `${(Math.log10(m.paramsB * 10) / maxLog) * 100}%` }} />
+              <div
+                className="h-full rounded-full bg-white/50"
+                style={{ width: `${(Math.log10(m.paramsB * 10) / Math.log10(Math.max(...d.models.map((x) => x.paramsB)) * 10)) * 100}%` }}
+              />
             </div>
           </div>
         ))}
@@ -144,21 +144,44 @@ const features: Feature[] = [
       <div className="flex flex-col items-center">
         <div className="nb-box-sm bg-black px-4 py-1.5 text-[13px] font-bold text-white dark:bg-[var(--nb-card)]">Start here: an idea</div>
         <NbLine />
-        <div
-          className="nb-box-sm px-3 py-1 text-[12px] font-bold uppercase tracking-wide text-black"
-          style={{ background: stepPhase.color }}
-        >
-          Phase {phases.indexOf(stepPhase) + 1} · {stepPhase.name}
+        <div className="nb-box-sm px-3 py-1 text-[12px] font-bold uppercase tracking-wide text-black" style={{ background: d.phase.color }}>
+          Phase {d.phase.number} · {d.phase.name}
         </div>
-        {stepSample.map((t) => (
+        {d.steps.map((t) => (
           <Fragment key={t.id}>
             <NbLine />
             <div className="nb-box-sm nb-alt-shadow flex w-full items-center gap-3 bg-[var(--nb-yellow)] px-3 py-2.5 text-black">
-              <span className="grid size-8 shrink-0 place-items-center bg-black text-[14px] font-bold text-white">{stepNumber[t.id]}</span>
+              <span className="grid size-8 shrink-0 place-items-center bg-black text-[14px] font-bold text-white">{t.number}</span>
               <span className="truncate text-[16px] font-bold">{t.title}</span>
             </div>
           </Fragment>
         ))}
+      </div>
+    ),
+  },
+  {
+    eyebrow: "Context Pack",
+    // {n} is filled in with the live template count.
+    title: "{n} Markdown files your AI agent needs.",
+    href: "/roadmap/ai-coding#context-pack",
+    tone: `nb nb-font nb-box nb-press ${balsamiq.variable}`,
+    nb: true,
+    visual: (
+      <div>
+        {contextSample.map((f, i) => (
+          <div
+            key={f.path}
+            className="nb-box-sm mb-2.5 flex items-center gap-2.5 bg-[var(--nb-card)] px-3 py-2"
+            style={{ marginLeft: i * 12, marginRight: (contextSample.length - 1 - i) * 12 }}
+          >
+            <span aria-hidden className="size-3 shrink-0 border-2 border-[var(--nb-line)]" style={{ background: f.color }} />
+            <span className="truncate font-mono text-[13px] font-bold">{f.path}</span>
+          </div>
+        ))}
+        <div className="nb-box-sm nb-alt-shadow mt-4 flex items-center justify-between bg-[var(--nb-yellow)] px-3 py-2 text-[14px] font-bold text-black">
+          <span>Starter · Standard · Production</span>
+          <span>.zip</span>
+        </div>
       </div>
     ),
   },
@@ -187,7 +210,8 @@ const features: Feature[] = [
   },
 ]
 
-export function FeatureCarousel() {
+export function FeatureCarousel({ samples }: { samples: HomeSamples }) {
+  const features = getFeatures(samples)
   const { open, prefetch } = useCommandMenu()
   return (
     <section className="overflow-hidden pb-12 pt-24 sm:pt-32">
@@ -206,7 +230,9 @@ export function FeatureCarousel() {
               )}
             >
               <p className="text-[13px] font-semibold opacity-70">{f.eyebrow}</p>
-              <h3 className="mt-2 text-[26px] font-semibold leading-[1.12] tracking-[-0.028em]">{f.title}</h3>
+              <h3 className="mt-2 text-[26px] font-semibold leading-[1.12] tracking-[-0.028em]">
+                {f.title.replace("{n}", String(samples.templateCount))}
+              </h3>
               <div className="mt-auto">{f.visual}</div>
               {f.search ? (
                 // The search card opens the palette itself rather than a page.

@@ -39,12 +39,12 @@ export function Hero() {
       >
         <div className="rise">
           <Link
-            href="/local-llms"
+            href="/roadmap/ai-coding"
             className="group inline-flex items-center gap-2 rounded-full border border-black/[0.06] bg-background/60 py-1 pl-1 pr-3 text-[13px] text-muted-foreground shadow-sm backdrop-blur-md transition-colors hover:text-foreground dark:border-white/10"
           >
             <span className="rounded-full bg-primary px-2 py-0.5 text-[11px] font-semibold text-primary-foreground">New</span>
             <span>
-              Local LLMs<span className="hidden sm:inline">: run open AI models on your own machine</span>
+              AI coding roadmap<span className="hidden sm:inline">: vibecode like an engineer</span>
             </span>
             <ChevronRight className="size-3.5 transition-transform duration-300 group-hover:translate-x-0.5" />
           </Link>

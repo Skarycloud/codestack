@@ -5,6 +5,7 @@ import { Hero } from "@/components/home/hero"
 import { LogoMarquee } from "@/components/home/logo-marquee"
 import { OpenSourceCta } from "@/components/home/open-source-cta"
 import { Stats } from "@/components/home/stats"
+import { homeSamples, homeStats } from "@/lib/home-samples"
 
 export default function HomePage() {
   return (
@@ -13,8 +14,8 @@ export default function HomePage() {
       <LogoMarquee />
       <Audiences />
       <CategoryBento />
-      <FeatureCarousel />
-      <Stats />
+      <FeatureCarousel samples={homeSamples()} />
+      <Stats items={homeStats()} />
       <OpenSourceCta />
     </>
   )

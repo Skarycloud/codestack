@@ -3,21 +3,9 @@
 import { animate, useInView, useReducedMotion } from "framer-motion"
 import { useEffect, useRef, useState } from "react"
 import { Reveal } from "@/components/motion/reveal"
-import { stats } from "@/data/catalog"
-import { brandMeta } from "@/data/brand-meta"
-import { localModels } from "@/data/local-llms"
-import { resources } from "@/data/resources"
-import { skills } from "@/data/skills"
 
-const items = [
-  { value: stats.tools, suffix: "+", label: "Hand‑picked tools" },
-  { value: Object.keys(brandMeta).length, suffix: "", label: "Brand icons to copy" },
-  { value: resources.length, suffix: "", label: "Learning resources" },
-  { value: skills.length, suffix: "", label: "Agent skills" },
-  { value: localModels.length, suffix: "", label: "Local AI models" },
-]
-
-export function Stats() {
+/** Counts come from the server (lib/home-samples.ts), so the data files stay off the client. */
+export function Stats({ items }: { items: { value: number; suffix: string; label: string }[] }) {
   return (
     <section className="shell py-20">
       <div className="grid grid-cols-2 gap-y-12 border-y border-black/[0.06] py-14 dark:border-white/[0.07] md:grid-cols-5">
