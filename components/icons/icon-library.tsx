@@ -1,10 +1,11 @@
 "use client"
 
 import * as Dialog from "@radix-ui/react-dialog"
-import { Check, Code2, Copy, Download, ImageDown, Search, X } from "lucide-react"
+import { Check, Code2, Copy, Download, ImageDown, X } from "lucide-react"
 import { useCallback, useDeferredValue, useEffect, useMemo, useState } from "react"
 import { toast } from "sonner"
 import { BrandIcon, type IconVariant } from "@/components/brand-icon"
+import { DirectoryToolbar, ResultsHeader, ResultsSheet } from "@/components/directory/toolbar"
 import { LoadMoreSentinel, useProgressiveList } from "@/components/progressive-list"
 import { SearchParamsListener } from "@/components/search-params"
 import { Segmented } from "@/components/segmented"
@@ -97,82 +98,74 @@ export function IconLibrary() {
   return (
     <>
       <SearchParamsListener onChange={onParams} />
-      <div className="sticky top-14 z-30">
-        <div className="glass border-y border-black/[0.06] dark:border-white/[0.07]">
-          <div className="shell flex items-center gap-3 py-3">
-            <label className="relative flex h-10 flex-1 items-center md:max-w-sm">
-              <Search className="pointer-events-none absolute left-3.5 size-4 text-muted-foreground" />
-              <input
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder={`Search ${icons.length} icons`}
-                aria-label="Search icons"
-                className="h-full w-full rounded-full bg-surface-2/80 pl-10 pr-4 text-[14px] outline-none ring-1 ring-inset ring-transparent transition-shadow placeholder:text-muted-foreground focus:ring-primary/60"
-              />
-            </label>
-            <Segmented
-              size="sm"
-              value={variant}
-              onChange={setVariant}
-              options={[
-                { value: "color", label: "Color" },
-                { value: "mono", label: "Mono" },
-              ]}
-              className="ml-auto"
-            />
-          </div>
-        </div>
-      </div>
+      <DirectoryToolbar
+        search={{ value: query, onChange: setQuery, placeholder: `Search ${icons.length} icons`, label: "Search icons" }}
+        controls={
+          <Segmented
+            size="sm"
+            value={variant}
+            onChange={setVariant}
+            options={[
+              { value: "color", label: "Color" },
+              { value: "mono", label: "Mono" },
+            ]}
+          />
+        }
+      />
 
-      <div className="shell min-h-[60vh] pb-28 pt-10">
-        <p className="mb-6 text-[14px] text-muted-foreground">{results.length} icons · click any icon for SVG, JSX and PNG downloads.</p>
-        {results.length === 0 ? (
-          <p className="py-24 text-center text-[20px] font-semibold tracking-[-0.02em]">No icons match “{query}”.</p>
-        ) : (
-          <>
-            <div className={gridClass}>
-              {visible.map((icon) => (
-                <div key={icon.slug} className="scroll-reveal group relative">
-                  <button
-                    onClick={() => setSelected(icon)}
-                    className="card-surface card-lift flex aspect-square w-full flex-col items-center justify-center gap-3 p-3"
-                  >
-                    <BrandIcon
-                      slug={icon.slug}
-                      name={icon.title}
-                      variant={variant}
-                      className="size-9 transition-transform duration-500 ease-apple group-hover:scale-110"
-                    />
-                    <span className="w-full truncate text-center text-[12px] text-muted-foreground">{icon.title}</span>
-                  </button>
-                  <button
-                    onClick={() =>
-                      copy(
-                        loadSvg().then((m) => m.brandSvg(icon.slug)),
-                        `${icon.title} SVG`,
-                      )
-                    }
-                    aria-label={`Copy ${icon.title} SVG`}
-                    className="pressable absolute right-2 top-2 grid size-7 place-items-center rounded-full bg-background/90 text-muted-foreground opacity-0 shadow-sm ring-1 ring-black/[0.06] transition-opacity hover:text-foreground focus-visible:opacity-100 group-hover:opacity-100 dark:ring-white/10"
-                  >
-                    <Copy className="size-3.5" />
-                  </button>
-                </div>
-              ))}
-            </div>
-            {hasMore && (
-              <LoadMoreSentinel onLoadMore={loadMore} count={visible.length} className={cn(gridClass, "mt-3")}>
-                {Array.from({ length: 16 }, (_, i) => (
-                  <div key={i} className="card-surface flex aspect-square flex-col items-center justify-center gap-3 p-3">
-                    <div className="skeleton size-9 rounded-xl" />
-                    <div className="skeleton h-2.5 w-3/5 rounded-full" />
+      <ResultsSheet className="min-h-[60vh] pb-28 pt-10">
+        <div className="shell">
+          <ResultsHeader>
+            <p>{results.length} icons · click any icon for SVG, JSX and PNG downloads.</p>
+          </ResultsHeader>
+          {results.length === 0 ? (
+            <p className="py-24 text-center text-[20px] font-semibold tracking-[-0.02em]">No icons match “{query}”.</p>
+          ) : (
+            <>
+              <div className={gridClass}>
+                {visible.map((icon) => (
+                  <div key={icon.slug} className="scroll-reveal group relative">
+                    <button
+                      onClick={() => setSelected(icon)}
+                      className="card-surface card-lift flex aspect-square w-full flex-col items-center justify-center gap-3 p-3"
+                    >
+                      <BrandIcon
+                        slug={icon.slug}
+                        name={icon.title}
+                        variant={variant}
+                        className="size-9 transition-transform duration-500 ease-apple group-hover:scale-110"
+                      />
+                      <span className="w-full truncate text-center text-[12px] text-muted-foreground">{icon.title}</span>
+                    </button>
+                    <button
+                      onClick={() =>
+                        copy(
+                          loadSvg().then((m) => m.brandSvg(icon.slug)),
+                          `${icon.title} SVG`,
+                        )
+                      }
+                      aria-label={`Copy ${icon.title} SVG`}
+                      className="pressable absolute right-2 top-2 grid size-7 place-items-center rounded-full bg-background/90 text-muted-foreground opacity-0 shadow-sm ring-1 ring-black/[0.06] transition-opacity hover:text-foreground focus-visible:opacity-100 group-hover:opacity-100 dark:ring-white/10"
+                    >
+                      <Copy className="size-3.5" />
+                    </button>
                   </div>
                 ))}
-              </LoadMoreSentinel>
-            )}
-          </>
-        )}
-      </div>
+              </div>
+              {hasMore && (
+                <LoadMoreSentinel onLoadMore={loadMore} count={visible.length} className={cn(gridClass, "mt-3")}>
+                  {Array.from({ length: 16 }, (_, i) => (
+                    <div key={i} className="card-surface flex aspect-square flex-col items-center justify-center gap-3 p-3">
+                      <div className="skeleton size-9 rounded-xl" />
+                      <div className="skeleton h-2.5 w-3/5 rounded-full" />
+                    </div>
+                  ))}
+                </LoadMoreSentinel>
+              )}
+            </>
+          )}
+        </div>
+      </ResultsSheet>
 
       <IconSheet icon={selected} onClose={() => setSelected(null)} />
     </>
@@ -203,7 +196,7 @@ function IconSheet({ icon, onClose }: { icon: Icon | null; onClose: () => void }
                     <use href={spriteHref(icon)} />
                   </svg>
                 </div>
-                <div className="grid aspect-square place-items-center bg-[#0b0b0d] sm:aspect-auto sm:rounded-bl-[28px]">
+                <div className="grid aspect-square place-items-center bg-[#111111] sm:aspect-auto sm:rounded-bl-[28px]">
                   <svg
                     viewBox="0 0 24 24"
                     className="size-24"
@@ -298,7 +291,7 @@ function Action({ icon: Icon, label, onClick, primary }: { icon: typeof Copy; la
       onClick={onClick}
       className={cn(
         "pressable flex h-11 items-center justify-center gap-1.5 whitespace-nowrap rounded-full px-2 text-[13px] font-medium",
-        primary ? "col-span-3 bg-primary text-primary-foreground hover:brightness-110" : "bg-surface-2 hover:bg-foreground/10",
+        primary ? "col-span-3 bg-primary text-primary-foreground hover:bg-primary-hover" : "bg-surface-2 hover:bg-foreground/10",
       )}
     >
       <Icon className="size-4" />

@@ -14,7 +14,7 @@ export function PageHeader({ eyebrow, title, description, children }: PageHeader
       />
       <div className="shell text-center">
         {[
-          <p key="e" className="text-eyebrow text-link">
+          <p key="e" className="text-eyebrow text-muted-foreground">
             {eyebrow}
           </p>,
           <h1 key="t" className="text-headline mx-auto mt-5 max-w-[20ch] text-balance">

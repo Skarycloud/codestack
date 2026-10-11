@@ -124,7 +124,7 @@ export const topics: RoadmapTopic[] = [
     rule: "AI-generated UI is no excuse for poor design. Decide the system first, then let tools apply it.",
     resources: [
       { name: "Design tools on CodeStack", href: "/explore?c=design-tools" },
-      { name: "UI kits on CodeStack", href: "/explore?c=components" },
+      { name: "UI kits on CodeStack", href: "/explore?c=ui&s=components" },
       { name: "Design skills for agents", href: "/skills?f=design" },
     ],
   },
@@ -193,7 +193,7 @@ export const topics: RoadmapTopic[] = [
     ],
     resources: [
       { name: "You Might Not Need an Effect", href: "https://react.dev/learn/you-might-not-need-an-effect" },
-      { name: "Frameworks on CodeStack", href: "/explore?c=frameworks" },
+      { name: "Frameworks on CodeStack", href: "/explore?c=code&s=frameworks" },
       { name: "Frontend skills for agents", href: "/skills?f=frontend" },
     ],
   },
@@ -268,7 +268,7 @@ export const topics: RoadmapTopic[] = [
     resources: [
       { name: "Use The Index, Luke", href: "https://use-the-index-luke.com" },
       { name: "HTTP caching, MDN", href: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Caching" },
-      { name: "Databases on CodeStack", href: "/explore?c=databases" },
+      { name: "Databases on CodeStack", href: "/explore?c=server&s=databases" },
     ],
   },
   {
@@ -296,7 +296,7 @@ export const topics: RoadmapTopic[] = [
       "Store provider IDs for customers and payments, never card details",
     ],
     resources: [
-      { name: "Payments on CodeStack", href: "/explore?c=payments" },
+      { name: "Payments on CodeStack", href: "/explore?c=cloud&s=payments" },
       { name: "Webhooks, Stripe", href: "https://docs.stripe.com/webhooks" },
       { name: "Testing, Stripe", href: "https://docs.stripe.com/testing" },
       { name: "Razorpay docs", href: "https://razorpay.com/docs/" },
@@ -497,7 +497,7 @@ export const topics: RoadmapTopic[] = [
     rule: "Setup should be four commands, not a 47-page document with 18 manual steps.",
     resources: [
       { name: "Dev Containers", href: "https://containers.dev" },
-      { name: "Hosting on CodeStack", href: "/explore?c=hosting" },
+      { name: "Hosting on CodeStack", href: "/explore?c=cloud&s=hosting" },
     ],
   },
   {
@@ -529,7 +529,7 @@ export const topics: RoadmapTopic[] = [
     flow: ["What is slow?", "What is expensive?", "What is failing?", "What is used?", "What isn't?"],
     resources: [
       { name: "OpenTelemetry", href: "https://opentelemetry.io" },
-      { name: "Services on CodeStack", href: "/explore?c=services" },
+      { name: "Services on CodeStack", href: "/explore?c=cloud&s=services" },
     ],
   },
   {

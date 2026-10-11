@@ -26,6 +26,13 @@ const config = {
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
+          hover: "hsl(var(--primary-hover))",
+        },
+        brand: "hsl(var(--brand))",
+        success: "hsl(var(--success))",
+        disabled: {
+          DEFAULT: "hsl(var(--disabled))",
+          foreground: "hsl(var(--disabled-foreground))",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",

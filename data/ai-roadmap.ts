@@ -383,7 +383,7 @@ export const aiTopics: ChartTopic[] = [
       "Ask for the down migration with every up migration.",
       "Keep DATA_DICTIONARY.md for meaning (what a field represents), not for types the schema already states.",
     ],
-    resources: [docs.mermaid, { name: "Databases on CodeStack", href: "/explore?c=databases" }],
+    resources: [docs.mermaid, { name: "Databases on CodeStack", href: "/explore?c=server&s=databases" }],
   },
   {
     id: "integrations",
@@ -428,7 +428,7 @@ export const aiTopics: ChartTopic[] = [
       "Generate types from the OpenAPI spec so drift becomes a compile error.",
       "Test webhooks with the provider's CLI or test events before going live.",
     ],
-    resources: [docs.openapi, docs.jsonSchema, { name: "Payments on CodeStack", href: "/explore?c=payments" }],
+    resources: [docs.openapi, docs.jsonSchema, { name: "Payments on CodeStack", href: "/explore?c=cloud&s=payments" }],
   },
 
   // Build and verify
@@ -694,7 +694,7 @@ export const aiTopics: ChartTopic[] = [
       "Ask the agent to write the runbook while it's building the feature.",
       "Rehearse a rollback in staging before you need it.",
     ],
-    resources: [docs.twelve, docs.sre, docs.changelog, docs.semver, { name: "Hosting on CodeStack", href: "/explore?c=hosting" }],
+    resources: [docs.twelve, docs.sre, docs.changelog, docs.semver, { name: "Hosting on CodeStack", href: "/explore?c=cloud&s=hosting" }],
   },
   {
     id: "advanced",

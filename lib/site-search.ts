@@ -1,4 +1,4 @@
-import { categories, categoryById, tools } from "@/data/catalog"
+import { audienceLabel, categories, categoryById, exploreHref, sectionById, tools } from "@/data/catalog"
 import { brandMeta } from "@/data/brand-meta"
 import { localModels } from "@/data/local-llms"
 import { resources, resourceTypes, tracks } from "@/data/resources"
@@ -94,21 +94,36 @@ export const pages: SearchItem[] = [
   ]),
 ]
 
-export const categoryItems: SearchItem[] = categories.map((c) =>
+// Categories, then each of their sections (e.g. "Payments" in Cloud & Services).
+export const categoryItems: SearchItem[] = categories.flatMap((c) => [
   item(
     {
       id: `c-${c.id}`,
       group: "categories",
       title: c.name,
-      subtitle: c.alsoFor ? "Design + Develop" : c.audience === "design" ? "Design" : "Develop",
-      href: `/explore?c=${c.id}`,
+      subtitle: audienceLabel(c),
+      href: exploreHref(c.id),
       icon: "category",
       iconName: c.name,
     },
-    ["category", c.audience],
+    ["category", c.audience, ...c.sections.map((s) => s.name)],
     c.tagline,
   ),
-)
+  ...c.sections.map((s) =>
+    item(
+      {
+        id: `s-${s.id}`,
+        group: "categories",
+        title: s.name,
+        subtitle: c.name,
+        href: exploreHref(c.id, s.id),
+        icon: "category",
+        iconName: s.name,
+      },
+      ["section", c.name],
+    ),
+  ),
+])
 
 let index: SearchItem[] | null = null
 
@@ -129,7 +144,7 @@ export function searchIndex() {
           icon: t.icon,
           iconName: t.name,
         },
-        [t.kind, categoryById[t.category].name, t.openSource ? "open source" : "", t.free ? "free" : ""],
+        [t.kind, categoryById[t.category].name, sectionById[t.section].name, t.openSource ? "open source" : "", t.free ? "free" : ""],
         t.description,
       ),
     ),

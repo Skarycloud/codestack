@@ -107,7 +107,7 @@ export default function ContributePage() {
             href={`${site.repo}/issues/new`}
             target="_blank"
             rel="noopener noreferrer"
-            className="pressable inline-flex h-11 items-center gap-2 rounded-full bg-primary px-6 text-[15px] font-medium text-primary-foreground hover:brightness-110"
+            className="pressable inline-flex h-11 items-center gap-2 rounded-full bg-primary px-6 text-[15px] font-medium text-primary-foreground hover:bg-primary-hover"
           >
             <Sparkles className="size-4" /> Suggest a tool
           </a>
@@ -154,14 +154,14 @@ export default function ContributePage() {
         <div className="shell grid grid-cols-1 gap-14 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:gap-20">
           <div className="lg:sticky lg:top-28 lg:self-start">
             <Reveal>
-              <p className="text-eyebrow text-link">Add a tool</p>
+              <p className="text-eyebrow text-muted-foreground">Add a tool</p>
               <h2 className="text-headline mt-4">Four steps. About five minutes.</h2>
               <p className="text-lede mt-5 text-muted-foreground">
                 Every tool lives in a single, typed file. Here's what an entry looks like.
               </p>
             </Reveal>
             <Reveal delay={0.08} className="mt-10">
-              <div className="overflow-hidden rounded-[20px] bg-[#0b0b0d] text-white shadow-[0_30px_60px_-30px_rgba(0,0,0,0.5)] ring-1 ring-white/10">
+              <div className="overflow-hidden rounded-[20px] bg-[#111111] text-white shadow-[0_30px_60px_-30px_rgba(0,0,0,0.5)] ring-1 ring-white/10">
                 <div className="flex items-center gap-1.5 border-b border-white/10 px-4 py-3">
                   <span className="size-2.5 rounded-full bg-[#ff5f57]" />
                   <span className="size-2.5 rounded-full bg-[#febc2e]" />

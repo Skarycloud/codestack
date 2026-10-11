@@ -1,9 +1,9 @@
 "use client"
 
-import { ArrowUpRight, ChevronDown, Gamepad2 } from "lucide-react"
+import { ArrowUpRight, ChevronDown } from "lucide-react"
 import { useState } from "react"
+import { DirectorySections, SectionHeading } from "@/components/directory/toolbar"
 import type { GameSkill, Resource } from "@/data/resources"
-import { cn } from "@/lib/utils"
 
 const skillNames: Record<GameSkill, string> = {
   code: "Code",
@@ -20,7 +20,17 @@ const skillNames: Record<GameSkill, string> = {
  * The Learn by playing track, presented like a game store: generous cover art, a quiet
  * eyebrow, the title, one line about the game and a single Play action.
  */
-export function GameArcade({ items, preview, onShowAll }: { items: Resource[]; preview: boolean; onShowAll: () => void }) {
+export function GameArcade({
+  index,
+  items,
+  preview,
+  onShowAll,
+}: {
+  index: number
+  items: Resource[]
+  preview: boolean
+  onShowAll: () => void
+}) {
   const [skill, setSkill] = useState<GameSkill | "all">("all")
   const present = (Object.keys(skillNames) as GameSkill[]).filter((s) => items.some((g) => g.skill === s))
   const filtered = skill === "all" ? items : items.filter((g) => g.skill === skill)
@@ -28,33 +38,26 @@ export function GameArcade({ items, preview, onShowAll }: { items: Resource[]; p
 
   return (
     <section id="games" className="scroll-mt-48">
-      <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
-        <div className="flex items-center gap-4">
-          <span className="grid size-12 shrink-0 place-items-center rounded-[14px] bg-surface-2 text-foreground">
-            <Gamepad2 className="size-[22px]" />
-          </span>
-          <div>
-            <h2 className="text-title">Learn by playing</h2>
-            <p className="mt-1 text-muted-foreground">Games that teach real skills, from SQL and Git to CSS and a designer&apos;s eye.</p>
-          </div>
-        </div>
-        <span className="text-[13px] tabular-nums text-muted-foreground">{items.length} games</span>
-      </div>
+      <SectionHeading
+        index={index}
+        title="Learn by playing"
+        blurb="Games that teach real skills, from SQL and Git to CSS and a designer's eye."
+        meta={`${items.length} games`}
+      />
 
       {present.length > 1 && (
-        <div className="no-scrollbar -mx-1 mb-10 flex gap-1 overflow-x-auto px-1">
-          {(["all", ...present] as const).map((id) => (
-            <button
-              key={id}
-              onClick={() => setSkill(id)}
-              className={cn(
-                "pressable shrink-0 rounded-full px-3.5 py-1.5 text-[13px] transition-colors",
-                skill === id ? "bg-foreground text-background" : "text-muted-foreground hover:bg-foreground/[0.05] hover:text-foreground",
-              )}
-            >
-              {id === "all" ? "All" : skillNames[id]}
-            </button>
-          ))}
+        <div className="mb-10">
+          <DirectorySections
+            label="Game skills"
+            layoutId="game-skill"
+            onSheet
+            active={skill}
+            onSelect={setSkill}
+            items={[
+              { id: "all" as const, label: "All", count: items.length },
+              ...present.map((s) => ({ id: s, label: skillNames[s], count: items.filter((g) => g.skill === s).length })),
+            ]}
+          />
         </div>
       )}
 

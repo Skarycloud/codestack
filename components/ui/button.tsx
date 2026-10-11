@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils"
 const buttonVariants = cva(
   cn(
     "group/button font-head font-medium inline-flex cursor-pointer items-center justify-center gap-2 rounded whitespace-nowrap select-none transition-all duration-200",
-    "disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-60",
+    "disabled:pointer-events-none disabled:cursor-not-allowed disabled:border-transparent disabled:bg-disabled disabled:text-disabled-foreground disabled:shadow-none",
     "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary aria-invalid:border-destructive",
     // Icons keep their own size; we only set a default when none is given so
     // Neobrutalism's h-4/size-4 icons aren't overridden.

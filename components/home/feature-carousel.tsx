@@ -50,7 +50,7 @@ const getFeatures = (d: HomeSamples): Feature[] => [
     eyebrow: "Stack Builder",
     title: "Assemble your stack in seconds.",
     href: "/stack-builder",
-    tone: "bg-[#0b0b0d] text-white dark:bg-surface",
+    tone: "bg-[#111111] text-white dark:bg-surface",
     visual: (
       <div className="space-y-2.5">
         {stackSample.map((t, i) => (
@@ -110,7 +110,7 @@ const getFeatures = (d: HomeSamples): Feature[] => [
     eyebrow: "Local LLMs",
     title: "Run AI on your own machine.",
     href: "/local-llms",
-    tone: "bg-[#0b0b0d] text-white dark:bg-surface",
+    tone: "bg-[#111111] text-white dark:bg-surface",
     visual: (
       <div className="space-y-3">
         {d.models.map((m) => (

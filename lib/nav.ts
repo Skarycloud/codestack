@@ -1,4 +1,4 @@
-import { categories } from "@/data/catalog"
+import { categories, exploreHref } from "@/data/catalog"
 import { resources, resourceTypes } from "@/data/resources"
 import { levels, phases } from "@/data/roadmap"
 import { skillFields } from "@/data/skills"
@@ -41,20 +41,26 @@ export const navItems: NavItem[] = [
           { name: "All tools", href: "/explore" },
           { name: "For designers", href: "/explore?a=design" },
           { name: "For developers", href: "/explore?a=develop" },
+          { name: "AI tools", href: "/explore?a=ai" },
           { name: "Local LLMs", href: "/local-llms" },
         ],
       },
       {
         title: "Design",
-        // Design categories first, then shared ones like AI.
-        links: [...categories.filter((c) => c.audience === "design"), ...categories.filter((c) => c.alsoFor === "design")].map((c) => ({
-          name: c.name,
-          href: `/explore?c=${c.id}`,
-        })),
+        // Design categories first, then shared ones like AI and Web Tools.
+        links: [...categories.filter((c) => c.audience === "design"), ...categories.filter((c) => c.alsoFor?.includes("design"))].map(
+          (c) => ({
+            name: c.name,
+            href: exploreHref(c.id),
+          }),
+        ),
       },
       {
         title: "Develop",
-        links: categories.filter((c) => c.audience === "develop").map((c) => ({ name: c.name, href: `/explore?c=${c.id}` })),
+        links: [...categories.filter((c) => c.audience === "develop"), ...categories.filter((c) => c.audience === "ai")].map((c) => ({
+          name: c.name,
+          href: exploreHref(c.id),
+        })),
       },
     ],
   },
@@ -73,9 +79,9 @@ export const navItems: NavItem[] = [
       {
         title: "Related",
         links: [
-          { name: "Icon sets", href: "/explore?c=icons" },
-          { name: "Color tools", href: "/explore?c=color" },
-          { name: "Design tools", href: "/explore?c=design-tools" },
+          { name: "Icon sets", href: exploreHref("type", "icons") },
+          { name: "Color tools", href: exploreHref("type", "color") },
+          { name: "Design tools", href: exploreHref("design-tools") },
         ],
       },
     ],

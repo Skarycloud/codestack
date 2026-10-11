@@ -13,7 +13,7 @@ export function Audiences() {
     <section className="shell grid gap-5 py-8 md:grid-cols-2 [&>*]:min-w-0">
       <Reveal>
         <div className="noise relative flex h-[560px] flex-col overflow-hidden rounded-[32px] bg-surface p-9 text-center sm:p-12">
-          <p className="text-eyebrow text-[#7d2fb0] dark:text-[#d79cff]">For designers</p>
+          <p className="text-eyebrow text-muted-foreground">For designers</p>
           <h2 className="text-title mx-auto mt-4 max-w-[16ch]">Type, color, icons and endless inspiration.</h2>
           <Links href="/explore?a=design" count={stats.designers} label="Explore design" />
 
@@ -41,8 +41,8 @@ export function Audiences() {
       </Reveal>
 
       <Reveal delay={0.08}>
-        <div className="relative flex h-[560px] flex-col overflow-hidden rounded-[32px] bg-[#0b0b0d] p-9 text-center text-white sm:p-12 dark:bg-surface">
-          <p className="text-eyebrow text-[#2997ff]">For developers</p>
+        <div className="relative flex h-[560px] flex-col overflow-hidden rounded-[32px] bg-[#111111] p-9 text-center text-white sm:p-12 dark:bg-surface">
+          <p className="text-eyebrow text-white/60">For developers</p>
           <h2 className="text-title mx-auto mt-4 max-w-[16ch]">Frameworks, data and the tools to ship.</h2>
           <Links href="/explore?a=develop" count={stats.developers} label="Explore code" dark />
 
@@ -76,10 +76,13 @@ export function Audiences() {
 function Links({ href, count, label, dark }: { href: string; count: number; label: string; dark?: boolean }) {
   return (
     <div className="mt-6 flex items-center justify-center gap-6 text-[15px]">
-      <Link href={href} className="pressable rounded-full bg-primary px-5 py-2 font-medium text-primary-foreground hover:brightness-110">
+      <Link
+        href={href}
+        className={`pressable rounded-full px-5 py-2 font-medium ${dark ? "bg-white text-black hover:bg-[#E5E5E5]" : "bg-primary text-primary-foreground hover:bg-primary-hover"}`}
+      >
         {label}
       </Link>
-      <Link href={href} className={`group inline-flex items-center gap-0.5 ${dark ? "text-[#2997ff]" : "text-link"}`}>
+      <Link href={href} className={`group inline-flex items-center gap-0.5 ${dark ? "text-white hover:underline" : "text-link hover:underline"}`}>
         {count} tools
         <ChevronRight className="size-4 transition-transform duration-300 group-hover:translate-x-0.5" />
       </Link>

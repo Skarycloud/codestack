@@ -3,6 +3,7 @@ import type { Metadata } from "next"
 import { BrandIcon } from "@/components/brand-icon"
 import { CopyCommand } from "@/components/contribute/copy-command"
 import { Reveal } from "@/components/motion/reveal"
+import { SheetBand, TopSheet } from "@/components/directory/toolbar"
 import { PageHeader } from "@/components/page-header"
 import { SkillDirectory } from "@/components/skills/skill-directory"
 import { SkillExplainer } from "@/components/skills/skill-explainer"
@@ -16,20 +17,24 @@ export const metadata: Metadata = {
 export default function SkillsPage() {
   return (
     <>
-      <PageHeader
-        eyebrow="Agent Skills"
-        title="Teach your AI agent new tricks."
-        description={`${skills.length} of the best skills for coding agents, from design taste to security audits, organized by field. Copy a command and your agent learns it.`}
-      >
-        <div className="mx-auto max-w-md text-left">
-          <CopyCommand command="npx skills add <owner/repo>" />
-        </div>
-        <p className="mt-4 text-[13px] text-muted-foreground">Works with {skillAgents.map((a) => a.name).join(", ")} and more.</p>
-      </PageHeader>
+      <SheetBand>
+        <TopSheet>
+          <PageHeader
+            eyebrow="Agent Skills"
+            title="Teach your AI agent new tricks."
+            description={`${skills.length} of the best skills for coding agents, from design taste to security audits, organized by field. Copy a command and your agent learns it.`}
+          >
+            <div className="mx-auto max-w-md text-left">
+              <CopyCommand command="npx skills add <owner/repo>" />
+            </div>
+            <p className="mt-4 text-[13px] text-muted-foreground">Works with {skillAgents.map((a) => a.name).join(", ")} and more.</p>
+          </PageHeader>
 
-      <SkillExplainer />
+          <SkillExplainer />
+        </TopSheet>
 
-      <SkillDirectory />
+        <SkillDirectory />
+      </SheetBand>
 
       <section className="bg-surface py-24 sm:py-28">
         <div className="shell">

@@ -1,69 +1,16 @@
 "use client"
 
 import { AnimatePresence, motion } from "framer-motion"
-import {
-  ArrowUpRight,
-  BadgeCheck,
-  BrainCircuit,
-  Check,
-  ChevronDown,
-  Clapperboard,
-  Copy,
-  Database,
-  FileText,
-  FlaskConical,
-  Flame,
-  Gem,
-  LayoutTemplate,
-  Megaphone,
-  Palette,
-  Search,
-  ShieldCheck,
-  Smartphone,
-  Sparkles,
-  Workflow,
-  X,
-} from "lucide-react"
+import { ArrowUpRight, BadgeCheck, Check, ChevronDown, Copy, Flame, Gem, Workflow } from "lucide-react"
 import { useCallback, useDeferredValue, useMemo, useRef, useState } from "react"
 import { toast } from "sonner"
 import { BrandIcon } from "@/components/brand-icon"
 import { ease } from "@/components/motion/reveal"
 import { SearchParamsListener, replaceQuery } from "@/components/search-params"
-import { Segmented } from "@/components/segmented"
+import { ActiveFilterChips, FilterButton, activeCount, type FilterGroup, type FilterValue } from "@/components/directory/filter-panel"
+import { DirectoryTabs, DirectoryToolbar, ResultsHeader, ResultsSheet, SectionHeading } from "@/components/directory/toolbar"
 import { installCommand, publisherById, skillFields, skills, type Skill, type SkillField } from "@/data/skills"
-import { cn } from "@/lib/utils"
-import { ChipScroller } from "@/components/chip-scroller"
 import { useFilterTop } from "@/lib/use-filter-top"
-
-export const fieldIcons: Record<SkillField, typeof Palette> = {
-  design: Palette,
-  frontend: LayoutTemplate,
-  testing: FlaskConical,
-  workflow: Workflow,
-  docs: FileText,
-  video: Clapperboard,
-  backend: Database,
-  mobile: Smartphone,
-  security: ShieldCheck,
-  ai: BrainCircuit,
-  marketing: Megaphone,
-  productivity: Sparkles,
-}
-
-const fieldTint: Record<SkillField, string> = {
-  design: "text-[#bf5af2] bg-[#bf5af2]/10",
-  frontend: "text-[#0a84ff] bg-[#0a84ff]/10",
-  testing: "text-[#1e9e45] bg-[#30d158]/10 dark:text-[#30d158]",
-  workflow: "text-[#5e5ce6] bg-[#5e5ce6]/10",
-  docs: "text-[#c27400] bg-[#ff9f0a]/10 dark:text-[#ff9f0a]",
-  video: "text-[#ff375f] bg-[#ff375f]/10",
-  backend: "text-[#1e9e45] bg-[#30d158]/10 dark:text-[#30d158]",
-  mobile: "text-[#0a84ff] bg-[#64d2ff]/15",
-  security: "text-[#d70015] bg-[#ff453a]/10 dark:text-[#ff6961]",
-  ai: "text-[#9a3fd0] bg-[#bf5af2]/10 dark:text-[#bf5af2]",
-  marketing: "text-[#c27400] bg-[#ffd60a]/15 dark:text-[#ffd60a]",
-  productivity: "text-[#0071e3] bg-[#0a84ff]/10 dark:text-[#64d2ff]",
-}
 
 async function copy(text: string, label: string) {
   try {
@@ -74,9 +21,36 @@ async function copy(text: string, label: string) {
   }
 }
 
+// Shorter tab labels so the fields read as one tidy row; the full names show as tooltips and headings.
+const fieldShort: Record<SkillField, string> = {
+  design: "Design",
+  frontend: "Frontend",
+  testing: "Testing",
+  workflow: "Workflow",
+  docs: "Documents",
+  video: "Video",
+  backend: "Backend",
+  mobile: "Mobile",
+  security: "Security",
+  ai: "AI & ML",
+  marketing: "Marketing",
+  productivity: "Productivity",
+}
+
+/** "Show" and publisher are each OR'd within their group and AND'd across groups. */
+function applyFilters(items: Skill[], f: FilterValue) {
+  const show = f.show ?? []
+  const pubs = f.publisher ?? []
+  return items.filter(
+    (s) =>
+      (!show.length || (show.includes("popular") && s.popular) || (show.includes("gems") && s.gem)) &&
+      (!pubs.length || pubs.includes(s.publisher)),
+  )
+}
+
 export function SkillDirectory() {
   const [field, setFieldState] = useState<SkillField | "all">("all")
-  const [show, setShow] = useState<"all" | "popular" | "gems">("all")
+  const [filters, setFiltersState] = useState<FilterValue>({})
   const [query, setQuery] = useState("")
   const deferred = useDeferredValue(query)
   const filterTop = useFilterTop()
@@ -90,23 +64,54 @@ export function SkillDirectory() {
   }, [])
   const setField = (next: SkillField | "all") => {
     setFieldState(next)
+    filterTop.reset()
     replaceQuery({ f: next === "all" ? null : next })
   }
+  const setFilters = (next: FilterValue) => {
+    setFiltersState(next)
+    filterTop.reset()
+  }
 
-  const results = useMemo(() => {
+  // Field and search narrow the list; the filter panel works within it.
+  const scoped = useMemo(() => {
     const q = deferred.trim().toLowerCase()
     return skills.filter(
       (s) =>
         (field === "all" || s.field === field) &&
-        (show === "all" || (show === "popular" ? s.popular : s.gem)) &&
         (!q || `${s.name} ${s.description} ${publisherById[s.publisher].name}`.toLowerCase().includes(q)),
     )
-  }, [field, show, deferred])
+  }, [field, deferred])
+  const results = useMemo(() => applyFilters(scoped, filters), [scoped, filters])
+  const active = activeCount(filters)
 
-  const counts = useMemo(() => Object.fromEntries(skillFields.map((f) => [f.id, skills.filter((s) => s.field === f.id).length])), [])
+  const groups = useMemo<FilterGroup[]>(() => {
+    const pubs = new Map<string, number>()
+    for (const s of scoped) pubs.set(s.publisher, (pubs.get(s.publisher) ?? 0) + 1)
+    return [
+      {
+        id: "show",
+        title: "Show",
+        options: [
+          { id: "popular", label: "Popular", count: scoped.filter((s) => s.popular).length },
+          { id: "gems", label: "Hidden gems", count: scoped.filter((s) => s.gem).length },
+        ].filter((o) => o.count),
+      },
+      {
+        id: "publisher",
+        title: "Publisher",
+        options: [...pubs]
+          .sort(
+            (a, b) =>
+              b[1] - a[1] ||
+              publisherById[a[0] as keyof typeof publisherById].name.localeCompare(publisherById[b[0] as keyof typeof publisherById].name),
+          )
+          .map(([id, count]) => ({ id, label: publisherById[id as keyof typeof publisherById].name, count })),
+      },
+    ]
+  }, [scoped])
 
-  // The "Everything" view previews each field; picking a field or searching shows all.
-  const preview = field === "all" && show === "all" && !deferred.trim()
+  // The "Everything" view previews each field; picking a field, filtering or searching shows all.
+  const preview = field === "all" && !active && !deferred.trim()
   const listTop = useRef<HTMLDivElement>(null)
   const expand = (id: SkillField) => {
     setField(id)
@@ -120,129 +125,82 @@ export function SkillDirectory() {
     <>
       <SearchParamsListener onChange={onParams} />
       <div ref={filterTop.ref} aria-hidden />
-      <div className="sticky top-14 z-30">
-        <div className="glass border-y border-black/[0.06] dark:border-white/[0.07]">
-          <div className="shell flex flex-col gap-3 py-3 md:flex-row md:items-center">
-            <label className="relative flex h-10 w-full shrink-0 items-center md:max-w-xs md:flex-1">
-              <Search className="pointer-events-none absolute left-3.5 size-4 text-muted-foreground" />
-              <input
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder={`Search ${skills.length} skills`}
-                aria-label="Search skills"
-                className="h-full w-full rounded-full bg-surface-2/80 pl-10 pr-9 text-[14px] outline-none ring-1 ring-inset ring-transparent transition-shadow placeholder:text-muted-foreground focus:ring-primary/60"
-              />
-              {query && (
-                <button
-                  onClick={() => setQuery("")}
-                  aria-label="Clear search"
-                  className="absolute right-2.5 grid size-5 place-items-center rounded-full bg-foreground/20 text-background"
-                >
-                  <X className="size-3" />
-                </button>
+      <DirectoryToolbar
+        search={{ value: query, onChange: setQuery, placeholder: `Search ${skills.length} skills`, label: "Search skills" }}
+        controls={
+          <FilterButton groups={groups} value={filters} onChange={setFilters} resultCount={results.length} noun={["skill", "skills"]} />
+        }
+        tabs={
+          <DirectoryTabs
+            label="Fields"
+            layoutId="skills-tab"
+            active={field}
+            onSelect={setField}
+            items={[
+              { id: "all" as const, label: "Everything" },
+              ...skillFields.map((f) => ({ id: f.id, label: fieldShort[f.id], title: f.name })),
+            ]}
+          />
+        }
+      />
+
+      <ResultsSheet className="min-h-[60vh] pb-24 pt-10">
+        <div ref={listTop} className="shell">
+          <ResultsHeader>
+            <p>
+              {results.length} {results.length === 1 ? "skill" : "skills"}
+              {field !== "all" && (
+                <>
+                  {" "}
+                  in <span className="text-foreground">{skillFields.find((f) => f.id === field)!.name}</span>
+                </>
               )}
-            </label>
-            <Segmented
-              size="sm"
-              value={show}
-              onChange={(v) => {
-                setShow(v)
-                filterTop.reset()
-              }}
-              options={[
-                { value: "all", label: "All" },
-                { value: "popular", label: "Popular", count: skills.filter((s) => s.popular).length },
-                { value: "gems", label: "Hidden gems", count: skills.filter((s) => s.gem).length },
-              ]}
-              className="self-start md:ml-auto md:self-auto"
-            />
-          </div>
-          <div className="shell">
-            <ChipScroller label="Fields" activeKey={field}>
-              {[{ id: "all" as const, name: "Everything" }, ...skillFields].map((f) => {
-                const active = field === f.id
+            </p>
+            <ActiveFilterChips groups={groups} value={filters} onChange={setFilters} />
+          </ResultsHeader>
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.div
+              key={`${field}-${JSON.stringify(filters)}-${deferred}`}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, transition: { duration: 0.12 } }}
+              transition={{ duration: 0.45, ease }}
+              className="space-y-20"
+            >
+              {results.length === 0 && (
+                <div className="py-24 text-center">
+                  <p className="text-[22px] font-semibold tracking-[-0.02em]">No skills match that.</p>
+                  <p className="mt-2 text-muted-foreground">Try a broader search, or clear the filters.</p>
+                </div>
+              )}
+              {skillFields.map((f) => {
+                const items = results.filter((s) => s.field === f.id)
+                if (!items.length) return null
                 return (
-                  <button
-                    key={f.id}
-                    data-active={active}
-                    onClick={() => {
-                      setField(f.id)
-                      filterTop.reset()
-                    }}
-                    className={cn(
-                      "pressable relative shrink-0 rounded-full px-3.5 py-1.5 text-[13px] transition-colors",
-                      active ? "text-background" : "text-muted-foreground hover:text-foreground",
+                  <section key={f.id} id={f.id} className="defer-render scroll-mt-44">
+                    <SectionHeading
+                      index={skillFields.indexOf(f) + 1}
+                      title={f.name}
+                      blurb={f.blurb}
+                      meta={`${items.length} ${items.length === 1 ? "skill" : "skills"}`}
+                    />
+                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 [&>*]:min-w-0">
+                      {(preview ? items.slice(0, 6) : items).map((s) => (
+                        <div key={`${s.publisher}-${s.name}`} className="scroll-reveal">
+                          <SkillCard skill={s} />
+                        </div>
+                      ))}
+                    </div>
+                    {preview && items.length > 6 && (
+                      <ShowAll count={items.length} label={`${f.name} skills`} onClick={() => expand(f.id)} />
                     )}
-                  >
-                    {active && (
-                      <motion.span
-                        layoutId="skills-chip"
-                        className="absolute inset-0 rounded-full bg-foreground"
-                        transition={{ type: "spring", bounce: 0.15, duration: 0.45 }}
-                      />
-                    )}
-                    <span className="relative">
-                      {f.name}
-                      {f.id !== "all" && <span className="ml-1.5 tabular-nums font-normal">{counts[f.id]}</span>}
-                    </span>
-                  </button>
+                  </section>
                 )
               })}
-            </ChipScroller>
-          </div>
+            </motion.div>
+          </AnimatePresence>
         </div>
-      </div>
-
-      <div ref={listTop} className="shell min-h-[60vh] pb-24 pt-12">
-        <AnimatePresence mode="wait" initial={false}>
-          <motion.div
-            key={`${field}-${show}-${deferred}`}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, transition: { duration: 0.12 } }}
-            transition={{ duration: 0.45, ease }}
-            className="space-y-20"
-          >
-            {results.length === 0 && (
-              <div className="py-24 text-center">
-                <p className="text-[22px] font-semibold tracking-[-0.02em]">No skills match that.</p>
-                <p className="mt-2 text-muted-foreground">Try a broader search, or switch the filter back to “All”.</p>
-              </div>
-            )}
-            {skillFields.map((f) => {
-              const items = results.filter((s) => s.field === f.id)
-              if (!items.length) return null
-              const Icon = fieldIcons[f.id]
-              return (
-                <section key={f.id} id={f.id} className="defer-render scroll-mt-44">
-                  <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
-                    <div className="flex items-center gap-4">
-                      <span className={cn("grid size-12 shrink-0 place-items-center rounded-[14px]", fieldTint[f.id])}>
-                        <Icon className="size-[22px]" />
-                      </span>
-                      <div>
-                        <h2 className="text-title">{f.name}</h2>
-                        <p className="mt-1 text-muted-foreground">{f.blurb}</p>
-                      </div>
-                    </div>
-                    <span className="text-[13px] tabular-nums text-muted-foreground">
-                      {items.length} {items.length === 1 ? "skill" : "skills"}
-                    </span>
-                  </div>
-                  <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 [&>*]:min-w-0">
-                    {(preview ? items.slice(0, 6) : items).map((s) => (
-                      <div key={`${s.publisher}-${s.name}`} className="scroll-reveal">
-                        <SkillCard skill={s} />
-                      </div>
-                    ))}
-                  </div>
-                  {preview && items.length > 6 && <ShowAll count={items.length} label={`${f.name} skills`} onClick={() => expand(f.id)} />}
-                </section>
-              )
-            })}
-          </motion.div>
-        </AnimatePresence>
-      </div>
+      </ResultsSheet>
     </>
   )
 }

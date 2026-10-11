@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { BrandIcon } from "@/components/brand-icon"
 import { brandMeta } from "@/data/brand-meta"
-import { stats, tools } from "@/data/catalog"
+import { exploreHref, stats, tools } from "@/data/catalog"
 import { isVeryDark } from "@/lib/color"
 import { cn } from "@/lib/utils"
 
@@ -51,6 +51,7 @@ const stickers = names
     name: t!.name,
     slug: t!.icon!,
     category: t!.category,
+    section: t!.section,
     paper: isVeryDark(brandMeta[t!.icon!].hex) ? "#f1efe8" : tint(brandMeta[t!.icon!].hex, 0.82),
     // Black logos turn white in dark mode, so their stickers switch to dark paper there.
     darkPaper: isVeryDark(brandMeta[t!.icon!].hex) ? "#232326" : tint(brandMeta[t!.icon!].hex, 0.82),
@@ -69,7 +70,7 @@ export function StickerSheet() {
         {stickers.map((s, i) => (
           <Link
             key={s.slug}
-            href={`/explore?c=${s.category}`}
+            href={exploreHref(s.category, s.section)}
             title={s.name}
             aria-label={`${s.name}: open its category`}
             className={cn("rise group outline-none", i >= 15 && "hidden sm:block", i >= 24 && "sm:hidden lg:block")}
@@ -86,7 +87,7 @@ export function StickerSheet() {
       </div>
       <p className="mt-8 flex justify-between font-mono text-[11.5px] uppercase tracking-[0.08em] text-muted-foreground/70">
         <span>Fig. 02</span>
-        <span>A few of the {stats.tools} tools</span>
+        <span>A few of the {stats.tools.toLocaleString("en-US")} tools</span>
       </p>
     </section>
   )

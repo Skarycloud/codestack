@@ -5,20 +5,20 @@ import { ArrowUpRight } from "lucide-react"
 import Link from "next/link"
 import { BrandIcon } from "@/components/brand-icon"
 import { Reveal, RevealGroup, RevealItem } from "@/components/motion/reveal"
-import { categories, toolsIn, type CategoryId } from "@/data/catalog"
+import { audienceLabel, categories, exploreHref, toolsIn, type CategoryId } from "@/data/catalog"
 import { cn } from "@/lib/utils"
 
 const layout: { id: CategoryId; span: string }[] = [
   { id: "design-tools", span: "md:col-span-2 md:row-span-2" },
-  { id: "frameworks", span: "md:col-span-2" },
-  { id: "inspiration", span: "" },
-  { id: "databases", span: "" },
-  { id: "typography", span: "" },
+  { id: "code", span: "md:col-span-2" },
   { id: "ai", span: "" },
-  { id: "icons", span: "" },
-  { id: "color", span: "" },
-  { id: "motion", span: "md:col-span-2" },
-  { id: "devtools", span: "md:col-span-2" },
+  { id: "ui", span: "" },
+  { id: "type", span: "md:col-span-2" },
+  { id: "server", span: "" },
+  { id: "media", span: "" },
+  { id: "cloud", span: "" },
+  { id: "devtools", span: "" },
+  { id: "web-tools", span: "md:col-span-2" },
 ]
 
 export function CategoryBento() {
@@ -49,7 +49,7 @@ export function CategoryBento() {
           .map((c) => (
             <Link
               key={c.id}
-              href={`/explore?c=${c.id}`}
+              href={exploreHref(c.id)}
               className="pressable rounded-full bg-surface px-4 py-2 text-[14px] text-muted-foreground ring-1 ring-inset ring-black/[0.04] hover:text-foreground dark:ring-white/[0.06]"
             >
               {c.name} <span className="tabular-nums font-normal">{toolsIn(c.id).length}</span>
@@ -66,7 +66,7 @@ function BentoCard({ id, large }: { id: CategoryId; large: boolean }) {
   const shown = items.slice(0, large ? 10 : 4)
 
   return (
-    <Link href={`/explore?c=${id}`} className="group block h-full">
+    <Link href={exploreHref(id)} className="group block h-full">
       <motion.div
         initial="rest"
         whileHover="hover"
@@ -75,9 +75,7 @@ function BentoCard({ id, large }: { id: CategoryId; large: boolean }) {
       >
         <div className="flex items-start justify-between gap-4">
           <div>
-            <p className="text-eyebrow text-muted-foreground">
-              {category.alsoFor ? "Design + Develop" : category.audience === "design" ? "Design" : "Develop"}
-            </p>
+            <p className="text-eyebrow text-muted-foreground">{audienceLabel(category)}</p>
             <h3 className={cn("mt-2 font-semibold tracking-[-0.025em]", large ? "text-[32px] leading-[1.05]" : "text-[22px]")}>
               {category.name}
             </h3>

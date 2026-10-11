@@ -8,7 +8,7 @@ import { useCommandMenu } from "@/components/site/command-menu"
 import { BrandIcon } from "@/components/brand-icon"
 import { StoryScene } from "@/components/home/story-scene"
 import { brandMeta } from "@/data/brand-meta"
-import { categoryById, stats, tools } from "@/data/catalog"
+import { exploreHref, sectionById, stats, tools } from "@/data/catalog"
 import { isVeryDark } from "@/lib/color"
 import { display, serif } from "@/lib/fonts"
 import { cn } from "@/lib/utils"
@@ -33,7 +33,7 @@ const tileTools = [
 ]
   .map((name) => tools.find((t) => t.name === name))
   .filter((t) => t?.icon && brandMeta[t.icon] && !brandMeta[t.icon].x)
-  .map((t) => ({ name: t!.name, slug: t!.icon!, hex: brandMeta[t!.icon!].hex, category: t!.category }))
+  .map((t) => ({ name: t!.name, slug: t!.icon!, hex: brandMeta[t!.icon!].hex, category: t!.category, section: t!.section }))
 const line2 = ["All", "in", "one", "place."]
 
 export function Hero() {
@@ -104,7 +104,7 @@ export function Hero() {
         </div>
 
         <div className="rise order-1 lg:order-2" style={delay(0.2)}>
-          <StoryScene caption={`${stats.tools} tools · idea to launch`} />
+          <StoryScene caption={`${stats.tools.toLocaleString("en-US")} tools · idea to launch`} />
         </div>
 
         <div className="rise order-3 flex flex-col gap-4 pr-[7px] sm:flex-row sm:items-center lg:col-span-2 lg:mt-2" style={delay(0.55)}>
@@ -167,8 +167,8 @@ function ToolTile() {
   return (
     <span className="rise-word mr-[0.22em] align-[-0.1em]" style={delay(0.11)}>
       <Link
-        href={`/explore?c=${tool.category}`}
-        aria-label={`${tool.name}, in ${categoryById[tool.category].name}. Open the category`}
+        href={exploreHref(tool.category, tool.section)}
+        aria-label={`${tool.name}, in ${sectionById[tool.section].name}. Open the section`}
         title={tool.name}
         onPointerEnter={() => setPaused(true)}
         onPointerLeave={() => setPaused(false)}
@@ -309,9 +309,9 @@ function CountUp({ to }: { to: number }) {
     <span className="inline-grid tabular-nums">
       {/* The final number, invisible, holds the slot's exact width. */}
       <span aria-hidden className="invisible col-start-1 row-start-1">
-        {to}
+        {to.toLocaleString("en-US")}
       </span>
-      <span className="col-start-1 row-start-1 text-right">{value}</span>
+      <span className="col-start-1 row-start-1 text-right">{value.toLocaleString("en-US")}</span>
     </span>
   )
 }

@@ -8,7 +8,7 @@ import { BrandIcon } from "@/components/brand-icon"
 import { DragScroller } from "@/components/drag-scroller"
 import { SearchParamsListener, replaceQuery } from "@/components/search-params"
 import { ease } from "@/components/motion/reveal"
-import { categoryById, tools, type Tool } from "@/data/catalog"
+import { categoryById, sectionById, tools, type Tool } from "@/data/catalog"
 import { stackCategories, stackPresets, type StackPreset } from "@/data/stacks"
 import { cn } from "@/lib/utils"
 
@@ -115,12 +115,13 @@ export function StackBuilder() {
         <div className="mt-12 grid gap-10 lg:grid-cols-[minmax(0,1fr)_360px]">
           <div className="space-y-14">
             {stackCategories.map((id) => {
-              const category = categoryById[id]
-              const items = tools.filter((t) => t.category === id)
+              const name =
+                id in sectionById ? sectionById[id as keyof typeof sectionById].name : categoryById[id as keyof typeof categoryById].name
+              const items = tools.filter((t) => t.section === id || t.category === id)
               return (
                 <section key={id}>
                   <div className="mb-5 flex items-baseline justify-between">
-                    <h2 className="text-[22px] font-semibold tracking-[-0.025em]">{category.name}</h2>
+                    <h2 className="text-[22px] font-semibold tracking-[-0.025em]">{name}</h2>
                     <span className="text-[13px] text-muted-foreground">{items.filter((t) => selected.has(t.name)).length} selected</span>
                   </div>
                   <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-4">
@@ -135,7 +136,7 @@ export function StackBuilder() {
 
           <aside id="summary" className="lg:sticky lg:top-24 lg:self-start">
             <div className="card-surface overflow-hidden">
-              <div className="relative overflow-hidden bg-[#0b0b0d] p-6 text-white dark:bg-surface-2">
+              <div className="relative overflow-hidden bg-[#111111] p-6 text-white dark:bg-surface-2">
                 <div
                   aria-hidden
                   className="absolute -right-16 -top-16 size-48 rounded-full bg-[conic-gradient(from_90deg,#0a84ff,#bf5af2,#ff375f,#0a84ff)] opacity-50 blur-3xl"
@@ -195,7 +196,7 @@ export function StackBuilder() {
                             </span>
                             <span className="flex-1">
                               <span className="block text-[14px] font-medium leading-tight">{t.name}</span>
-                              <span className="text-[12px] text-muted-foreground">{categoryById[t.category].name}</span>
+                              <span className="text-[12px] text-muted-foreground">{sectionById[t.section].name}</span>
                             </span>
                             <span className="text-[12px] text-muted-foreground opacity-0 group-hover:opacity-100">Remove</span>
                           </button>

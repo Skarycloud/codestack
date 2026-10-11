@@ -1,7 +1,7 @@
-import type { CategoryId } from "./catalog"
+import type { CategoryId, SectionId } from "./catalog"
 
-/** Categories offered as building blocks in the Stack Builder, in display order. */
-export const stackCategories: CategoryId[] = ["frameworks", "languages", "backend", "databases", "devtools", "hosting", "services", "payments", "ai"]
+/** Building blocks in the Stack Builder, in display order: sections, or whole categories for Dev Tools and AI. */
+export const stackCategories: (SectionId | CategoryId)[] = ["frameworks", "languages", "backend", "databases", "devtools", "hosting", "services", "payments", "ai"]
 
 export interface StackPreset {
   name: string

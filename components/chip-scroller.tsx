@@ -9,17 +9,21 @@ import { cn } from "@/lib/utils"
  * edge fades and arrow buttons, a mouse can drag the row (without the drag ever selecting a chip),
  * touch and trackpads scroll natively, and the active chip (marked `data-active`) is kept in view.
  * The vertical wheel is deliberately left alone so the page still scrolls under the cursor.
+ * The "tabs" variant drops the bottom padding so an underline can sit on the row's edge, and centers
+ * the arrows on the row.
  */
 export function ChipScroller({
   children,
   activeKey,
   label,
   className,
+  variant = "chips",
 }: {
   children: ReactNode
   activeKey?: string
   label: string
   className?: string
+  variant?: "chips" | "tabs"
 }) {
   const ref = useRef<HTMLDivElement>(null)
   const drag = useRef({ down: false, moved: false, startX: 0, startLeft: 0 })
@@ -90,7 +94,10 @@ export function ChipScroller({
         style={{
           maskImage: `linear-gradient(90deg, ${edges.start ? "transparent, #000 48px" : "#000"}, ${edges.end ? "#000 calc(100% - 48px), transparent" : "#000"})`,
         }}
-        className="no-scrollbar relative -mx-1 flex select-none gap-1 overflow-x-auto overscroll-x-contain px-1 pb-3"
+        className={cn(
+          "no-scrollbar relative -mx-1 flex select-none overflow-x-auto overscroll-x-contain px-1",
+          variant === "tabs" ? "gap-0" : "gap-1 pb-3",
+        )}
       >
         {children}
       </div>
@@ -102,8 +109,9 @@ export function ChipScroller({
           aria-hidden
           onClick={() => page(side === "start" ? -1 : 1)}
           className={cn(
-            "pressable absolute top-0 grid size-8 place-items-center rounded-full bg-background/90 text-muted-foreground shadow-[0_1px_2px_rgba(0,0,0,0.06),0_4px_14px_-4px_rgba(0,0,0,0.18)] ring-1 ring-black/[0.06] backdrop-blur transition-opacity duration-200 hover:text-foreground dark:ring-white/10",
+            "pressable absolute grid size-8 place-items-center rounded-full bg-background/90 text-muted-foreground shadow-[0_1px_2px_rgba(0,0,0,0.06),0_4px_14px_-4px_rgba(0,0,0,0.18)] ring-1 ring-black/[0.06] backdrop-blur transition-opacity duration-200 hover:text-foreground dark:ring-white/10",
             side === "start" ? "-left-2" : "-right-2",
+            variant === "tabs" ? "top-1/2 hidden -translate-y-1/2 sm:grid" : "top-0",
             edges[side] ? "opacity-100" : "pointer-events-none opacity-0",
           )}
         >

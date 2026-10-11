@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import { IconLibrary } from "@/components/icons/icon-library"
+import { SheetBand, TopSheet } from "@/components/directory/toolbar"
 import { PageHeader } from "@/components/page-header"
 
 export const metadata: Metadata = {
@@ -9,13 +10,15 @@ export const metadata: Metadata = {
 
 export default function IconsPage() {
   return (
-    <>
-      <PageHeader
-        eyebrow="Icon library"
-        title="Every logo. Ready to paste."
-        description="Pixel‑perfect brand marks for the tools in your stack. Copy as SVG or a React component, or export a crisp PNG."
-      />
+    <SheetBand>
+      <TopSheet>
+        <PageHeader
+          eyebrow="Icon library"
+          title="Every logo. Ready to paste."
+          description="Pixel‑perfect brand marks for the tools in your stack. Copy as SVG or a React component, or export a crisp PNG."
+        />
+      </TopSheet>
       <IconLibrary />
-    </>
+    </SheetBand>
   )
 }

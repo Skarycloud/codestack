@@ -5,36 +5,25 @@ import {
   ArrowUpRight,
   Book,
   BookOpen,
-  BrainCircuit,
   ChevronDown,
-  Code2,
   Compass,
-  Cpu,
   Dumbbell,
   Gamepad2,
   GraduationCap,
-  Layers,
+  Languages,
   Mic,
-  Palette,
   Play,
   PlayCircle,
-  Rocket,
-  School,
-  Search,
-  Server,
-  Smartphone,
-  X,
 } from "lucide-react"
 import { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from "react"
 import { DragScroller } from "@/components/drag-scroller"
 import { GameArcade } from "@/components/learn/game-arcade"
 import { ease } from "@/components/motion/reveal"
 import { SearchParamsListener, replaceQuery } from "@/components/search-params"
-import { Segmented } from "@/components/segmented"
-import { SwitchPill } from "@/components/switch-pill"
+import { ActiveFilterChips, FilterButton, activeCount, type FilterGroup, type FilterValue } from "@/components/directory/filter-panel"
+import { DirectoryTabs, DirectoryToolbar, ResultsHeader, ResultsSheet, SectionHeading } from "@/components/directory/toolbar"
 import { resources, resourceTypes, tracks, type Resource, type ResourceType, type Track } from "@/data/resources"
 import { cn } from "@/lib/utils"
-import { ChipScroller } from "@/components/chip-scroller"
 import { useFilterTop } from "@/lib/use-filter-top"
 
 const typeMeta: Record<ResourceType, { icon: typeof Book; label: string; tint: string }> = {
@@ -46,20 +35,6 @@ const typeMeta: Record<ResourceType, { icon: typeof Book; label: string; tint: s
   practice: { icon: Dumbbell, label: "Practice", tint: "text-[#0062c4] bg-[#64d2ff]/15 dark:text-[#64d2ff]" },
   game: { icon: Gamepad2, label: "Game", tint: "text-[#15803d] bg-[#4ade80]/15 dark:text-[#4ade80]" },
   podcast: { icon: Mic, label: "Podcast", tint: "text-[#4b49c8] bg-[#5e5ce6]/10 dark:text-[#a5a4ff]" },
-}
-
-const trackIcons: Record<Track, typeof Book> = {
-  platforms: School,
-  design: Palette,
-  frontend: Code2,
-  backend: Server,
-  devops: Layers,
-  mobile: Smartphone,
-  ai: BrainCircuit,
-  cs: Cpu,
-  fullstack: Rocket,
-  career: Compass,
-  games: Gamepad2,
 }
 
 const thumb = (id: string) => `https://i.ytimg.com/vi/${id}/hqdefault.jpg`
@@ -159,25 +134,58 @@ function VideoCard({ video: v, className, priority }: { video: Resource; classNa
   )
 }
 
+// Shorter tab labels so the tracks read as one tidy row; the full names show as tooltips and headings.
+const trackShort: Partial<Record<Track, string>> = {
+  platforms: "Platforms",
+  backend: "Backend",
+  devops: "DevOps",
+  cs: "CS",
+  fullstack: "Full-stack",
+  career: "Career",
+  creative: "Art & music",
+  knowledge: "Languages & maths",
+  games: "Games",
+}
+
+const levels = ["Beginner", "Intermediate", "Advanced", "All levels"] as const
+
+/** Format, price and level are OR'd within each group and AND'd across groups. */
+function applyFilters(items: Resource[], f: FilterValue) {
+  const types = f.type ?? []
+  const price = f.price ?? []
+  const level = f.level ?? []
+  return items.filter(
+    (r) =>
+      (!types.length || types.includes(r.type)) &&
+      (!price.length || price.includes(r.free ? "free" : "paid")) &&
+      (!level.length || level.includes(r.level)),
+  )
+}
+
 export function LearnLibrary() {
-  const [type, setType] = useState<ResourceType | "all">("all")
   const [track, setTrack] = useState<Track | "all">("all")
-  const [freeOnly, setFreeOnly] = useState(false)
+  const [filters, setFilters] = useState<FilterValue>({})
   const [query, setQuery] = useState("")
   const deferred = useDeferredValue(query)
   const filterTop = useFilterTop()
 
-  // Apply ?type= and ?q= on load, and follow it when it changes from outside, e.g. a format picked in the navbar.
+  // Apply ?type= and ?q= on load, and follow them when they change from outside, e.g. a format
+  // picked in the navbar. A format arrives as a preselected filter.
   const onParams = useCallback((params: URLSearchParams) => {
     const t = params.get("type")
-    setType(resourceTypes.some((r) => r.id === t) ? (t as ResourceType) : "all")
+    setFilters(resourceTypes.some((r) => r.id === t && t !== "all") ? { type: [t as ResourceType] } : {})
     const q = params.get("q")
     if (q !== null) setQuery(q)
   }, [])
-  const selectType = (next: ResourceType | "all") => {
-    setType(next)
+  const changeFilters = (next: FilterValue) => {
+    setFilters(next)
     filterTop.reset()
-    replaceQuery({ type: next === "all" ? null : next })
+    const types = next.type ?? []
+    replaceQuery({ type: types.length === 1 ? types[0] : null })
+  }
+  const selectTrack = (id: Track | "all") => {
+    setTrack(id)
+    filterTop.reset()
   }
 
   // A "#track" link can arrive together with a filter reset. Once the new results
@@ -187,23 +195,47 @@ export function LearnLibrary() {
     if (!hash) return
     const t = setTimeout(() => document.getElementById(hash)?.scrollIntoView({ behavior: "smooth", block: "start" }), 260)
     return () => clearTimeout(t)
-  }, [type])
+  }, [filters])
 
-  const results = useMemo(() => {
+  // Track and search narrow the list; the filter panel works within it.
+  const scoped = useMemo(() => {
     const q = deferred.trim().toLowerCase()
     return resources.filter(
-      (r) =>
-        (type === "all" || r.type === type) &&
-        (track === "all" || r.track === track) &&
-        (!freeOnly || r.free) &&
-        (!q || `${r.name} ${r.description} ${r.author}`.toLowerCase().includes(q)),
+      (r) => (track === "all" || r.track === track) && (!q || `${r.name} ${r.description} ${r.author}`.toLowerCase().includes(q)),
     )
-  }, [type, track, freeOnly, deferred])
+  }, [track, deferred])
+  const results = useMemo(() => applyFilters(scoped, filters), [scoped, filters])
+  const active = activeCount(filters)
 
-  const counts = useMemo(() => Object.fromEntries(tracks.map((t) => [t.id, resources.filter((r) => r.track === t.id).length])), [])
+  const groups = useMemo<FilterGroup[]>(
+    () => [
+      {
+        id: "type",
+        title: "Format",
+        options: resourceTypes
+          .filter((t) => t.id !== "all")
+          .map((t) => ({ id: t.id, label: t.name, count: scoped.filter((r) => r.type === t.id).length }))
+          .filter((o) => o.count),
+      },
+      {
+        id: "price",
+        title: "Price",
+        options: [
+          { id: "free", label: "Free", count: scoped.filter((r) => r.free).length },
+          { id: "paid", label: "Paid", count: scoped.filter((r) => !r.free).length },
+        ].filter((o) => o.count),
+      },
+      {
+        id: "level",
+        title: "Level",
+        options: levels.map((l) => ({ id: l, label: l, count: scoped.filter((r) => r.level === l).length })).filter((o) => o.count),
+      },
+    ],
+    [scoped],
+  )
 
-  // The "All tracks" view previews each track; picking a track or searching shows all.
-  const preview = track === "all" && type === "all" && !deferred.trim()
+  // The "All tracks" view previews each track; picking a track, filtering or searching shows all.
+  const preview = track === "all" && !active && !deferred.trim()
   const listTop = useRef<HTMLDivElement>(null)
   const expand = (id: Track) => {
     setTrack(id)
@@ -217,159 +249,118 @@ export function LearnLibrary() {
     <>
       <SearchParamsListener onChange={onParams} />
       <div ref={filterTop.ref} aria-hidden />
-      <div className="sticky top-14 z-30">
-        <div className="glass border-y border-black/[0.06] dark:border-white/[0.07]">
-          <div className="shell flex flex-col gap-3 py-3 md:flex-row md:items-center">
-            <label className="relative flex h-10 w-full shrink-0 items-center md:max-w-xs md:flex-1">
-              <Search className="pointer-events-none absolute left-3.5 size-4 text-muted-foreground" />
-              <input
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder={`Search ${resources.length} resources`}
-                aria-label="Search resources"
-                className="h-full w-full rounded-full bg-surface-2/80 pl-10 pr-9 text-[14px] outline-none ring-1 ring-inset ring-transparent transition-shadow placeholder:text-muted-foreground focus:ring-primary/60"
-              />
-              {query && (
-                <button
-                  onClick={() => setQuery("")}
-                  aria-label="Clear search"
-                  className="absolute right-2.5 grid size-5 place-items-center rounded-full bg-foreground/20 text-background"
-                >
-                  <X className="size-3" />
-                </button>
-              )}
-            </label>
-            <div className="no-scrollbar -mx-5 flex items-center gap-3 overflow-x-auto px-5 md:mx-0 md:flex-1 md:px-0">
-              <Segmented
-                size="sm"
-                value={type}
-                onChange={selectType}
-                options={resourceTypes.map((t) => ({ value: t.id, label: t.name }))}
-                className="shrink-0"
-              />
-              <SwitchPill
-                checked={freeOnly}
-                onChange={(v) => {
-                  setFreeOnly(v)
-                  filterTop.reset()
-                }}
-                label="Free only"
-                className="ml-auto"
-              />
-            </div>
-          </div>
-          <div className="shell">
-            <ChipScroller label="Tracks" activeKey={track}>
-              {[{ id: "all" as const, name: "All tracks" }, ...tracks].map((t) => {
-                const active = track === t.id
-                return (
-                  <button
-                    key={t.id}
-                    data-active={active}
-                    onClick={() => {
-                      setTrack(t.id)
-                      filterTop.reset()
-                    }}
-                    className={cn(
-                      "pressable relative shrink-0 rounded-full px-3.5 py-1.5 text-[13px] transition-colors",
-                      active ? "text-background" : "text-muted-foreground hover:text-foreground",
-                    )}
-                  >
-                    {active && (
-                      <motion.span
-                        layoutId="learn-chip"
-                        className="absolute inset-0 rounded-full bg-foreground"
-                        transition={{ type: "spring", bounce: 0.15, duration: 0.45 }}
-                      />
-                    )}
-                    <span className="relative">
-                      {t.name}
-                      {t.id !== "all" && <span className="ml-1.5 tabular-nums font-normal">{counts[t.id]}</span>}
-                    </span>
-                  </button>
-                )
-              })}
-            </ChipScroller>
-          </div>
-        </div>
-      </div>
+      <DirectoryToolbar
+        search={{ value: query, onChange: setQuery, placeholder: `Search ${resources.length} resources`, label: "Search resources" }}
+        controls={
+          <FilterButton
+            groups={groups}
+            value={filters}
+            onChange={changeFilters}
+            resultCount={results.length}
+            noun={["resource", "resources"]}
+          />
+        }
+        tabs={
+          <DirectoryTabs
+            label="Tracks"
+            layoutId="learn-tab"
+            active={track}
+            onSelect={selectTrack}
+            items={[
+              { id: "all" as const, label: "All tracks" },
+              ...tracks.map((t) => ({ id: t.id, label: trackShort[t.id] ?? t.name, title: t.name })),
+            ]}
+          />
+        }
+      />
 
-      <div ref={listTop} className="shell min-h-[60vh] pb-28 pt-12">
-        <AnimatePresence mode="wait" initial={false}>
-          <motion.div
-            key={`${type}-${track}-${freeOnly}-${deferred}`}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, transition: { duration: 0.12 } }}
-            transition={{ duration: 0.45, ease }}
-            className="space-y-20"
-          >
-            {results.length === 0 && (
-              <div className="py-24 text-center">
-                <p className="text-[22px] font-semibold tracking-[-0.02em]">Nothing matches that.</p>
-                <p className="mt-2 text-muted-foreground">Try another format or track, or a broader search.</p>
-              </div>
-            )}
-            {tracks.map((t) => {
-              const items = results.filter((r) => r.track === t.id)
-              if (!items.length) return null
-              if (t.id === "games") return <GameArcade key={t.id} items={items} preview={preview} onShowAll={() => expand("games")} />
-              const Icon = trackIcons[t.id]
-              const allReading = items.filter((r) => r.type !== "video")
-              const allWatch = items.filter((r) => r.type === "video")
-              const reading = preview ? allReading.slice(0, 6) : allReading
-              const watch = preview ? allWatch.slice(0, 4) : allWatch
-              const hidden = items.length - reading.length - watch.length
-              return (
-                <section
-                  key={t.id}
-                  id={t.id}
-                  // Skip rendering off-screen tracks. The size estimates match a real track at each
-                  // breakpoint, so "#track" links from the navbar still land in the right place.
-                  className="defer-render scroll-mt-48 [contain-intrinsic-size:auto_2900px] md:[contain-intrinsic-size:auto_1600px] lg:[contain-intrinsic-size:auto_1000px]"
-                >
-                  <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
-                    <div className="flex items-center gap-4">
-                      <span className="grid size-12 shrink-0 place-items-center rounded-[14px] bg-surface-2 text-foreground">
-                        <Icon className="size-[22px]" />
-                      </span>
-                      <div>
-                        <h2 className="text-title">{t.name}</h2>
-                        <p className="mt-1 text-muted-foreground">{t.blurb}</p>
-                      </div>
-                    </div>
-                    <span className="text-[13px] tabular-nums text-muted-foreground">{items.length} resources</span>
-                  </div>
-                  {reading.length > 0 && (
-                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 [&>*]:min-w-0">
-                      {reading.map((r) => (
-                        <div key={r.name} className="scroll-reveal">
-                          <ResourceCard resource={r} />
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                  {watch.length > 0 && (
-                    <div className={reading.length > 0 ? "mt-12" : ""}>
-                      <p className="mb-5 flex items-center gap-2 text-[13px] font-medium text-muted-foreground">
-                        <PlayCircle className="size-4 text-[#ff375f]" /> Watch
-                      </p>
-                      <div className="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2 lg:grid-cols-4 [&>*]:min-w-0">
-                        {watch.map((r) => (
+      <ResultsSheet className="min-h-[60vh] pb-28 pt-10">
+        <div ref={listTop} className="shell">
+          <ResultsHeader>
+            <p>
+              {results.length} {results.length === 1 ? "resource" : "resources"}
+              {track !== "all" && (
+                <>
+                  {" "}
+                  in <span className="text-foreground">{tracks.find((t) => t.id === track)!.name}</span>
+                </>
+              )}
+            </p>
+            <ActiveFilterChips groups={groups} value={filters} onChange={changeFilters} />
+          </ResultsHeader>
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.div
+              key={`${track}-${JSON.stringify(filters)}-${deferred}`}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, transition: { duration: 0.12 } }}
+              transition={{ duration: 0.45, ease }}
+              className="space-y-20"
+            >
+              {results.length === 0 && (
+                <div className="py-24 text-center">
+                  <p className="text-[22px] font-semibold tracking-[-0.02em]">Nothing matches that.</p>
+                  <p className="mt-2 text-muted-foreground">Try another track, a broader search, or clear the filters.</p>
+                </div>
+              )}
+              {tracks.map((t) => {
+                const items = results.filter((r) => r.track === t.id)
+                if (!items.length) return null
+                if (t.id === "games")
+                  return (
+                    <GameArcade
+                      key={t.id}
+                      index={tracks.indexOf(t) + 1}
+                      items={items}
+                      preview={preview}
+                      onShowAll={() => expand("games")}
+                    />
+                  )
+                const allReading = items.filter((r) => r.type !== "video")
+                const allWatch = items.filter((r) => r.type === "video")
+                const reading = preview ? allReading.slice(0, 6) : allReading
+                const watch = preview ? allWatch.slice(0, 4) : allWatch
+                const hidden = items.length - reading.length - watch.length
+                return (
+                  <section
+                    key={t.id}
+                    id={t.id}
+                    // Skip rendering off-screen tracks. The size estimates match a real track at each
+                    // breakpoint, so "#track" links from the navbar still land in the right place.
+                    className="defer-render scroll-mt-48 [contain-intrinsic-size:auto_2900px] md:[contain-intrinsic-size:auto_1600px] lg:[contain-intrinsic-size:auto_1000px]"
+                  >
+                    <SectionHeading index={tracks.indexOf(t) + 1} title={t.name} blurb={t.blurb} meta={`${items.length} resources`} />
+                    {reading.length > 0 && (
+                      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 [&>*]:min-w-0">
+                        {reading.map((r) => (
                           <div key={r.name} className="scroll-reveal">
-                            <VideoCard video={r} />
+                            <ResourceCard resource={r} />
                           </div>
                         ))}
                       </div>
-                    </div>
-                  )}
-                  {hidden > 0 && <ShowAll count={items.length} label={`${t.name} resources`} onClick={() => expand(t.id)} />}
-                </section>
-              )
-            })}
-          </motion.div>
-        </AnimatePresence>
-      </div>
+                    )}
+                    {watch.length > 0 && (
+                      <div className={reading.length > 0 ? "mt-12" : ""}>
+                        <p className="mb-5 flex items-center gap-2 text-[13px] font-medium text-muted-foreground">
+                          <PlayCircle className="size-4 text-[#ff375f]" /> Watch
+                        </p>
+                        <div className="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2 lg:grid-cols-4 [&>*]:min-w-0">
+                          {watch.map((r) => (
+                            <div key={r.name} className="scroll-reveal">
+                              <VideoCard video={r} />
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    {hidden > 0 && <ShowAll count={items.length} label={`${t.name} resources`} onClick={() => expand(t.id)} />}
+                  </section>
+                )
+              })}
+            </motion.div>
+          </AnimatePresence>
+        </div>
+      </ResultsSheet>
     </>
   )
 }

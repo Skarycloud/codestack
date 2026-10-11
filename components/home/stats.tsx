@@ -40,5 +40,5 @@ function Counter({ to }: { to: number }) {
     return () => controls.stop()
   }, [inView, reduce, to])
 
-  return <span ref={ref}>{value}</span>
+  return <span ref={ref}>{value.toLocaleString("en-US")}</span>
 }

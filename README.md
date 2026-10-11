@@ -59,7 +59,7 @@ Screenshots follow your GitHub theme: light or dark.
 
 <table>
   <tr>
-    <td width="50%"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/explore-dark.webp"><img src="docs/screenshots/explore-light.webp" alt="The Explore directory with category tabs and tool cards."></picture><br><sub><b>Explore</b>: 574 tools across 20 categories</sub></td>
+    <td width="50%"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/explore-dark.webp"><img src="docs/screenshots/explore-light.webp" alt="The Explore directory with category tabs and tool cards."></picture><br><sub><b>Explore</b>: 1,232 tools in 11 categories</sub></td>
     <td width="50%"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/search-dark.webp"><img src="docs/screenshots/search-light.webp" alt="The Ctrl+K palette searching for postgres."></picture><br><sub><b>Search</b>: one palette for tools, resources, skills, models, icons and roadmap steps</sub></td>
   </tr>
   <tr>
@@ -77,11 +77,11 @@ Screenshots follow your GitHub theme: light or dark.
 | Page | What it does |
 | --- | --- |
 | **Home** (`/`) | An editorial hero: a headline with a rolling tool sticker, an isometric "idea to launch" diorama (a glowing idea travels past blueprint, design, code, AI and server stations, then lifts off on a rocket), a typing command-bar search and a count-up of the tools; then a sheet of brand stickers, a logo marquee, "For designers / For developers" tiles, a category bento grid, a draggable feature carousel, live stats and an open source call to action. |
-| **Explore** (`/explore`) | **574 tools across 20 categories**, from frameworks and databases to payments, AI, mockups, 3D, typography and color. Search, filter by Design or Develop, and jump between categories. Links like `/explore?c=typography` or `/explore?q=upi` open a filtered view directly. |
+| **Explore** (`/explore`) | **1,232 tools in 11 categories**, each split into sections: AI (assistants, models, coding, agents, images, video, audio, writing), Frameworks & Languages, Backend & Data, Dev Tools, Cloud & Services (hosting, auth and email, payments), Design Tools, UI & Inspiration, Type, Color & Icons, Media Assets (photos, stock video, music and sound, 3D), Web Tools, and Productivity & Privacy. Switch between All, Design, Develop and AI, tap a section to narrow a category, and use **Filter** for pricing (open source, free, free + pro, paid) and type. Active filters show as removable chips. Links like `/explore?c=cloud&s=payments` or `/explore?q=upi` open a filtered view directly, and old links such as `/explore?c=typography` still land in the right section. |
 | **Icons** (`/icons`) | **483 brand logos.** Search, switch between color and mono, then copy any logo as **SVG** or a **React component**, or download **SVG** or **PNG** in brand, black or white. |
-| **Learn** (`/learn`) | **272 verified resources across 11 tracks**: learning platforms (Coursera, edX, Udemy, Khan Academy, GeeksforGeeks, W3Schools, MIT OpenCourseWare and 35 more), design, frontend, backend, DevOps, mobile, AI, CS fundamentals, full‑stack paths, career and **Learn by playing** (40 coding, SQL, Git, security and design games). Docs, courses, videos, guides, books, practice platforms, games and podcasts, with a "Start watching" row of must‑see videos and a "Free only" filter. |
+| **Learn** (`/learn`) | **311 verified resources across 13 tracks**: learning platforms (Coursera, edX, Udemy, Khan Academy, GeeksforGeeks, W3Schools, MIT OpenCourseWare and 35 more), design, frontend, backend, DevOps, mobile, AI, CS fundamentals, full‑stack paths, career, art, music and photography, languages, maths and books, and **Learn by playing** (40 coding, SQL, Git, security and design games). Docs, courses, videos, guides, books, practice platforms, games and podcasts, with a "Start watching" row of must‑see videos, track tabs and a Filter for format, price and level. |
 | **Stack Builder** (`/stack-builder`) | Pick technologies or start from **9 proven presets** (T3, MERN, Supa‑Next, AI App and more). See how closely your stack matches the classics, share it as a link or copy it as Markdown. |
-| **Agent Skills** (`/skills`) | **194 Agent Skills** for Claude Code, Codex, Cursor, Copilot, Gemini CLI and more, from **47 publishers** and organized into **12 fields**. Includes **Popular** picks from the skills.sh leaderboard, hand‑picked **Hidden gems** and one‑click install commands. |
+| **Agent Skills** (`/skills`) | **194 Agent Skills** for Claude Code, Codex, Cursor, Copilot, Gemini CLI and more, from **47 publishers** and organized into **12 fields**. Field tabs and a Filter for **Popular** picks from the skills.sh leaderboard, hand‑picked **Hidden gems** and publisher, plus one‑click install commands. |
 | **Developer Roadmap** (`/roadmap`) | A roadmap.sh-style flowchart from idea to production in **31 steps across 7 phases** (Plan, Build, Secure, Verify, Ship, Run, Grow). Each step opens its checklist in place, with the key rule, a mini flowchart, techniques and resources. Styled after neobrutalism with roadmap.sh's Balsamiq Sans font. Covers design, UX, payments (gateway or merchant of record), a coding-agent definition of done, agent and MCP security, OWASP Top 10:2025, performance, SEO and GEO. Includes the AI-first loop, the optimization loop, five maturity levels (`?level=1` to `5` highlights a level), a final ship checklist and tips. Progress is saved in the browser. Content lives in `data/roadmap.ts`. |
 | **AI Coding Roadmap** (`/roadmap/ai-coding`) | A separate roadmap for building with AI coding agents (Codex, Claude Code, Copilot, Cursor, Gemini CLI): **15 levels in 5 phases**, from understanding agents and prompting to context engineering, architecture, data, APIs, testing, security, deployment and multi-agent workflows. Includes the **AI Project Context Pack** (65 Markdown templates such as AGENTS.md, CLAUDE.md and docs/ARCHITECTURE.md, each with what to include, when to create it, which agents read it automatically and how to check it was used), downloadable as Starter, Standard and Production zips; a table of which instruction files each agent loads, checked against each tool's docs; a 9-step workflow; 17 copyable prompts; a worked example; and 17 habits. Templates live in `content/context-pack/`; run `npm run context-pack` after editing one. |
 | **Local LLMs** (`/local-llms`) | **111 open-weight models** you can download and run locally, sorted from SmolLM2 135M (271 MB) to DeepSeek-V3 671B (404 GB). Each card shows parameters (total and active for mixture-of-experts), download size, context window, license, capabilities, the memory it needs and a copyable `ollama run` command. Filter by memory, capability or search. Data comes from the Ollama library; licenses from each model's license file (`data/local-llms.ts`). |
@@ -198,10 +198,10 @@ codestack/
 │   └── tool-card.tsx         Tool card used across the site
 │
 ├── data/                     All content lives here, as typed TypeScript
-│   ├── catalog.ts            Tools and categories
+│   ├── catalog.ts            Tools, categories and their sections
 │   ├── resources.ts          Learning resources, formats and tracks
 │   ├── skills.ts             Agent skills, fields and publishers
-│   ├── stacks.ts             Stack Builder presets and categories
+│   ├── stacks.ts             Stack Builder presets and building blocks
 │   ├── roadmap.ts            Roadmap phases, steps, levels and checklists
 │   ├── ai-roadmap.ts         AI coding roadmap: levels, agent file table, workflow, prompts, example, habits
 │   ├── context-pack.ts       Context Pack file index and the three packs
@@ -249,8 +249,9 @@ Add an entry to the `tools` array in [`data/catalog.ts`](data/catalog.ts):
   name: "Rive",                                   // Display name, must be unique
   url: "https://rive.app",                         // Official URL, no tracking parameters
   description: "Interactive, real‑time animations for any platform.",
-  kind: "Interactive",                             // Short label shown on the card
-  category: "motion",                              // One of the category ids below
+  kind: "Interactive",                             // Short label shown on the card, and a Type option in the filter
+  category: "design-tools",                        // One of the category ids below
+  section: "motion-3d",                            // One of that category's sections
   icon: "rive",                                    // Optional Simple Icons slug
   openSource: true,                                // Optional "Open source" badge
   paid: false,                                     // Optional "Paid" badge
@@ -259,14 +260,23 @@ Add an entry to the `tools` array in [`data/catalog.ts`](data/catalog.ts):
 }
 ```
 
-**Category ids**
+**Categories and sections**
 
-| Develop | Design |
-| --- | --- |
-| `frameworks`, `languages`, `mobile`, `backend`, `databases`, `devtools`, `hosting`, `services`, `payments`, `ai` | `design-tools`, `inspiration`, `typography`, `icons`, `color`, `assets`, `mockups`, `components`, `motion`, `3d` |
+| Category id | Name | Section ids |
+| --- | --- | --- |
+| `ai` | AI | `assistants`, `models`, `ai-coding`, `agents`, `ai-image`, `ai-video`, `ai-audio`, `ai-writing` |
+| `code` | Frameworks & Languages | `frameworks`, `languages`, `mobile`, `docs-sites` |
+| `server` | Backend & Data | `backend`, `databases`, `data` |
+| `devtools` | Dev Tools | `editors`, `build`, `testing`, `docs-diagrams`, `web-css` |
+| `cloud` | Cloud & Services | `hosting`, `services`, `payments` |
+| `design-tools` | Design Tools | `design-apps`, `ux`, `motion-3d`, `mockups` |
+| `ui` | UI & Inspiration | `components`, `motion`, `inspiration` |
+| `type` | Type, Color & Icons | `typography`, `color`, `icons` |
+| `media` | Media Assets | `assets`, `stock-video`, `audio`, `3d` |
+| `web-tools` | Web Tools | `convert`, `media-tools`, `utilities`, `publishing` |
+| `productivity` | Productivity & Privacy | `notes`, `files`, `work`, `privacy`, `life` |
 
-`ai` also sets `alsoFor: "design"`, so it appears under both Design and Develop. To add a category, append it to `categories` in the same file. It appears in Explore, the home page bento, the navbar
-menu and the footer automatically.
+Each category has an `audience` (`design`, `develop` or `ai`). `ai` also lists itself under Design and Develop, and `web-tools` and `productivity` under Design, through `alsoFor`. Sections are defined on each category in [`data/catalog.ts`](data/catalog.ts); a new category or section appears in Explore, the home page bento, the navbar, the footer and search automatically. When you rename or remove one, add the old id to `legacyCategories` so existing links keep working.
 
 ### Brand icons
 
@@ -299,7 +309,7 @@ Add an entry to `resources` in [`data/resources.ts`](data/resources.ts):
   url: "https://doc.rust-lang.org/book/",
   description: "The official, free book for learning Rust.",
   type: "book",            // docs | course | video | guide | book | practice | podcast
-  track: "backend",        // design | frontend | backend | devops | mobile | ai | cs | fullstack | career
+  track: "backend",        // platforms | design | frontend | backend | devops | mobile | ai | cs | fullstack | career | creative | knowledge | games
   level: "Intermediate",   // Beginner | Intermediate | Advanced | All levels
   free: true,
   author: "Rust Team",
@@ -366,21 +376,27 @@ so they stay in sync without manual edits.
 
 ## Design system
 
-The look is inspired by Apple's product pages: generous space, a restrained palette, one accent color and motion that
-explains rather than decorates.
+The look is a restrained monochrome palette with one accent, the brand yellow: generous space, quiet surfaces and
+motion that explains rather than decorates.
 
 **Color tokens** are CSS variables in [`app/globals.css`](app/globals.css), defined for light and dark themes and exposed to
 Tailwind in [`tailwind.config.ts`](tailwind.config.ts):
 
-| Token | Use |
-| --- | --- |
-| `background`, `foreground` | Page background and main text |
-| `surface`, `surface-2` | Section backgrounds, chips and inputs |
-| `card` | Card backgrounds |
-| `muted-foreground` | Secondary text |
-| `primary` | Button fills (white text on it passes WCAG AA in both themes) |
-| `link` | Text links and accent text (a brighter blue in dark mode for contrast) |
-| `border`, `ring` | Hairlines and focus rings |
+| Token | Light | Dark | Use |
+| --- | --- | --- | --- |
+| `background` | `#FAFAFA` | `#111111` | Page background |
+| `card` | `#FFFFFF` | `#1A1A1A` | Cards |
+| `surface`, `surface-2` | `#F2F2F2` | `#1A1A1A`, `#242424` | Subtle fills: chips, inputs, hover |
+| `popover` | `#FFFFFF` | `#242424` | Elevated surfaces: menus, popovers (with a shadow) |
+| `foreground` | `#111111` | `#F5F5F5` | Main text; also `link` and `ring` |
+| `muted-foreground` | `#666666` | `#A3A3A3` | Secondary text |
+| `primary` / `primary-hover` | `#000000` / `#262626` | `#FFFFFF` / `#E5E5E5` | Primary buttons (text in `primary-foreground`) |
+| `border` / `input` | `#E5E5E5` / `#D4D4D4` | `#303030` / `#404040` | Hairlines and input borders |
+| `disabled` | `#F2F2F2` on `#A3A3A3` text | `#242424` on `#525252` text | Disabled buttons |
+| `brand` | `#FFDC58` | `#FFDC58` | The one accent: logo, highlights, Free + Pro badges, text selection |
+| `success` / `destructive` | `#15803D` / `#DC2626` | `#4ADE80` / `#F87171` | Status colors |
+
+Text links use the text color and underline on hover; focus shows as a 2px ring in the text color with a small offset.
 
 **Typography** uses Inter with a size‑aware scale: `text-display`, `text-headline`, `text-title`, `text-lede` and
 `text-eyebrow`. Large headings use tight negative tracking; body text stays near zero.
