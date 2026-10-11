@@ -16,6 +16,7 @@ const columns = [
       { name: "Developer roadmap", href: "/roadmap" },
       { name: "AI coding roadmap", href: "/roadmap/ai-coding" },
       { name: "Local LLMs", href: "/local-llms" },
+      { name: "Top GitHub repos", href: "/repos" },
     ],
   },
   {

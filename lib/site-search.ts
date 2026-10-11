@@ -87,6 +87,14 @@ export const pages: SearchItem[] = [
     "offline",
     "ai",
   ]),
+  item({ id: "p-repos", group: "pages", title: "Top GitHub repositories, live", href: "/repos", icon: "page:repos" }, [
+    "github",
+    "repos",
+    "repositories",
+    "trending",
+    "stars",
+    "open source",
+  ]),
   item({ id: "p-contribute", group: "pages", title: "Contribute to CodeStack", href: "/contribute", icon: "page:contribute" }, [
     "contribute",
     "add a tool",

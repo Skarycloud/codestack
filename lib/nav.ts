@@ -3,6 +3,7 @@ import { resources, resourceTypes } from "@/data/resources"
 import { levels, phases } from "@/data/roadmap"
 import { skillFields } from "@/data/skills"
 import { stackPresets } from "@/data/stacks"
+import { repoLanguages } from "@/lib/repos"
 
 export interface NavLink {
   name: string
@@ -168,5 +169,34 @@ export const navItems: NavItem[] = [
       { title: "Levels", links: levels.map((l) => ({ name: `${l.level}. ${l.name}`, href: `/roadmap?level=${l.level}#roadmap` })) },
     ],
   },
-  { name: "Contribute", href: "/contribute" },
+  {
+    name: "Top Repos",
+    href: "/repos",
+    menu: [
+      {
+        title: "Top repos",
+        primary: true,
+        links: [
+          { name: "Most starred", href: "/repos" },
+          { name: "New this week", href: "/repos?list=week" },
+          { name: "New this month", href: "/repos?list=month" },
+        ],
+      },
+      {
+        title: "By language",
+        links: repoLanguages
+          .filter((l) => l.id !== "all")
+          .slice(0, 8)
+          .map((l) => ({ name: l.name, href: `/repos?l=${l.id}` })),
+      },
+      {
+        title: "On GitHub",
+        links: [
+          { name: "GitHub Trending", href: "https://github.com/trending", external: true },
+          { name: "GitHub Explore", href: "https://github.com/explore", external: true },
+          { name: "Contribute to CodeStack", href: "/contribute" },
+        ],
+      },
+    ],
+  },
 ]

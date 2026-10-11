@@ -85,6 +85,7 @@ Screenshots follow your GitHub theme: light or dark.
 | **Developer Roadmap** (`/roadmap`) | A roadmap.sh-style flowchart from idea to production in **31 steps across 7 phases** (Plan, Build, Secure, Verify, Ship, Run, Grow). Each step opens its checklist in place, with the key rule, a mini flowchart, techniques and resources. Styled after neobrutalism with roadmap.sh's Balsamiq Sans font. Covers design, UX, payments (gateway or merchant of record), a coding-agent definition of done, agent and MCP security, OWASP Top 10:2025, performance, SEO and GEO. Includes the AI-first loop, the optimization loop, five maturity levels (`?level=1` to `5` highlights a level), a final ship checklist and tips. Progress is saved in the browser. Content lives in `data/roadmap.ts`. |
 | **AI Coding Roadmap** (`/roadmap/ai-coding`) | A separate roadmap for building with AI coding agents (Codex, Claude Code, Copilot, Cursor, Gemini CLI): **15 levels in 5 phases**, from understanding agents and prompting to context engineering, architecture, data, APIs, testing, security, deployment and multi-agent workflows. Includes the **AI Project Context Pack** (65 Markdown templates such as AGENTS.md, CLAUDE.md and docs/ARCHITECTURE.md, each with what to include, when to create it, which agents read it automatically and how to check it was used), downloadable as Starter, Standard and Production zips; a table of which instruction files each agent loads, checked against each tool's docs; a 9-step workflow; 17 copyable prompts; a worked example; and 17 habits. Templates live in `content/context-pack/`; run `npm run context-pack` after editing one. |
 | **Local LLMs** (`/local-llms`) | **111 open-weight models** you can download and run locally, sorted from SmolLM2 135M (271 MB) to DeepSeek-V3 671B (404 GB). Each card shows parameters (total and active for mixture-of-experts), download size, context window, license, capabilities, the memory it needs and a copyable `ollama run` command. Filter by memory, capability or search. Data comes from the Ollama library; licenses from each model's license file (`data/local-llms.ts`). |
+| **Top Repos** (`/repos`) | **Live from GitHub:** the most-starred repositories of all time, plus the top new repositories of the last week and month, ranked by stars. Filter by 12 languages and search within the list. Each card shows the owner, rank, description, topics, stars, forks, language and last update. Data comes from the GitHub REST search API on the server and is cached for an hour (`lib/github.ts`, `app/api/repos`). |
 | **Contribute** (`/contribute`) | Three ways to help, a four‑step guide with copyable commands, contribution guidelines and the code of conduct. |
 
 Available everywhere:
@@ -161,6 +162,8 @@ codestack/
 │   ├── skills/               Agent Skills directory
 │   ├── roadmap/              Developer roadmap, and ai-coding/ for the AI coding roadmap
 │   ├── local-llms/           Local LLMs directory
+│   ├── repos/                Top GitHub repositories (live)
+│   ├── api/repos/            Cached GitHub search for the repos page
 │   ├── contribute/           Contribution guide and code of conduct
 │   ├── not-found.tsx         Custom 404 page
 │   ├── globals.css           Design tokens, type scale, utilities, keyframes
@@ -215,6 +218,7 @@ codestack/
 │   ├── site.ts               Site name, URL, repository and social links
 │   ├── nav.ts                Navbar menus (built from the data files)
 │   ├── site-search.ts        The ⌘K search index and ranking
+│   ├── github.ts             Server-side GitHub search, cached hourly (repos.ts holds the shared types)
 │   ├── use-filter-top.ts     Glides back to a filter bar when a tab changes
 │   ├── model-creators.ts     Brand icon for each model creator
 │   ├── zip.ts                Tiny zip writer for Context Pack downloads
@@ -471,7 +475,9 @@ CodeStack works on any platform that runs Next.js. [Vercel](https://vercel.com) 
 2. Set the environment variable **`NEXT_PUBLIC_SITE_URL`** to your public URL, for example `https://codestack.dev`.
    It's used for absolute links in the sitemap, robots.txt and social share images.
    On Vercel it falls back to the production URL automatically if you don't set it.
-3. Deploy. The build command is `npm run build`, and the output is served with `npm run start`.
+3. Optional: set **`GITHUB_TOKEN`** to a GitHub personal access token (a fine-grained token with no extra
+   permissions is enough). The Top Repos page works without it, but a token raises GitHub's rate limits.
+4. Deploy. The build command is `npm run build`, and the output is served with `npm run start`.
 
 ## Troubleshooting
 
