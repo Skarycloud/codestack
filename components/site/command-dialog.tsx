@@ -27,6 +27,7 @@ import {
   type LucideIcon,
 } from "lucide-react"
 import { useTheme } from "next-themes"
+import { switchTheme } from "@/lib/theme-transition"
 import { useRouter } from "next/navigation"
 import { useCallback, useDeferredValue, useEffect, useMemo, useState } from "react"
 import { BrandIcon } from "@/components/brand-icon"
@@ -131,7 +132,7 @@ export default function CommandDialog({ open, onOpenChange }: { open: boolean; o
                   {g.id === "pages" && showTheme && (
                     <ThemeItem
                       dark={resolvedTheme === "dark"}
-                      onSelect={() => run(() => setTheme(resolvedTheme === "dark" ? "light" : "dark"))}
+                      onSelect={() => run(() => switchTheme(resolvedTheme === "dark" ? "light" : "dark", setTheme))}
                     />
                   )}
                 </Command.Group>
@@ -140,7 +141,7 @@ export default function CommandDialog({ open, onOpenChange }: { open: boolean; o
                 <Command.Group heading="Appearance">
                   <ThemeItem
                     dark={resolvedTheme === "dark"}
-                    onSelect={() => run(() => setTheme(resolvedTheme === "dark" ? "light" : "dark"))}
+                    onSelect={() => run(() => switchTheme(resolvedTheme === "dark" ? "light" : "dark", setTheme))}
                   />
                 </Command.Group>
               )}

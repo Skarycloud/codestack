@@ -113,6 +113,14 @@
   a {
     -webkit-tap-highlight-color: transparent;
   }
+
+  /* Theme switches reveal the new theme in a growing circle (lib/theme-transition), so the
+     browser's default cross-fade is turned off. */
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+    mix-blend-mode: normal;
+  }
 }
 
 /* ---------------------------------------------------------------------------
