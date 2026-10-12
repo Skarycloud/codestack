@@ -813,6 +813,8 @@ const coreTools: Tool[] = [
   { name: "Bootstrap Icons", url: "https://icons.getbootstrap.com", description: "Over 2,000 free, open source icons from the Bootstrap team.", kind: "Icon Set", category: "type", section: "icons", openSource: true },
   { name: "Icônes", url: "https://icones.js.org", description: "A fast icon browser for every Iconify collection.", kind: "Icon Browser", category: "type", section: "icons", openSource: true },
   { name: "Streamline", url: "https://www.streamlinehq.com", description: "A huge library of icons, illustrations and emoji in many styles.", kind: "Icon Set", category: "type", section: "icons", freemium: true },
+  { name: "Streamline Freehand", url: "https://www.streamlinehq.com/icons/freehand-free", description: "Free hand-drawn line icons with a loose, sketchy stroke.", kind: "Icon Set", category: "type", section: "icons", icon: "streamlinefreehand" },
+  { name: "Streamline Freehand Duotone", url: "https://www.streamlinehq.com/icons/freehand-duotone-free", description: "The free hand-drawn set with a second accent color.", kind: "Icon Set", category: "type", section: "icons", icon: "streamlinefreehandduotone" },
   { name: "Lordicon", url: "https://lordicon.com", description: "Animated icons ready for websites, apps and video.", kind: "Animated Icons", category: "type", section: "icons", freemium: true },
 
   // Color

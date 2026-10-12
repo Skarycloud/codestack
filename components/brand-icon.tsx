@@ -73,7 +73,14 @@ export function BrandIcon({ slug, name, variant = "color", className }: BrandIco
   const tone = variant === "mono" ? "currentColor" : isVeryDark(icon.hex) || isVeryLight(icon.hex) ? "currentColor" : `#${icon.hex}`
 
   return (
-    <svg viewBox="0 0 24 24" role="img" aria-label={icon.title} className={cn("size-6", className)} fill={tone}>
+    <svg
+      viewBox="0 0 24 24"
+      role="img"
+      aria-label={icon.title}
+      className={cn("size-6", className)}
+      fill={tone}
+      style={variant === "mono" ? ({ "--icon-accent": "currentColor" } as React.CSSProperties) : undefined}
+    >
       <use href={`${icon.x ? brandSpriteExtra : brandSprite}#${slug}`} />
     </svg>
   )
